@@ -1,9 +1,8 @@
-import { webPaths } from "@/paths";
 import Link from "next/link";
 
 export default function Logo() {
   return (
-    <Link className="text-primary" href={webPaths.homePath()}>
+    <Link className="text-primary h-4 w-[60px] block" href={"/"}>
       <svg
         viewBox="0 0 47 13"
         fill="currentColor"

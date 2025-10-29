@@ -1,45 +1,31 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-interface ContainerProps {
+export type ContainerElement = "div" | "section" | "article" | "main" | "aside";
+
+export interface ContainerProps {
   children: ReactNode;
   className?: string;
-  size?: "sm" | "md" | "lg" | "xl" | "full";
-  padding?: "none" | "sm" | "md" | "lg";
-  as?: "div" | "section" | "article" | "main" | "aside";
+  padding?: "fluid" | "fixed";
+  as?: ContainerElement;
 }
-
-const sizeClasses = {
-  sm: "max-w-3xl",
-  md: "max-w-5xl",
-  lg: "max-w-7xl",
-  xl: "max-w-[90rem]",
-  full: "max-w-full",
-};
-
-const paddingClasses = {
-  none: "",
-  sm: "px-4",
-  md: "px-4 md:px-6",
-  lg: "px-4 md:px-8 lg:px-12",
-};
 
 export default function Container({
   children,
   className = "",
-  size = "xl",
-  padding = "md",
+  padding = "fluid",
   as: Component = "div",
 }: ContainerProps) {
+  const paddingClasses: Record<
+    NonNullable<ContainerProps["padding"]>,
+    string
+  > = {
+    fluid: "w-full padding-fluid",
+    fixed: "w-full px-8",
+  };
+
   return (
-    <Component
-      className={cn(
-        "mx-auto w-full space-y-6",
-        sizeClasses[size],
-        paddingClasses[padding],
-        className
-      )}
-    >
+    <Component className={cn(paddingClasses[padding], className)}>
       {children}
     </Component>
   );

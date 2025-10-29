@@ -37,11 +37,19 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
 
+  /* Border Radius Values */
+  --radius: 0.5rem;
+  --radius-none: 0px;
+  --radius-sm: 0.225rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Spacing Values */
   --spacing-9_5: 2.4375rem;
   --spacing-11: 2.8125rem;
   --spacing-13_5: 3.4375rem;
@@ -95,10 +103,10 @@
 
 @layer utilities {
   .text-outline {
-    color: transparent; /* hides fill color */
-    -webkit-text-stroke: 1px white; /* visible border */
-    paint-order: stroke fill; /* makes stroke appear outside for clarity */
-    text-transform: uppercase; /* optional: consistent look for display text */
+    color: transparent;
+    -webkit-text-stroke: 1px white;
+    paint-order: stroke fill;
+    text-transform: uppercase;
   }
 
   .font-sans {
@@ -107,5 +115,22 @@
 
   .font-serif {
     font-family: var(--font-serif);
+  }
+
+  .padding-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .intro-height {
+    height: 100vh;
+    max-height: clamp(24rem, 80vw, 132rem);
+  }
+
+  @media (min-width: 1840px) {
+    .padding-fluid {
+      padding-left: clamp(2rem, 3.5vw, 12.5rem);
+      padding-right: clamp(2rem, 3.5vw, 12.5rem);
+    }
   }
 }

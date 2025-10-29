@@ -11,7 +11,7 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   weight?: "normal" | "medium" | "semibold" | "bold";
   align?: "left" | "center" | "right" | "justify";
   className?: string;
-  font: "serif" | "sans";
+  font?: "serif" | "sans";
   children: React.ReactNode;
 }
 
