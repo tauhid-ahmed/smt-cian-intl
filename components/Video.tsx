@@ -101,14 +101,8 @@ function Demo() {
             <Video
               sources={[
                 {
-                  src: "https://artlist-dev.imgix.net/artlist/artlist-ai-Mobile-2.webm",
-                  type: "video/webm",
-                  media: "(max-width: 767px)",
-                },
-                {
-                  src: "https://artlist-dev.imgix.net/artlist/artlist-ai-1920-1.webm",
-                  type: "video/webm",
-                  media: "(min-width: 768px)",
+                  src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                  type: "video/mp4",
                 },
               ]}
               className="w-full rounded-lg shadow-2xl"
