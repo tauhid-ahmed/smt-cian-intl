@@ -1,25 +1,16 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import Heading from "@/components/Heading";
+import { Heading } from "@/components/Heading";
 import Container from "./Container";
 
 type SectionProps = {
-  /** Section heading text */
   title?: string | React.ReactNode;
-  /** Optional description under the heading */
   description?: string;
-  /** Content inside the section */
   children?: React.ReactNode;
-  /** Background color or variant style */
   variant?: "default" | "muted" | "highlight";
-  /** Spacing style */
   padding?: "none" | "sm" | "md" | "lg";
-  /** Text alignment */
   align?: "left" | "center" | "right";
-  /** Additional className for customization */
   className?: string;
-  id?: string;
-  cta?: React.ReactNode;
 };
 
 export default function Section({
@@ -28,9 +19,9 @@ export default function Section({
   children,
   variant = "default",
   padding = "md",
-  align = "center",
+  align = "left",
   className,
-  cta,
+
   ...props
 }: SectionProps) {
   const variants: Record<typeof variant, string> = {
@@ -92,11 +83,6 @@ export default function Section({
             >
               {description}
             </p>
-          )}
-          {cta && (
-            <span className="absolute right-0 top-1/2 -translate-y-1/2">
-              {cta}
-            </span>
           )}
         </Container>
       )}

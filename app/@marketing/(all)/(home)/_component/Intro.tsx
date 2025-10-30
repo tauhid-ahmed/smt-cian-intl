@@ -1,9 +1,7 @@
 import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
-import { Button } from "@/components/ui/button";
 import Video from "@/components/Video";
-import SignupForm from "@/features/auth/components/Signup";
-import Link from "next/link";
+import GetStarted from "./GetStarted";
 
 export default function Intro() {
   return (
@@ -69,7 +67,7 @@ export default function Intro() {
               </p>
             </div>
             <div className="mt-6 md:mt-8 lg:mt-10">
-              <SignupForm />
+              <GetStarted />
             </div>
           </div>
         </Container>

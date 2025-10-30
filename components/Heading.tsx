@@ -29,14 +29,13 @@ export function Heading({
   const Component = as ?? size;
   const Comp = asChild ? Slot : Component;
 
-  // 1rem = 16px baseline (by default in Tailwind)
   const sizes: Record<HeadingLevel, string> = {
-    h1: "text-[3rem] sm:text-[4rem] md:text-[4.1875rem] leading-tight", // 48 → 64 → 67px
-    h2: "text-[2.5rem] sm:text-[3rem] md:text-[2.8125rem] leading-snug", // 40 → 48 → 45px
-    h3: "text-[2rem] sm:text-[2.5rem] md:text-[2.5rem] leading-snug", // 32 → 40 → 40px
-    h4: "text-[1.75rem] sm:text-[2rem] md:text-[2rem] leading-normal", // 28 → 32px
-    h5: "text-[1.5rem] sm:text-[1.625rem] md:text-[1.625rem] leading-normal", // 24 → 26px
-    h6: "text-[1.25rem] sm:text-[1.375rem] md:text-[1.25rem] leading-normal", // 20px
+    h1: "text-[2rem] sm:text-[3rem] md:text-[4rem] lg:text-[4.25rem] leading-tight",
+    h2: "text-[1.75rem] sm:text-[2.25rem] md:text-[2.75rem] lg:text-[3rem] leading-snug",
+    h3: "text-[1.5rem] sm:text-[2rem] md:text-[2.25rem] lg:text-[2.5rem] leading-snug",
+    h4: "text-[1.25rem] sm:text-[1.75rem] md:text-[2rem] lg:text-[2.125rem] leading-normal",
+    h5: "text-[1.125rem] sm:text-[1.5rem] md:text-[1.625rem] lg:text-[1.75rem] leading-normal",
+    h6: "text-[1rem] leading-normal",
   };
 
   const weights: Record<NonNullable<HeadingProps["weight"]>, string> = {

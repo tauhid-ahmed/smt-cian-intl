@@ -1,45 +1,59 @@
-import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/Heading";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogOverlay,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 type AuthCardProps = {
-  variant: "signin" | "signup";
+  variant: "signin" | "signup" | "forgot-password" | "email-verified";
   children: React.ReactNode;
   footer?: React.ReactNode;
+  trigger: React.ReactNode;
+  title: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
-export default function AuthCard({ children, footer }: AuthCardProps) {
+export default function AuthCard({
+  children,
+  footer,
+  trigger,
+  title,
+  variant,
+  open,
+  onOpenChange,
+}: AuthCardProps) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button size="xl" shape="sm">
-          Start Free Now
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle className="visually-hidden">
-          Authentication Card
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogOverlay
+        className={cn(variant === "signup" ? "bg-black/90" : "bg-black/50")}
+      />
+      <DialogContent
+        className={cn(
+          "sm:max-w-lg space-y-6 lg:space-y-10 rounded-xl shadow-2xl p-6 md:p-10 flex flex-col",
+          {
+            "bg-sidebar":
+              variant === "signin" ||
+              variant === "forgot-password" ||
+              variant === "email-verified",
+            "bg-white text-primary-foreground": variant === "signup",
+          }
+        )}
+      >
+        <DialogTitle asChild>
+          <Heading as="h2" size="h4" align="center">
+            {title}
+          </Heading>
         </DialogTitle>
-
         {children}
-
-        {footer && <DialogFooter>{footer}</DialogFooter>}
+        <DialogFooter className="self-center m-0">{footer}</DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-
-/*
-<DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-
-*/

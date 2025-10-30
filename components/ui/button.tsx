@@ -52,8 +52,9 @@ const buttonVariants = cva(
 
       width: {
         auto: "w-auto",
-        responsive: "w-full md:w-45",
-        fixed: "w-45",
+        responsive: "w-full md:w-44",
+        fixed: "w-45!",
+        xl: "w-[13.75rem]!",
       },
     },
 

@@ -1,10 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-export default function TextOpacityAnimation() {
-  const text =
-    "The quick brown fox jumps over the lazy dog. This animation reveals each letter gradually while keeping the entire text visible from the start.";
-
+export default function TextOpacityAnimation({ text }: { text: string }) {
   return (
     <div className="text-5xl text-white max-w-4xl">
       <div>

@@ -7,9 +7,10 @@ import { marketingNavbarData } from "@/paths";
 import Logo from "../Logo";
 import ActiveLink from "../ActiveLink";
 import MobileNav from "./MobileNav";
-import { LucideHome } from "lucide-react";
+import { useAuth } from "@/features/auth/provider/AuthProvider";
 
 export default function () {
+  const { openSignUp, openSignIn } = useAuth();
   return (
     <header className="bg-accent sticky top-0 z-50 shadow">
       <Container>
@@ -32,17 +33,17 @@ export default function () {
             </ul>
           </div>
           <div className="flex-1 flex gap-4 justify-end">
-            <Button size="sm" asChild>
-              <Link href="/">Start Free Now</Link>
+            <Button size="sm" onClick={openSignUp}>
+              Start Free Now
             </Button>
             <Button
               variant="ghost"
               weight="normal"
               size="sm"
               className="text-base"
-              asChild
+              onClick={openSignIn}
             >
-              <Link href="/">Sign in</Link>
+              Sign in
             </Button>
           </div>
         </nav>

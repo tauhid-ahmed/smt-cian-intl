@@ -1,6 +1,6 @@
 "use client";
 
-import TextOpacityAnimation from "@/components/aniamtions/TextOpacity";
+import TextOpacityAnimation from "@/components/animations/TextOpacity";
 import FAQ from "@/components/FAQ";
 import TextField from "@/features/auth/components/TextField";
 import { FormProvider, useForm } from "react-hook-form";
