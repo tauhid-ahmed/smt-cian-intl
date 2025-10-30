@@ -25,7 +25,7 @@ export function PieChartCard({ title, subtitle, data }: PieChartCardProps) {
         {subtitle && <h2 className="text-sm text-[#F2F2F2]">{subtitle}</h2>}
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center-safe justify-around gap-12">
+      <div className="flex flex-col lg:flex-row items-center justify-start gap-12">
         <div className="shrink-0">
           <ResponsiveContainer width={280} height={280}>
             <PieChart width={400} height={400}>
@@ -34,7 +34,7 @@ export function PieChartCard({ title, subtitle, data }: PieChartCardProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={130}
+                outerRadius={120}
                 dataKey="value"
                 paddingAngle={2}
                 stroke="none">

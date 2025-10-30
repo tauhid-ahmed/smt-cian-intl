@@ -5,6 +5,7 @@ import {
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
 import CustomerAnalyticsTabContent from "@/components/adminDashboard/overview/CustomerAnalyticsTabContent";
+import ReviewAnalyticsTabContent from "@/components/adminDashboard/overview/ReviewAnalyticsTabContent";
 import SalesDashboardTabContent from "@/components/adminDashboard/overview/SalesDashboardTabContent";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
@@ -39,6 +40,10 @@ const AdminOverviewPage = () => {
 
           <CustomTabsContent value="tab2">
             <CustomerAnalyticsTabContent />
+          </CustomTabsContent>
+
+          <CustomTabsContent value="tab3">
+            <ReviewAnalyticsTabContent />
           </CustomTabsContent>
         </CustomTabs>
       </div>
