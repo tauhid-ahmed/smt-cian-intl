@@ -13,7 +13,7 @@ export default function () {
   return (
     <header className="bg-accent sticky top-0 z-50 shadow">
       <Container>
-        <nav className="py-4 flex">
+        <nav className="py-3 flex">
           <div className="flex-1 flex items-center gap-4">
             <div className="lg:hidden">
               <MobileNav />

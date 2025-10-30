@@ -133,4 +133,8 @@
       padding-right: clamp(2rem, 3.5vw, 12.5rem);
     }
   }
+
+  [data-mode="auth-card-light"] label {
+    background: red;
+  }
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Inria_Serif } from "next/font/google";
 import "@/styles/globals.css";
-import QueryProvider from "@/providers/QueryProvider";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -21,14 +20,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+  marketing,
 }: Readonly<{
-  children: React.ReactNode;
+  marketing?: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        {marketing}
       </body>
     </html>
   );
