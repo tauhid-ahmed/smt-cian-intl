@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           </Button>
         </div>
 
-        <nav className="flex-1 px-2 space-y-2 py-6 mt-8">
+        <nav className="flex-1 px-2 space-y-5 py-6 mt-11">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -98,12 +98,10 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent">
-            <LogOut className="w-5 h-5" />
+          <button className="w-full flex justify-center items-center gap-2.5 px-2 py-3 rounded-lg transition-all duration-200text-white hover:bg-[#262626]">
+            <LogOut className="w-5 h-5 text-white" />
             <span>Logout</span>
-          </Button>
+          </button>
         </div>
       </aside>
     </>
