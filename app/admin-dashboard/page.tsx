@@ -1,7 +1,12 @@
+import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
+
 const AdminOverviewPage = () => {
   return (
     <div>
-      <h1>Admin Dashboard Overview</h1>
+      <DashboardPageHeader
+        title="Analytics & Insights"
+        sub_title="Monitor your business performance and customer behavior"
+      />
     </div>
   );
 };
