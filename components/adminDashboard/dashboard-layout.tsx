@@ -15,7 +15,7 @@ const DashboardLayout = ({ children }: React.PropsWithChildren) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-        <div className="p-6 lg:p-8">{children}</div>
+        <div className="p-6 lg:p-8 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

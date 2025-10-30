@@ -1,38 +1,47 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+interface Product {
+  name: string;
+  units: number;
+  revenue: string;
+}
 
-const products = [
-  { name: "Vinyl Record - Jazz Collection", units: 342, revenue: "$10,260" },
-  { name: "Artist T-Shirt - Limited Ed.", units: 289, revenue: "$8,670" },
-  { name: "Premium Membership", units: 156, revenue: "$15,600" },
-  { name: "Concert Ticket Bundle", units: 234, revenue: "$14,040" },
-  { name: "Exclusive Art Print", units: 198, revenue: "$5,940" },
-]
+interface TopProductsCardProps {
+  products: Product[];
+  title?: string;
+  subtitle?: string;
+}
 
-export function TopProductsCard() {
+export function TopProductsCard({
+  products,
+  title = "Top Products",
+  subtitle = "Best selling products by revenue",
+}: TopProductsCardProps) {
   return (
-    <Card className="border border-border bg-card">
-      <CardHeader>
-        <CardTitle className="text-foreground">Top Products</CardTitle>
-        <CardDescription className="text-muted-foreground">Best selling products by revenue</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {products.map((product, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-secondary transition-colors duration-200 cursor-pointer"
-            >
-              <div>
-                <p className="font-medium text-sm text-foreground">{product.name}</p>
-                <p className="text-xs text-muted-foreground">{product.units} units sold</p>
-              </div>
-              <p className="font-semibold text-sm text-foreground">{product.revenue}</p>
-            </div>
-          ))}
+    <div className="bg-[#181818] rounded-xl p-3 sm:p-5 w-full">
+      <div className="space-y-4">
+        <div className="text-left text-white mb-4">
+          <h1 className="font-semibold text-base sm:text-lg">{title}</h1>
+          <h2 className="text-sm text-[#F2F2F2]">{subtitle}</h2>
         </div>
-      </CardContent>
-    </Card>
-  )
+        {products.map((product, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 rounded-lg hover:bg-secondary transition-colors duration-200">
+            <div>
+              <p className="font-medium text-sm text-white mb-1">
+                {product.name}
+              </p>
+              <p className="text-xs text-[#F2F2F2]">
+                {product.units} units sold
+              </p>
+            </div>
+            <p className="font-normal text-sm text-[#F2F2F2]">
+              {product.revenue}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

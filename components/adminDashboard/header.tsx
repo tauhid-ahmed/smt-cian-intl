@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   return (
-    <header className="bg-[#1A1A1A] px-6 lg:px-8 lg:h-[88px] h-[70px] flex items-center justify-between">
+    <header className="bg-[#1A1A1A] px-6 lg:px-8 lg:min-h-[88px] min-h-[70px] flex items-center justify-between">
       <Button
         variant="ghost"
         size="icon"

@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           </Button>
         </div>
 
-        <nav className="flex-1 px-2 space-y-2 py-6 mt-11">
+        <nav className="flex-1 px-2 space-y-5 py-6 mt-11">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
