@@ -124,7 +124,7 @@
 
   .intro-height {
     height: 100vh;
-    max-height: clamp(24rem, 80vw, 132rem);
+    max-height: clamp(44rem, 80vw, 132rem);
   }
 
   @media (min-width: 1840px) {

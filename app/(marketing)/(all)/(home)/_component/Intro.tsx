@@ -2,6 +2,7 @@ import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Video from "@/components/Video";
 import GetStarted from "./GetStarted";
+import IconGallery from "./IconsGallery";
 
 export default function Intro() {
   return (
@@ -71,6 +72,9 @@ export default function Intro() {
             </div>
           </div>
         </Container>
+      </div>
+      <div className="absolute bottom-0 inset-x-0 py-10">
+        <IconGallery />
       </div>
     </div>
   );
