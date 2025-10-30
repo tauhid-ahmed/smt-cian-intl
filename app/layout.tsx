@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
-        {marketing}
+        {/* {marketing} */}
         {children}
       </body>
     </html>
