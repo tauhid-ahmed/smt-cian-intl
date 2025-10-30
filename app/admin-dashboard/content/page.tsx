@@ -1,15 +1,12 @@
 "use client";
 
+import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
 import {
   CustomTabs,
   CustomTabsContent,
   CustomTabsList,
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
-import CustomerAnalyticsTabContent from "@/components/adminDashboard/overview/CustomerAnalyticsTabContent";
-import PerformanceMetricsTabContent from "@/components/adminDashboard/overview/PerformanceMetricsTabContent";
-import ReviewAnalyticsTabContent from "@/components/adminDashboard/overview/ReviewAnalyticsTabContent";
-import SalesDashboardTabContent from "@/components/adminDashboard/overview/SalesDashboardTabContent";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const ContentManagementPage = () => {
@@ -24,34 +21,28 @@ const ContentManagementPage = () => {
         <CustomTabs defaultValue="tab1">
           <CustomTabsList variant="bordered">
             <CustomTabsTrigger value="tab1" variant="bordered">
-              Sales Dashboard
+              Product Catalog
             </CustomTabsTrigger>
             <CustomTabsTrigger value="tab2" variant="bordered">
-              Customer Analytics
+              Artist Profiles
             </CustomTabsTrigger>
             <CustomTabsTrigger value="tab3" variant="bordered">
-              Review Analytics
+              Review Moderation
             </CustomTabsTrigger>
             <CustomTabsTrigger value="tab4" variant="bordered">
-              Performance Metric
+              Content Approval
             </CustomTabsTrigger>
           </CustomTabsList>
 
           <CustomTabsContent value="tab1">
-            <SalesDashboardTabContent />
+            <ProductCatalogTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab2">
-            <CustomerAnalyticsTabContent />
-          </CustomTabsContent>
+          <CustomTabsContent value="tab2">advved</CustomTabsContent>
 
-          <CustomTabsContent value="tab3">
-            <ReviewAnalyticsTabContent />
-          </CustomTabsContent>
+          <CustomTabsContent value="tab3">adadvad</CustomTabsContent>
 
-          <CustomTabsContent value="tab4">
-            <PerformanceMetricsTabContent />
-          </CustomTabsContent>
+          <CustomTabsContent value="tab4">adadv</CustomTabsContent>
         </CustomTabs>
       </div>
     </>
