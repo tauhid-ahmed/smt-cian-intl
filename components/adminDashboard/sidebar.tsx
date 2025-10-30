@@ -28,7 +28,7 @@ const menuItems = [
   {
     icon: FileText,
     label: "Content Management",
-    href: "/content",
+    href: "/admin-dashboard/content",
     id: "content",
   },
   {

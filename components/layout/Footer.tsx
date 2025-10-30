@@ -1,305 +1,215 @@
-import { socialPaths } from "@/paths";
 import Link from "next/link";
-import React from "react";
-import { BsTelephone } from "react-icons/bs";
-import {
-  FaEnvelope,
-  FaFacebookF,
-  FaInstagram,
-  FaMapMarkerAlt,
-  FaYoutube,
-} from "react-icons/fa";
+import Container from "@/components/layout/Container";
 
-const socialIcons = {
-  facebook: <FaFacebookF />,
-  instagram: <FaInstagram />,
-  youtube: <FaYoutube />,
-  map: <FaMapMarkerAlt />,
-  email: <FaEnvelope />,
-  phone: <BsTelephone />,
-};
+interface FooterLink {
+  label: string;
+  href: string;
+}
 
-// Contact Information
-const CONTACT_INFO = {
-  address: {
-    line1: "The Octopus Building",
-    line2: "Royal Road, Pointe aux Canonniers",
-    postalCode: "30510",
-  },
-  phone: {
-    business: "269 1500",
-    hotline: "5256 6138",
-  },
-  email: "info@deals.mu",
-  hours: {
-    weekday: { label: "Monday - Friday", time: "08h00 - 20h00" },
-    saturday: { label: "Saturday", time: "08h00 - 16h00" },
-    sunday: { label: "Sunday", time: "08h00 - 13h00", note: "(Office Closed)" },
-  },
-};
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
 
-// Footer Links
-const FOOTER_LINKS = {
-  categories: [
-    "Hotels",
-    "Activities",
-    "TOURS & ECO TOURISM",
-    "Events and tickets",
-    "Business and meetings",
-    "Nosy be",
-    "Travel",
-    "Corporate deal",
-    "Airport & VIP pick up",
-    "Team building",
+const footerColumns = [
+  [
+    {
+      title: "Products",
+      links: [
+        { label: "Royalty-Free Music", href: "/music" },
+        { label: "Sound Effects", href: "/sfx" },
+        { label: "AI Voiceover", href: "/ai-voiceover" },
+        { label: "AI Image & Video", href: "/ai-tools" },
+        { label: "Stock Footage", href: "/stock-footage" },
+        { label: "Video Templates", href: "/templates" },
+        { label: "LUTs", href: "/luts" },
+        { label: "Tools", href: "/tools" },
+        { label: "Music API", href: "/api" },
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "About Us", href: "/about" },
+        { label: "Artist for Business", href: "/business" },
+        { label: "Pricing", href: "/pricing" },
+      ],
+    },
   ],
-  additional: [
-    "About Us",
-    "Contact Us",
-    "Why are we the best?",
-    "FAQs",
-    "Video Tutorials",
-    { text: "baodeal.net by baodeal", link: "https://baodeal.net" },
-    "Corporate Deals",
-    "Madagascar blogs",
-    "Influencer Program",
+  [
+    {
+      title: "Business Solutions",
+      links: [
+        { label: "Businesses", href: "/solutions/businesses" },
+        { label: "In-app", href: "/solutions/in-app" },
+        { label: "Creative Agencies", href: "/solutions/agencies" },
+        { label: "Broadcast & Media", href: "/solutions/broadcast" },
+        { label: "Sports Industry", href: "/solutions/sports" },
+        { label: "Retail Brands", href: "/solutions/retail" },
+        { label: "Tech Companies", href: "/solutions/tech" },
+        { label: "Education", href: "/solutions/education" },
+      ],
+    },
   ],
-  legal: [
-    "Terms & Conditions",
-    "Cookie Policy",
-    "Cancellation policy",
-    "Cyclone Protocol",
-    "Privacy",
+  [
+    {
+      title: "Join Us",
+      links: [
+        { label: "Become a Musician", href: "/join/musician" },
+        { label: "Become a Filmmaker", href: "/join/filmmaker" },
+        { label: "Become a Template Artist", href: "/join/template-artist" },
+        { label: "Become an Ambassador", href: "/join/ambassador" },
+        { label: "Become a Channel Partner", href: "/join/partner" },
+        { label: "Artlist Jobs", href: "/careers" },
+      ],
+    },
+    {
+      title: "Help",
+      links: [{ label: "Help Center", href: "/help" }],
+    },
   ],
+  [
+    {
+      title: "Resources",
+      links: [
+        { label: "Artlist Blog", href: "/blog" },
+        { label: "Artlist Academy", href: "/academy" },
+      ],
+    },
+    {
+      title: "License & Terms",
+      links: [
+        { label: "Artlist License", href: "/license" },
+        { label: "Terms of Use", href: "/terms" },
+        { label: "Copyright Policy", href: "/copyright" },
+        { label: "Privacy Policy", href: "/privacy" },
+      ],
+    },
+  ],
+];
+
+const footerBrand = {
+  title: "Creative tools, built for creators.",
+  description:
+    "Our mission is to empower creators worldwide to tell their stories through video. We bring opportunity to the creative industry through professional digital assets for video creation, powerful video editing software, and accessible learning resources to support you in achieving your vision.",
 };
 
-// Company Information
-const COMPANY_INFO = {
-  name: "Baodeal.net",
-  registrationNumber: "15288",
-  tradingName: "Baodeals Simply the Best Ltd",
-};
+// Sub-components
+function FooterBrand() {
+  return (
+    <div className="lg:max-w-sm">
+      <h3 className="text-lg font-semibold text-white mb-3">
+        {footerBrand.title}
+      </h3>
+      <p className="text-sm text-gray-400 leading-relaxed">
+        {footerBrand.description}
+      </p>
+    </div>
+  );
+}
 
+function FooterColumn({ section }: { section: FooterSection }) {
+  return (
+    <div>
+      <h4 className="text-sm font-semibold text-white mb-4">{section.title}</h4>
+      <ul className="space-y-3">
+        {section.links.map((link) => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function FooterBottom() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <div className="border-t border-gray-800 mt-12 pt-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-sm text-gray-500">
+          © {currentYear} Artlist Ltd. All Rights Reserved.
+        </p>
+        <div className="flex items-center gap-6">
+          <Link
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+            aria-label="Twitter"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </Link>
+          <Link
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+            aria-label="Facebook"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 3.667h-3.533v7.98H9.101z" />
+            </svg>
+          </Link>
+          <Link
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+          </Link>
+          <Link
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white transition-colors"
+            aria-label="LinkedIn"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component
 export default function Footer() {
   return (
-    <footer className="bg-[#333]">
-      {/* Newsletter Section */}
-      <div className="bg-green-600 text-white py-6 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
-          <div className="text-base md:text-lg font-semibold uppercase md:px-16 text-center md:text-left">
-            Sign Up For Our Newsletter
-          </div>
-          <div className="flex w-full md:w-auto items-stretch gap-2">
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="px-4 py-2 text-black w-full md:w-[300px] bg-white"
-            />
-            <button className="text-white border bg-green px-6 py-2 font-semibold whitespace-nowrap">
-              Submit
-            </button>
+    <footer className="bg-black text-white">
+      <Container className="py-16">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          {/* Left side - Brand */}
+          <FooterBrand />
+
+          {/* Right side - Link columns */}
+          <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+            {footerColumns.map((column, colIndex) => (
+              <div key={colIndex} className="space-y-8">
+                {column.map((section) => (
+                  <FooterColumn key={section.title} section={section} />
+                ))}
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="text-white text-sm">
-        <div className="max-w-7xl mx-auto px-4 py-10">
-          {/* Main Footer Columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-8 xl:gap-12 mb-12">
-            {/* Column 1 - All Categories */}
-            <div>
-              <div className="font-semibold mb-3 uppercase text-base text-white">
-                All Categories
-              </div>
-              <hr className="w-9 border-t-2 border-red-700 mb-4" />
-              <ul className="space-y-2 list-disc pl-5 text-white/80">
-                {FOOTER_LINKS.categories.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Column 2 - Additional Information */}
-            <div>
-              <div className="font-semibold mb-3 uppercase text-base text-white">
-                Additional Information
-              </div>
-              <hr className="w-9 border-t-2 border-red-700 mb-4" />
-              <ul className="space-y-2 list-disc pl-5 text-white/80">
-                {FOOTER_LINKS.additional.map((item, index) =>
-                  typeof item === "string" ? (
-                    <li key={index}>{item}</li>
-                  ) : (
-                    <li key={index}>
-                      <a
-                        href={item.link}
-                        className="underline hover:text-white"
-                      >
-                        {item.text}
-                      </a>
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-
-            {/* Column 3 - Legal Information */}
-            <div>
-              <div className="font-semibold mb-3 uppercase text-base text-white">
-                Legal Information
-              </div>
-              <hr className="w-9 border-t-2 border-red-700 mb-4" />
-              <ul className="space-y-2 list-disc pl-5 text-white/80">
-                {FOOTER_LINKS.legal.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Column 4 - Contact Form */}
-            <div className="sm:col-span-2 xl:col-span-2">
-              <div className="font-semibold mb-3 uppercase text-base text-white">
-                Send Us A Message
-              </div>
-              <hr className="w-9 border-t-2 border-red-700 mb-4" />
-              <div className="text-gray-300 mb-4">
-                Feel free to contact us by phone, email or by our contact form
-              </div>
-              <div className="space-y-3 max-w-2xl">
-                <input
-                  type="text"
-                  placeholder="Your Name*"
-                  className="w-full px-4 py-2 bg-white text-[#404040] focus:outline-none focus:ring-2 focus:ring-green-600"
-                  aria-label="Your Name"
-                  required
-                />
-                <input
-                  type="tel"
-                  placeholder="Your Telephone"
-                  className="w-full px-4 py-2 bg-white text-[#404040] focus:outline-none focus:ring-2 focus:ring-green-600"
-                  aria-label="Your Telephone"
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email*"
-                  className="w-full px-4 py-2 bg-white text-[#404040] focus:outline-none focus:ring-2 focus:ring-green-600"
-                  aria-label="Your Email"
-                  required
-                />
-                <textarea
-                  placeholder="Type your message here...*"
-                  className="w-full px-4 py-2 bg-white text-[#404040] h-24 resize-none focus:outline-none focus:ring-2 focus:ring-green-600"
-                  aria-label="Your Message"
-                  required
-                ></textarea>
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 px-6 py-2 text-white font-semibold transition-colors"
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Details Section */}
-          <div className="mb-10">
-            <div className="font-semibold mb-3 uppercase text-base text-white">
-              Contact Details
-            </div>
-            <hr className="w-9 border-t-2 border-red-700 mb-6" />
-            <div className="bg-[#444] px-6 py-8 max-w-2xl">
-              <div className="text-white/80 space-y-4">
-                {/* Address */}
-                <div className="flex items-start gap-3">
-                  <FaMapMarkerAlt className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    {CONTACT_INFO.address.line1}, {CONTACT_INFO.address.line2},{" "}
-                    {CONTACT_INFO.address.postalCode}
-                  </div>
-                </div>
-
-                {/* Phone Numbers */}
-                <div className="flex items-start gap-3">
-                  <BsTelephone className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div>
-                      <strong className="text-white">
-                        Tel (business hours):
-                      </strong>{" "}
-                      {CONTACT_INFO.phone.business}
-                    </div>
-                    <div>
-                      <strong className="text-white">Tel (Hotline):</strong>{" "}
-                      {CONTACT_INFO.phone.hotline}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Business Hours */}
-                <div className="pl-8 space-y-1">
-                  <div>
-                    <strong className="text-white">
-                      {CONTACT_INFO.hours.weekday.label}:
-                    </strong>{" "}
-                    {CONTACT_INFO.hours.weekday.time}
-                  </div>
-                  <div>
-                    <strong className="text-white">
-                      {CONTACT_INFO.hours.saturday.label}:
-                    </strong>{" "}
-                    {CONTACT_INFO.hours.saturday.time}
-                  </div>
-                  <div>
-                    <strong className="text-white">
-                      {CONTACT_INFO.hours.sunday.label}:
-                    </strong>{" "}
-                    {CONTACT_INFO.hours.sunday.time}{" "}
-                    {CONTACT_INFO.hours.sunday.note}
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="flex items-center gap-3">
-                  <FaEnvelope className="w-5 h-5 flex-shrink-0" />
-                  <a
-                    href={`mailto:${CONTACT_INFO.email}`}
-                    className="hover:text-white"
-                  >
-                    {CONTACT_INFO.email}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Bottom */}
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between pt-8 border-t border-gray-600">
-            <div className="text-xs text-gray-300 text-center lg:text-left">
-              © {new Date().getFullYear()} {COMPANY_INFO.name}, a Registered
-              Tour Operator (No. {COMPANY_INFO.registrationNumber}), Trading as{" "}
-              {COMPANY_INFO.tradingName}
-            </div>
-            <div className="flex items-center gap-4 text-sm text-gray-300">
-              <div>Stay connected</div>
-              <div className="flex items-center gap-4">
-                {Object.entries(socialPaths).map(([social, href]) => (
-                  <Link
-                    key={social}
-                    href={href()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white transition-colors"
-                    aria-label={social}
-                  >
-                    {socialIcons[social as keyof typeof socialIcons]}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <FooterBottom />
+      </Container>
     </footer>
   );
 }
