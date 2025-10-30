@@ -2,6 +2,7 @@ import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import Video from "@/components/Video";
+import SignupForm from "@/features/auth/components/Signup";
 import Link from "next/link";
 
 export default function Intro() {
@@ -68,9 +69,7 @@ export default function Intro() {
               </p>
             </div>
             <div className="mt-6 md:mt-8 lg:mt-10">
-              <Button size="xl" shape="sm" asChild>
-                <Link href="/">Start Free Now</Link>
-              </Button>
+              <SignupForm />
             </div>
           </div>
         </Container>

@@ -72,7 +72,7 @@ export default function TextField({
               )}
 
               {errorMessage && (
-                <span className="text-red-500 text-xs mt-1 absolute bottom-[-1.25rem] left-0">
+                <span className="text-red-500 text-xs mt-1 absolute left-0">
                   {errorMessage}
                 </span>
               )}
