@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CustomTabs,
   CustomTabsContent,
@@ -10,7 +12,7 @@ import ReviewAnalyticsTabContent from "@/components/adminDashboard/overview/Revi
 import SalesDashboardTabContent from "@/components/adminDashboard/overview/SalesDashboardTabContent";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
-const AdminOverviewPage = () => {
+const ContentManagementPage = () => {
   return (
     <>
       <DashboardPageHeader
@@ -56,4 +58,4 @@ const AdminOverviewPage = () => {
   );
 };
 
-export default AdminOverviewPage;
+export default ContentManagementPage;

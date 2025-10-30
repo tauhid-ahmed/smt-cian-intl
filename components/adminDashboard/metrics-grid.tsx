@@ -5,7 +5,7 @@ import React from "react";
 interface MetricsGridProps {
   title: string;
   value: string | number;
-  icon: React.ElementType;
+  icon?: React.ElementType;
 }
 
 export function MetricsGrid({ title, value, icon: Icon }: MetricsGridProps) {
@@ -16,7 +16,7 @@ export function MetricsGrid({ title, value, icon: Icon }: MetricsGridProps) {
           <p className="text-sm text-[#F2F2F2] mb-1">{title}</p>
           <p className="text-[30px] font-bold text-white">{value}</p>
         </div>
-        <Icon className="w-12 h-12 text-white" />
+        {Icon && <Icon className="w-12 h-12 text-white" />}
       </div>
     </div>
   );
