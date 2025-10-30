@@ -21,13 +21,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   marketing,
+  children,
 }: Readonly<{
   marketing?: React.ReactNode;
+  children?: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
         {marketing}
+        {children}
       </body>
     </html>
   );
