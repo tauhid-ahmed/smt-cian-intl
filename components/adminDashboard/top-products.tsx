@@ -18,7 +18,7 @@ export function TopProductsCard({
   subtitle = "Best selling products by revenue",
 }: TopProductsCardProps) {
   return (
-    <div className="bg-[#181818] rounded-xl p-3 sm:p-5 w-full">
+    <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
       <div className="space-y-4">
         <div className="text-left text-white mb-4">
           <h1 className="font-semibold text-base sm:text-lg">{title}</h1>

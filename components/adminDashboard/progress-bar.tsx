@@ -1,40 +1,52 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import React from "react";
 
-interface ProgressItem {
-  label: string
-  value: number
-  color: string
+interface MetricItem {
+  label: string;
+  percentage: number;
+  color: string;
 }
 
-const progressItems: ProgressItem[] = [
-  { label: "Q1 Target", value: 75, color: "bg-chart-1" },
-  { label: "Q2 Target", value: 60, color: "bg-chart-2" },
-  { label: "Q3 Target", value: 85, color: "bg-chart-3" },
-  { label: "Q4 Target", value: 45, color: "bg-chart-4" },
-]
+interface ProgressBarCardProps {
+  title: string;
+  subtitle?: string;
+  metrics: MetricItem[]; // single array
+}
 
-export function ProgressBarCard() {
+export function ProgressBarCard({
+  title,
+  subtitle,
+  metrics,
+}: ProgressBarCardProps) {
   return (
-    <Card className="border border-border">
-      <CardHeader>
-        <CardTitle>Quarterly Progress</CardTitle>
-        <CardDescription>Target achievement by quarter</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {progressItems.map((item) => (
-          <div key={item.label}>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium">{item.label}</span>
-              <span className="text-sm text-muted-foreground">{item.value}%</span>
+    <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
+      <div className="text-left text-white mb-6">
+        <h1 className="font-semibold text-base sm:text-lg">{title}</h1>
+        {subtitle && <h2 className="text-sm text-[#F2F2F2]">{subtitle}</h2>}
+      </div>
+
+      {/* Progress Bars */}
+      <div className="shrink-0">
+        <div className="space-y-12">
+          {metrics.map((metric) => (
+            <div key={metric.label} className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-white font-normal">{metric.label}</span>
+              </div>
+              <div className="w-full bg-[#3B3B3B] rounded-full h-2.5 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${metric.percentage}%`,
+                    backgroundColor: metric.color,
+                  }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-muted rounded-full h-2">
-              <div className={`${item.color} h-2 rounded-full transition-all`} style={{ width: `${item.value}%` }} />
-            </div>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  )
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
