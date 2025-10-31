@@ -3,6 +3,11 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
+import { Heading } from "@/components/Heading";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 // ==================== TYPE DEFINITIONS ====================
 interface BoxItem {
@@ -146,131 +151,125 @@ const BoxShowcase: React.FC<BoxShowcaseProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-12 md:py-20 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+    <Section>
+      <Container>
         {/* Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12">
+        <Heading as="h2" size="h3" align="center" className="mb-10">
           What's in Your Box?
-        </h1>
-
-        {/* Image Container with Animation */}
-        <div className="relative mb-8">
-          <AnimatePresence initial={false} custom={direction} mode="wait">
-            <motion.div
-              key={currentBox.id}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.3 },
-              }}
-              className="rounded-3xl overflow-hidden aspect-video"
-            >
-              <img
-                src={currentBox.image}
-                alt={currentBox.title}
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mb-12">
-          <button
-            onClick={handlePrevious}
-            className="flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-white rounded-full hover:bg-white hover:text-black transition-all font-medium"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            Previous Box
-          </button>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentBox.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="text-center"
-            >
-              <h2 className="text-xl md:text-2xl font-semibold">
-                {currentBox.title}
-              </h2>
-            </motion.div>
-          </AnimatePresence>
-
-          <button
-            onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition-all font-medium"
-          >
-            Next
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Items Included */}
-        <div className="mb-12">
-          <AnimatePresence mode="wait">
-            <motion.h3
-              key={`${currentBox.id}-title`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-2xl md:text-3xl font-semibold text-center mb-8"
-            >
-              {currentBox.title} Included:
-            </motion.h3>
-          </AnimatePresence>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <AnimatePresence mode="wait">
-              {currentBox.items.map((item, index) => (
-                <motion.div
-                  key={`${currentBox.id}-${item.name}`}
-                  custom={index}
-                  variants={itemVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="bg-transparent border-2 border-white rounded-2xl p-6 text-center hover:bg-white hover:text-black transition-all"
-                >
-                  <h4 className="text-lg md:text-xl font-semibold mb-2">
-                    {item.name}
-                  </h4>
-                  <p className="text-base md:text-lg">${item.value} val</p>
-                </motion.div>
-              ))}
+        </Heading>
+        <div className="max-w-2xl mx-auto overflow-hidden">
+          {/* Image Container with Animation */}
+          <div className="relative mb-8">
+            <AnimatePresence initial={false} custom={direction} mode="wait">
+              <motion.div
+                key={currentBox.id}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.3 },
+                }}
+                className="rounded-3xl overflow-hidden aspect-4/2"
+              >
+                <Image
+                  src={currentBox.image}
+                  alt={currentBox.title}
+                  className="w-full h-full object-cover"
+                  fill
+                />
+              </motion.div>
             </AnimatePresence>
           </div>
-        </div>
 
-        {/* Total Value */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${currentBox.id}-price`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            className="text-center"
-          >
-            <p className="text-xl md:text-2xl">
-              <span className="font-normal">Total Value: </span>
-              <span className="font-bold">${currentBox.totalValue}</span>
-              <span className="font-normal"> Your Price </span>
-              <span className="font-bold">
-                ${currentBox.yourPrice.toFixed(2)}
-              </span>
-            </p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
+          {/* Navigation */}
+          <div className="flex items-center justify-between mb-12">
+            <Button variant="outline" onClick={handlePrevious}>
+              <ChevronLeft className="w-5 h-5" />
+              Previous Box
+            </Button>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentBox.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="text-center"
+              >
+                <h2 className="text-xl md:text-2xl font-semibold">
+                  {currentBox.title}
+                </h2>
+              </motion.div>
+            </AnimatePresence>
+
+            <Button variant="outline" onClick={handlePrevious}>
+              Next
+              <ChevronRight className="w-5 h-5" />
+            </Button>
+          </div>
+
+          {/* Items Included */}
+          <div className="mb-12">
+            <AnimatePresence mode="wait">
+              <motion.h3
+                key={`${currentBox.id}-title`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-2xl md:text-3xl font-semibold text-center mb-8"
+              >
+                {currentBox.title} Included:
+              </motion.h3>
+            </AnimatePresence>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <AnimatePresence mode="wait">
+                {currentBox.items.map((item, index) => (
+                  <motion.div
+                    key={`${currentBox.id}-${item.name}`}
+                    custom={index}
+                    variants={itemVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="bg-transparent border-2 border-white rounded-2xl p-4 text-center hover:bg-white hover:text-black transition-all flex flex-col justify-center"
+                  >
+                    <h4 className="text-lg font-semibold mb-2">{item.name}</h4>
+                    <p className="text-base md:text-lg">${item.value} val</p>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Total Value */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${currentBox.id}-price`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="text-center"
+            >
+              <p className="text-xl md:text-2xl">
+                <span className="font-normal">Total Value: </span>
+                <span className="font-bold">${currentBox.totalValue}</span>
+                <span className="font-normal"> Your Price </span>
+                <span className="font-bold">
+                  ${currentBox.yourPrice.toFixed(2)}
+                </span>
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </Container>
+    </Section>
   );
 };
 

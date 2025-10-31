@@ -1,3 +1,4 @@
+import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import TextCarousel from "@/components/TextCarousel";
@@ -49,6 +50,9 @@ export default function Testimonial() {
   return (
     <Section>
       <Container>
+        <Heading as="h2" size="h4" align="center">
+          Artist Voice
+        </Heading>
         <TextCarousel data={testimonials} />
       </Container>
     </Section>

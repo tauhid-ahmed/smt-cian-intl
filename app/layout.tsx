@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Inria_Serif } from "next/font/google";
 import "@/styles/globals.css";
+import { MusicPlayerProvider } from "@/providers/MusicPlayer";
+import { MusicPlayerPlaylistProvider } from "./(marketing)/(music)/music/_components/Playlist";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -30,7 +32,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
         {/* {marketing} */}
-        {children}
+        <MusicPlayerProvider>{children}</MusicPlayerProvider>
       </body>
     </html>
   );

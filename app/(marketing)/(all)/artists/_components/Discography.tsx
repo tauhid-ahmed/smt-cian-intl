@@ -2,6 +2,11 @@
 
 import React, { useState } from "react";
 import { Play, ShoppingBag, Star } from "lucide-react";
+import Section from "@/components/layout/Section";
+import { Heading } from "@/components/Heading";
+import Container from "@/components/layout/Container";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // Type Definitions
 interface Track {
@@ -25,24 +30,21 @@ interface Album {
 type FilterType = "All" | "Albums" | "Singles" | "EPs";
 type SortType = "Most Recent" | "Oldest" | "Most Popular";
 
-interface AlbumCardProps {
-  album: Album;
-}
-
 interface DiscographyProps {
   albums?: Album[];
 }
 
 // Reusable Album Card Component
-const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
+function AlbumCard({ album }) {
   return (
-    <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl overflow-hidden border border-gray-800 hover:border-gray-700 transition-all">
+    <div className="bg-linear-to-br from-gray-900 to-black rounded-xl overflow-hidden border border-gray-800 hover:border-gray-700 transition-all p-2">
       {/* Album Cover */}
-      <div className="relative aspect-square overflow-hidden group">
-        <img
+      <div className="relative aspect-3/2 overflow-hidden group rounded-lg">
+        <Image
+          fill
           src={album.coverImage}
           alt={album.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-lg"
         />
         <div
           className="absolute inset-0"
@@ -50,34 +52,35 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
             background:
               "linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%)",
           }}
-        ></div>
-
-        {/* Album Type Badge */}
-        <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs font-medium">
+        />
+      </div>
+      <div className="flex justify-between gap-2 py-2">
+        <div className="">
+          <span className="px-3 py-1 bg-accent backdrop-blur-sm rounded text-xs font-medium">
             {album.type}
           </span>
         </div>
 
         {/* Release Date */}
-        <div className="absolute top-4 right-4">
+        <div className="absolutex top-4 right-4">
           <span className="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs font-medium">
             {album.releaseDate}
           </span>
         </div>
       </div>
-
       {/* Album Info */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold mb-2">{album.title}</h3>
-        <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+      <div className="p-6 space-y-1">
+        <Heading as="h4" size="h6">
+          {album.title}
+        </Heading>
+        <div className="flex items-center gap-1 text-sm text-gray-400">
           <span>{album.trackCount} tracks</span>
           <span>•</span>
           <span>{album.duration}</span>
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-1 mb-4">
           <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
           <span className="text-sm font-medium">{album.rating}</span>
           <span className="text-sm text-gray-400">
@@ -87,32 +90,36 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
 
         {/* Action Buttons */}
         <div className="flex gap-3 mb-4">
-          <button className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium">
+          <Button variant="secondary">
             <Play className="w-4 h-4 fill-black" />
             Preview
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors font-medium">
+          </Button>
+          <Button variant="outline">
             <ShoppingBag className="w-4 h-4" />
             Buy
-          </button>
+          </Button>
         </div>
 
         {/* Popular Tracks */}
-        <div>
-          <h4 className="text-sm font-semibold mb-3">Popular Tracks:</h4>
+        <div className="space-y-2">
+          <Heading size="h6" as="h4">
+            Popular Tracks:
+          </Heading>
           <div className="space-y-2">
             {album.popularTracks.map((track: Track, index: number) => (
               <div
                 key={index}
                 className="flex items-center justify-between text-sm group cursor-pointer"
               >
-                <div className="flex items-center gap-3 flex-1">
-                  <Play className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" />
+                <div className="flex items-center gap-3 flex-1 group">
+                  <Play className="w-3 h-3 text-white transition-colors" />
                   <span className="text-gray-300 group-hover:text-white transition-colors">
                     {track.title}
                   </span>
                 </div>
-                <span className="text-gray-500">{track.duration}</span>
+                <span className="text-xs text-gray-300 group-hover:text-white">
+                  {track.duration}
+                </span>
               </div>
             ))}
           </div>
@@ -120,7 +127,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
       </div>
     </div>
   );
-};
+}
 
 // Default Albums Data
 const defaultAlbums: Album[] = [
@@ -225,9 +232,9 @@ const defaultAlbums: Album[] = [
 ];
 
 // Main Discography Component
-const Discography: React.FC<DiscographyProps> = ({
+export default function Discography({
   albums = defaultAlbums,
-}) => {
+}: DiscographyProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
   const [sortBy, setSortBy] = useState<SortType>("Most Recent");
 
@@ -250,31 +257,30 @@ const Discography: React.FC<DiscographyProps> = ({
   );
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-12 md:py-20">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12">
+    <Section padding="md">
+      <Container className="space-y-10">
+        <Heading as="h2" size="h3" align="center">
           Discography
-        </h1>
+        </Heading>
 
-        {/* Filters and Sort */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           {/* Filter Buttons */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium">Filter:</span>
+          <div className="flex flex-col gap-2">
+            <span className="text-base font-bold block">Filter:</span>
             <div className="flex gap-2">
               {filters.map((filter: FilterType) => (
-                <button
+                <Button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  variant="ghost"
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white hover:text-black ${
                     activeFilter === filter
                       ? "bg-white text-black"
-                      : "bg-gray-800 text-white hover:bg-gray-700"
+                      : "text-white"
                   }`}
                 >
                   {filter}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -287,7 +293,7 @@ const Discography: React.FC<DiscographyProps> = ({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setSortBy(e.target.value as SortType)
               }
-              className="px-4 py-2 bg-gray-800 rounded-lg text-sm font-medium border border-gray-700 focus:outline-none focus:border-gray-600 cursor-pointer"
+              className="px-4 py-2 bg-white/20 rounded-lg text-sm font-medium border border-white/20 focus:outline-none focus:border-white/20 cursor-pointer"
             >
               <option value="Most Recent">Most Recent</option>
               <option value="Oldest">Oldest</option>
@@ -302,9 +308,7 @@ const Discography: React.FC<DiscographyProps> = ({
             <AlbumCard key={album.id} album={album} />
           ))}
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
-};
-
-export default Discography;
+}

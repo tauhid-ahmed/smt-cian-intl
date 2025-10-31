@@ -96,7 +96,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans overflow-x-hidden;
     font-family: var(--font-sans);
   }
 }
@@ -124,7 +124,7 @@
 
   .intro-height {
     height: calc(100vh + 3.5rem);
-    max-height: clamp(44rem, 80vw, 132rem);
+    max-height: clamp(54rem, 80vw, 132rem);
     margin-top: -3.5rem;
   }
 

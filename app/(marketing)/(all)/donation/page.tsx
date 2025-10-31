@@ -1,3 +1,5 @@
+import DonationForm from "./_components/Form";
+
 export default function page() {
-  return <div>page</div>;
+  return <DonationForm />;
 }

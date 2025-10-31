@@ -31,7 +31,7 @@ export const marketingNavbarData: NavbarItem[] = [
   },
   {
     title: "Subscriptions",
-    path: () => "/Subscriptions",
+    path: () => "/subscriptions",
     icon: <LucideStore />,
   },
   {

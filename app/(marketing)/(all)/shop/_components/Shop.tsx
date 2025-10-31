@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Search,
   ChevronDown,
@@ -11,6 +11,11 @@ import {
   Heart,
   ShoppingCart,
 } from "lucide-react";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
+import { Heading } from "@/components/Heading";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -49,13 +54,12 @@ interface FilterPanelProps {
   onClearAll: () => void;
 }
 
-// ==================== FILTER PANEL COMPONENT ====================
-const FilterPanel: React.FC<FilterPanelProps> = ({
+export function FilterPanel({
   config,
   selectedFilters,
   onFilterChange,
   onClearAll,
-}) => {
+}: FilterPanelProps) {
   const [expandedFilters, setExpandedFilters] = useState<
     Record<string, boolean>
   >({
@@ -98,38 +102,27 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   );
 
   return (
-    <div className="w-full lg:w-72 bg-gray-900 text-white rounded-lg h-fit">
-      {/* Header */}
-      <div className="bg-gray-800 p-4 rounded-t-lg">
-        <h2 className="text-xl font-bold">Filters</h2>
+    <div className="w-full lg:w-72 bg-sidebar text-white rounded-lg">
+      <div className="bg-sidebar p-4 rounded-t-lg">
+        <Heading as="h3" size="h6">
+          Filters
+        </Heading>
       </div>
 
       {/* Search Box */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-zinc-700">
         <div className="relative">
           <input
             type="text"
             placeholder="Search..."
-            className="w-full bg-gray-800 text-white pl-4 pr-10 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            className="w-full bg-stone-800 text-white pl-4 pr-10 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-yellow-500" />
         </div>
       </div>
 
-      {/* Clear All Button */}
-      {totalActiveFilters > 0 && (
-        <div className="p-4 border-b border-gray-700">
-          <button
-            onClick={onClearAll}
-            className="w-full py-2 px-4 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors"
-          >
-            Clear All Filters
-          </button>
-        </div>
-      )}
-
       {/* Filters */}
-      <div className="p-4 space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto">
+      <div className="p-4 space-y-4">
         {config.filters.map((filter) => {
           const isExpanded = expandedFilters[filter.id];
           const filteredOptions = getFilteredOptions(filter);
@@ -138,7 +131,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           return (
             <div
               key={filter.id}
-              className="border-b border-gray-700 pb-4 last:border-0"
+              className="border-b border-zinc-700 pb-4 last:border-0"
             >
               {/* Filter Header */}
               <button
@@ -166,7 +159,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                         onChange={(e) =>
                           handleSearch(filter.id, e.target.value)
                         }
-                        className="w-full bg-gray-800 text-white pl-4 pr-10 py-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                        className="w-full bg-zinc-800 text-white pl-4 pr-10 py-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500"
                       />
                       <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                     </div>
@@ -181,7 +174,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                     return (
                       <label
                         key={option.value}
-                        className="flex items-center justify-between cursor-pointer hover:bg-gray-800 p-2 rounded transition-colors"
+                        className="flex items-center justify-between cursor-pointer hover:bg-zinc-800 p-2 rounded transition-colors"
                       >
                         <div className="flex items-center gap-2 flex-1">
                           <input
@@ -215,24 +208,37 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           );
         })}
       </div>
+      {/* Clear All Button */}
+      {totalActiveFilters > 0 && (
+        <div className="p-4 border-b border-gray-700">
+          <Button
+            onClick={onClearAll}
+            variant="outline"
+            className="w-full border-primary hover:border-primary"
+          >
+            Clear All Filters
+          </Button>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 // ==================== PRODUCT CARD COMPONENT ====================
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+function ProductCard({ product: product }) {
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden group relative">
+    <div className="rounded-lg overflow-hidden group relative border border-white/20">
       {/* Wishlist Icon */}
       <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors">
         <Heart className="w-5 h-5 text-white" />
       </button>
 
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden">
-        <img
+      <div className="relative aspect-3/2 overflow-hidden">
+        <Image
           src={product.image}
           alt={product.title}
+          fill
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         {product.badge && (
@@ -280,10 +286,10 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       </div>
     </div>
   );
-};
+}
 
 // ==================== MAIN SHOP COMPONENT ====================
-const MusicShop: React.FC = () => {
+function MusicShop() {
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
   >({});
@@ -456,10 +462,9 @@ const MusicShop: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <Section padding="none">
+      <Container>
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filter Sidebar */}
           <FilterPanel
             config={filterConfig}
             selectedFilters={selectedFilters}
@@ -470,7 +475,7 @@ const MusicShop: React.FC = () => {
           {/* Main Content */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="bg-gray-800 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="bg-zinc-800 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="text-lg font-semibold">
                 {products.length} Products found
               </div>
@@ -484,7 +489,7 @@ const MusicShop: React.FC = () => {
                     className={`p-2 rounded ${
                       viewMode === "list"
                         ? "bg-yellow-500 text-black"
-                        : "bg-gray-700"
+                        : "bg-zinc-700"
                     }`}
                   >
                     <List className="w-5 h-5" />
@@ -494,7 +499,7 @@ const MusicShop: React.FC = () => {
                     className={`p-2 rounded ${
                       viewMode === "grid"
                         ? "bg-yellow-500 text-black"
-                        : "bg-gray-700"
+                        : "bg-zinc-700"
                     }`}
                   >
                     <Grid className="w-5 h-5" />
@@ -507,7 +512,7 @@ const MusicShop: React.FC = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-gray-700 px-4 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    className="bg-zinc-700 px-4 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   >
                     <option value="most-recent">Most Recent</option>
                     <option value="price-low">Price: Low to High</option>
@@ -533,30 +538,30 @@ const MusicShop: React.FC = () => {
 
             {/* Pagination */}
             <div className="flex justify-center items-center gap-2 mt-8">
-              <button className="px-3 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors">
+              <button className="px-3 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                 &lt;
               </button>
-              <button className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold">
+              <button className="px-4 py-2 bg-white text-black rounded font-semibold">
                 1
               </button>
-              <button className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors">
+              <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                 2
               </button>
-              <button className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors">
+              <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                 3
               </button>
-              <button className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors">
+              <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                 4
               </button>
-              <button className="px-3 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors">
+              <button className="px-3 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                 &gt;
               </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
-};
+}
 
 export default MusicShop;

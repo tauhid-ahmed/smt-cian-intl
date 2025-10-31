@@ -2,6 +2,9 @@
 
 import React from "react";
 import { CheckCircle } from "lucide-react";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
+import { Heading } from "@/components/Heading";
 
 // ==================== TYPE DEFINITIONS ====================
 interface Feature {
@@ -37,7 +40,7 @@ const MembershipCard: React.FC<{
 }> = ({ plan, onSelect }) => {
   return (
     <div
-      className={`bg-gray-900 rounded-2xl p-8 border-2 relative ${
+      className={`rounded-2xl p-8 border-2 relative flex flex-col h-full ${
         plan.borderColor || "border-gray-700"
       } hover:border-gray-600 transition-all`}
     >
@@ -58,8 +61,8 @@ const MembershipCard: React.FC<{
         <p className="text-5xl font-bold text-yellow-500">{plan.price}</p>
       </div>
 
-      {/* Features */}
-      <div className="space-y-4 mb-8 min-h-[280px]">
+      {/* Features - Flexible grow section */}
+      <div className="space-y-4 mb-8 flex-grow">
         {plan.features.map((feature, index) => (
           <div key={index} className="flex items-start gap-3">
             <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
@@ -68,10 +71,10 @@ const MembershipCard: React.FC<{
         ))}
       </div>
 
-      {/* Select Button */}
+      {/* Select Button - Always at bottom */}
       <button
         onClick={onSelect}
-        className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
+        className={`w-full py-4 rounded-xl font-semibold text-lg transition-all mt-auto ${
           plan.buttonStyle === "solid"
             ? "bg-white text-black hover:bg-gray-200"
             : "bg-transparent border-2 border-white text-white hover:bg-white hover:text-black"
@@ -162,7 +165,7 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
   globalFeatures = defaultGlobalFeatures,
   onSelectPlan,
 }) => {
-  const handleSelectPlan = (planId: string) => {
+  const handleSelectPlan = (planId: string): void => {
     if (onSelectPlan) {
       onSelectPlan(planId);
     } else {
@@ -171,15 +174,14 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-12 md:py-20">
-      <div className="max-w-7xl mx-auto">
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-16">
+    <Section padding="sm" className="bg-sidebar">
+      <Container>
+        <Heading as="h2" size="h3" align="center">
           {title}
-        </h1>
+        </Heading>
 
-        {/* Membership Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {/* Membership Cards Grid - Equal height with flexbox */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-16 items-stretch">
           {plans.map((plan) => (
             <MembershipCard
               key={plan.id}
@@ -191,7 +193,9 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
 
         {/* Global Features */}
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-8">All plans include:</h2>
+          <h2 className="text-2xl font-semibold text-white mb-8">
+            All plans include:
+          </h2>
           <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-4">
             {globalFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
@@ -201,8 +205,8 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
             ))}
           </div>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
 };
 

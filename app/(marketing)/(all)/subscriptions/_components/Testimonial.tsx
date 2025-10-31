@@ -1,3 +1,4 @@
+import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import TextCarousel from "@/components/TextCarousel";
@@ -47,8 +48,11 @@ const testimonials = [
 
 export default function Testimonial() {
   return (
-    <Section>
-      <Container>
+    <Section className="bg-sidebar">
+      <Container className="space-y-8">
+        <Heading as="h2" size="h4" align="center">
+          What Subscribers Say
+        </Heading>
         <TextCarousel data={testimonials} />
       </Container>
     </Section>

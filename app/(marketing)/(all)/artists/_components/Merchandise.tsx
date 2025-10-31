@@ -2,6 +2,11 @@
 
 import React from "react";
 import { ShoppingBag } from "lucide-react";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
+import { Heading } from "@/components/Heading";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // Type Definitions
 interface Product {
@@ -12,45 +17,43 @@ interface Product {
   image: string;
 }
 
-interface ProductCardProps {
-  product: Product;
-}
-
 interface ArtistMerchandiseProps {
   products?: Product[];
 }
 
-// Reusable Product Card Component
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+function ProductCard({ product }) {
   return (
-    <div className="bg-gray-200 rounded-2xl overflow-hidden group">
+    <div className="rounded-2xl overflow-hidden group text-center border border-white/30">
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-white">
-        <img
+      <div className="relative aspect-3/2 overflow-hidden bg-white">
+        <Image
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          fill
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 size-full"
         />
       </div>
 
       {/* Product Info */}
-      <div className="p-6 bg-gray-200">
-        <p className="text-sm text-gray-700 mb-1">{product.category}</p>
-        <h3 className="text-xl font-bold text-black mb-4">{product.name}</h3>
+      <div className="p-6">
+        <p className="text-sm text-white/80 mb-1 text-left">
+          {product.category}
+        </p>
+        <Heading as="h3" size="h6">
+          {product.name}
+        </Heading>
 
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-2xl font-bold text-black">
-            ${product.price.toFixed(2)}
-          </span>
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors font-medium border border-gray-300">
+        <div className="flex items-center justify-between gap-3 mt-2">
+          <span className="text-xl font-bold">${product.price.toFixed(2)}</span>
+          <Button variant="secondary">
             <ShoppingBag className="w-4 h-4" />
             Shop
-          </button>
+          </Button>
         </div>
       </div>
     </div>
   );
-};
+}
 
 // Default Products Data
 const defaultProducts: Product[] = [
@@ -93,28 +96,28 @@ const ArtistMerchandise: React.FC<ArtistMerchandiseProps> = ({
   products = defaultProducts,
 }) => {
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-12 md:py-20">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12">
-          Artist Merchandise
-        </h1>
+    <Section padding="lg">
+      <Container>
+        <div className="flex flex-col gap-8">
+          <Heading align="center" size="h3" as="h2">
+            Artist Merchandise
+          </Heading>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {products.map((product: Product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {products.map((product: Product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
 
-        {/* View All Button */}
-        <div className="flex justify-center">
-          <button className="px-8 py-4 border-2 border-white rounded-lg hover:bg-white hover:text-black transition-all font-medium text-lg">
-            View All Products
-          </button>
+          <div className="flex justify-center">
+            <Button size="lg" variant="outline">
+              View All Products
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
 };
 
