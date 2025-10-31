@@ -195,7 +195,11 @@ const MusicPlaylist = () => {
 
               {/* Waveform/Spectrum */}
               <div className="flex-1 min-w-0 px-2">
-                <WaveformSpectrum trackId={track.id} playingId={playingId} />
+                <WaveformSpectrum
+                  trackId={track.id}
+                  playingId={playingId}
+                  isPlaying={false}
+                />
               </div>
 
               {/* Action Buttons */}
