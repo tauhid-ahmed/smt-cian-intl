@@ -3,9 +3,9 @@
 import Container from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import Logo from "../Logo";
-import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 import { usePathname } from "next/navigation";
+import MusicNav from "./MusicSidebar";
 
 export default function NavbarWithSidebar() {
   const { openSignUp, openSignIn } = useAuth();
@@ -19,7 +19,7 @@ export default function NavbarWithSidebar() {
               {pathname === "/music" ? "Music" : "Download"}
             </span>
             <div className="lg:opacity-0 lg:pointer-events-none lg:user-select-none flex flex-wrap items-center gap-2">
-              <MobileNav />
+              <MusicNav />
               <Logo />
             </div>
           </div>

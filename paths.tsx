@@ -4,7 +4,6 @@ import {
   LucideCircleDollarSign,
   LucideCloudDownload,
   LucideContact,
-  LucideDownload,
   LucideFlower,
   LucideHome,
   LucideMusic,
@@ -39,11 +38,6 @@ export const marketingNavbarData: NavbarItem[] = [
     icon: <LucideMusic />,
   },
   {
-    title: "Download",
-    path: () => "/download",
-    icon: <LucideCloudDownload />,
-  },
-  {
     title: "Subscriptions",
     path: () => "/subscriptions",
     icon: <LucideBadgeDollarSign />,
@@ -62,5 +56,18 @@ export const marketingNavbarData: NavbarItem[] = [
     title: "Donation",
     path: () => "/donation",
     icon: <LucideCircleDollarSign />,
+  },
+];
+
+export const musicNavbarData: NavbarItem[] = [
+  {
+    title: "Music",
+    path: () => "/music",
+    icon: <LucideMusic />,
+  },
+  {
+    title: "Download",
+    path: () => "/download",
+    icon: <LucideCloudDownload />,
   },
 ];
