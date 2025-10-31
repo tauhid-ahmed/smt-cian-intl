@@ -55,7 +55,7 @@ const DashboardSidebar = () => {
 
   const handleLogout = () => {
     console.log("Logout Successful.");
-    router.push("/signin");
+    alert("Logout Successful")
   };
 
   return (
