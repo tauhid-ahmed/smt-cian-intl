@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import Image from "next/image";
 
 const DashboardSidebar = () => {
   const router = useRouter();
@@ -38,9 +39,17 @@ const DashboardSidebar = () => {
     { icon: ShoppingBag, label: "Orders", href: "/user-dashboard/orders" },
     { icon: Heart, label: "Wishlist", href: "/user-dashboard/wishlist" },
     { icon: Star, label: "Reviews", href: "/user-dashboard/reviews" },
-    { icon: CreditCard, label: "Subscriptions", href: "/user-dashboard/subscriptions" },
+    {
+      icon: CreditCard,
+      label: "Subscriptions",
+      href: "/user-dashboard/subscriptions",
+    },
     { icon: Truck, label: "Tracking", href: "/user-dashboard/tracking" },
-    { icon: Users, label: "Donor Portal", href: "/user-dashboard/donor-portal" },
+    {
+      icon: Users,
+      label: "Donor Portal",
+      href: "/user-dashboard/donor-portal",
+    },
     { icon: Settings, label: "Settings", href: "/user-dashboard/settings" },
   ];
 
@@ -69,12 +78,16 @@ const DashboardSidebar = () => {
             onMouseLeave={() => collapsed && setHoveringLogo(false)}
           >
             <Link href="/" className="flex items-center">
-              <img
+              <Image
                 src="/logo.svg"
                 alt="Logo"
+                width={90}
+                height={90}
+                priority
                 className={`transition-all duration-200 ${
                   collapsed ? "w-8 h-8" : "w-24 h-auto"
                 }`}
+                style={{ height: "auto" }}
               />
             </Link>
 
