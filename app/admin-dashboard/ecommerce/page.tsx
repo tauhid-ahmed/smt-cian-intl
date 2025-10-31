@@ -1,6 +1,5 @@
 "use client";
 
-import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
 import ContentApprovalTab from "@/components/adminDashboard/contentManagement/ContentApprovalTab";
 import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
 import {
@@ -9,6 +8,7 @@ import {
   CustomTabsList,
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
+import InventoryManagementTab from "@/components/adminDashboard/ecommerceManagement/InventoryManagementTab";
 import OrderProcessingTab from "@/components/adminDashboard/ecommerceManagement/OrderProcessingTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
@@ -16,8 +16,8 @@ const EcommerceManagementPage = () => {
   return (
     <>
       <DashboardPageHeader
-        title="Analytics & Insights"
-        sub_title="Monitor your business performance and customer behavior"></DashboardPageHeader>
+        title="E-commerce Management"
+        sub_title="Manage orders, inventory, subscriptions, and customer support"></DashboardPageHeader>
 
       <div>
         <CustomTabs defaultValue="tab1">
@@ -41,7 +41,7 @@ const EcommerceManagementPage = () => {
           </CustomTabsContent>
 
           <CustomTabsContent value="tab2">
-            <ArtistProfileTab />
+            <InventoryManagementTab />
           </CustomTabsContent>
 
           <CustomTabsContent value="tab3">
