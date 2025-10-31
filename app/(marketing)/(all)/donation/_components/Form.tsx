@@ -170,7 +170,7 @@ export default function DonationForm() {
 
   return (
     <div className="min-h-screen bg-black text-white p-4 py-12">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <FormProvider {...methods}>
           <div className="space-y-8">
             {/* How Your Gift Help */}
