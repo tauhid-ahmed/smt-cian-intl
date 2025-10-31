@@ -6,10 +6,13 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   PanelLeft,
   LayoutDashboard,
-  FileText,
+  ShoppingBag,
+  Heart,
+  Star,
+  CreditCard,
+  Truck,
   Users,
-  FolderKanban,
-  Wallet,
+  Settings,
   LogOut,
 } from "lucide-react";
 
@@ -30,13 +33,15 @@ const DashboardSidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Updated Menu Items
   const items = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-    { icon: FileText, label: "Transactions", href: "/transactions" },
-    { icon: Users, label: "Accounts", href: "/accounts" },
-    { icon: FolderKanban, label: "Projects", href: "/projects" },
-    { icon: Wallet, label: "Withdrawals", href: "/withdrawals" },
+    { icon: LayoutDashboard, label: "Overview", href: "/user-dashboard" },
+    { icon: ShoppingBag, label: "Orders", href: "/orders" },
+    { icon: Heart, label: "Wishlist", href: "/wishlist" },
+    { icon: Star, label: "Reviews", href: "/reviews" },
+    { icon: CreditCard, label: "Subscriptions", href: "/subscriptions" },
+    { icon: Truck, label: "Tracking", href: "/tracking" },
+    { icon: Users, label: "Donor Portal", href: "/donor-portal" },
+    { icon: Settings, label: "Settings", href: "/settings" },
   ];
 
   const handleLogout = () => {
@@ -48,7 +53,7 @@ const DashboardSidebar = () => {
     <div
       className={`${
         collapsed ? "w-16" : "w-64"
-      } flex flex-col justify-between border-r border-gray-200 transition-all duration-300 bg-white h-screen`}
+      } flex flex-col justify-between border-r border-[#1A1A1A] transition-all duration-300 bg-[#1A1A1A] h-screen`}
     >
       <div className="flex flex-col gap-6 px-3 pt-4">
         {/* Branding + Toggle */}
@@ -57,19 +62,21 @@ const DashboardSidebar = () => {
             collapsed ? "justify-center" : "justify-between"
           }`}
         >
+          {/* Single logo block */}
           <div
             className="relative flex items-center justify-center"
             onMouseEnter={() => collapsed && setHoveringLogo(true)}
             onMouseLeave={() => collapsed && setHoveringLogo(false)}
           >
-            {/* Logo */}
-            <h1
-              className={`w-9 h-9 text-white font-semibold text-lg bg-[#2d60ff] rounded-lg flex items-center justify-center shadow-md transition-opacity duration-200 ${
-                hoveringLogo ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              A
-            </h1>
+            <Link href="/" className="flex items-center">
+              <img
+                src="/logo.svg"
+                alt="Logo"
+                className={`transition-all duration-200 ${
+                  collapsed ? "w-8 h-8" : "w-24 h-auto"
+                }`}
+              />
+            </Link>
 
             {/* Expand button when collapsed */}
             {collapsed && (
@@ -87,17 +94,14 @@ const DashboardSidebar = () => {
             )}
           </div>
 
-          {/* Expanded header */}
+          {/* Collapse button when expanded */}
           {!collapsed && (
-            <div className="flex items-center justify-between w-full ml-2">
-              <span className="text-lg font-bold text-black">ADMIN</span>
-              <button
-                onClick={() => setCollapsed(true)}
-                className="p-1.5 rounded-md hover:bg-gray-200 transition cursor-e-resize"
-              >
-                <PanelLeft className="w-6 h-6 text-gray-800" />
-              </button>
-            </div>
+            <button
+              onClick={() => setCollapsed(true)}
+              className="p-1.5 rounded-md hover:bg-gray-200/10 transition cursor-e-resize"
+            >
+              <PanelLeft className="w-6 h-6 text-gray-300" />
+            </button>
           )}
         </div>
 
@@ -112,20 +116,22 @@ const DashboardSidebar = () => {
                 href={item.href}
                 className={`flex items-center ${
                   collapsed ? "justify-center py-2" : "gap-3 px-3 py-2"
-                } rounded-lg transition
-                ${active ? "bg-transparent" : "hover:bg-gray-200"}
-                `}
+                } rounded-lg transition-all duration-200
+                ${
+                  active
+                    ? "bg-gray-800 text-white"
+                    : "hover:bg-gray-700 text-gray-400"
+                }`}
               >
                 <item.icon
-                  className={`w-6 h-6 transition ${
-                    active ? "text-[#2d60ff]" : "text-gray-600"
+                  className={`w-6 h-6 ${
+                    active ? "text-white" : "text-gray-400"
                   }`}
                 />
-
                 {!collapsed && (
                   <span
-                    className={`text-base font-medium transition ${
-                      active ? "text-[#2d60ff]" : "text-gray-700"
+                    className={`text-base font-medium ${
+                      active ? "text-white" : "text-gray-400"
                     }`}
                   >
                     {item.label}
@@ -135,6 +141,21 @@ const DashboardSidebar = () => {
             );
           })}
         </nav>
+      </div>
+
+      {/* Logout Button */}
+      <div className="px-3 pb-6">
+        <button
+          onClick={handleLogout}
+          className={`w-full flex items-center ${
+            collapsed ? "justify-center py-2" : "gap-3 px-3 py-2"
+          } rounded-lg transition-all duration-200 hover:bg-gray-700 text-gray-400`}
+        >
+          <LogOut className="w-6 h-6 text-gray-400" />
+          {!collapsed && (
+            <span className="text-base font-medium text-gray-400">Logout</span>
+          )}
+        </button>
       </div>
     </div>
   );

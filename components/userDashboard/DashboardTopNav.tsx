@@ -84,7 +84,7 @@ const DashboardTopNav = () => {
   return (
     <div>
       {/* Top Navigation */}
-      <div className="flex items-center justify-between px-6 py-2.5 bg-white shadow-sm">
+      <div className="flex items-center justify-between px-6 py-2.5 bg-[#1A1A1A] shadow-sm">
         {/* Page Title */}
         <div className="text-xl font-semibold text-gray-900">{pageTitle}</div>
 
