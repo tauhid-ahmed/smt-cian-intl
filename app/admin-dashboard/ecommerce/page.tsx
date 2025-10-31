@@ -1,15 +1,15 @@
 "use client";
 
-import ContentApprovalTab from "@/components/adminDashboard/contentManagement/ContentApprovalTab";
-import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
 import {
   CustomTabs,
   CustomTabsContent,
   CustomTabsList,
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
+import CustomerSupportTab from "@/components/adminDashboard/ecommerceManagement/CustomerSupportTab";
 import InventoryManagementTab from "@/components/adminDashboard/ecommerceManagement/InventoryManagementTab";
 import OrderProcessingTab from "@/components/adminDashboard/ecommerceManagement/OrderProcessingTab";
+import SubscriptionManagementTab from "@/components/adminDashboard/ecommerceManagement/SubscriptionManagementTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const EcommerceManagementPage = () => {
@@ -45,11 +45,11 @@ const EcommerceManagementPage = () => {
           </CustomTabsContent>
 
           <CustomTabsContent value="tab3">
-            <ReviewModerationTab />
+            <SubscriptionManagementTab />
           </CustomTabsContent>
 
           <CustomTabsContent value="tab4">
-            <ContentApprovalTab />
+            <CustomerSupportTab />
           </CustomTabsContent>
         </CustomTabs>
       </div>
