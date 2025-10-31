@@ -115,10 +115,11 @@ const InventoryManagementTab = () => {
                 <tr
                   key={content.id}
                   className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
-                  <td className="py-4 pr-4 text-white text-sm">{content.id}</td>
                   <td className="py-4 pr-4 text-white text-sm">
                     {content.title}
                   </td>
+                  <td className="py-4 pr-4 text-white text-sm">{content.id}</td>
+
                   <td className="py-4 pr-4 text-white text-sm">
                     {content.author}
                   </td>
@@ -139,9 +140,7 @@ const InventoryManagementTab = () => {
                       {content.status}
                     </span>
                   </td>
-                  <td className="py-4 pr-4 text-white text-sm">
-                    {content.date}
-                  </td>
+
                   <td className="pl-4 pt-4 pb-4 flex justify-end">
                     <button
                       className="text-white"
@@ -193,10 +192,6 @@ const InventoryManagementTab = () => {
                     }`}>
                     {content.status}
                   </span>
-                </div>
-                <div>
-                  <span className="text-gray-400">Date:</span>
-                  <span className="text-white ml-2">{content.date}</span>
                 </div>
               </div>
               <div className="flex justify-end">
