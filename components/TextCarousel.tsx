@@ -72,7 +72,7 @@ export default function TextCarousel({ data, className }: Props) {
         </Button>
       </div>
 
-      <div className="overflow-hidden relative min-h-[70vh] lg:min-h-[500px] xl:min-h-[400px]">
+      <div className="overflow-hidden relative min-h-[90vh] lg:min-h-[500px] xl:min-h-[400px]">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentIndex}
