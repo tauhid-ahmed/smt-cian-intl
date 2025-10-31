@@ -15,31 +15,29 @@ export function Header({ onMenuClick }: HeaderProps) {
         variant="ghost"
         size="icon"
         onClick={onMenuClick}
-        className="md:hidden text-foreground hover:bg-secondary">
+        className="md:hidden text-foreground hover:bg-secondary px-2.5">
         <Menu className="w-5 h-5" />
       </Button>
       <div className="flex-1" />
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-foreground hover:bg-secondary">
-          <Bell className="w-5 h-5" />
-        </Button>
         <div className="flex items-center gap-3">
           <div className="text-right">
             <p className="text-sm font-medium text-foreground">
               Sarah Mitchell
             </p>
-            <p className="text-xs text-muted-foreground">
-              sarah.mitchell@gmail.com
-            </p>
+            <p className="text-xs text-[#f2f2f2]">sarah.mitchell@gmail.com</p>
           </div>
           <Avatar>
             <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" />
             <AvatarFallback>SM</AvatarFallback>
           </Avatar>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-foreground hover:bg-secondary">
+          <Bell className="w-5 h-5" />
+        </Button>
       </div>
     </header>
   );

@@ -80,14 +80,15 @@ const CustomTabsList = React.forwardRef<
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-start rounded-[10px] bg-muted p-1";
+      // ✅ Added responsive wrapping only for small screens
+      "inline-flex sm:flex-nowrap flex-wrap items-center justify-start rounded-[10px] bg-muted p-1";
     const variantStyles = {
       default: "bg-muted",
       underline: "border-b border-border bg-transparent p-0",
       pills: "gap-2 bg-transparent p-0",
       bordered: "border gap-5 border-white bg-transparent p-[5px]",
     };
-    const sizeStyles = { sm: "h-8", md: "h-12", lg: "h-12" };
+    const sizeStyles = { sm: "h-8", md: "h-fit sm:h-12", lg: "h-12" };
 
     return (
       <TabsPrimitive.List
