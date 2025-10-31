@@ -6,7 +6,7 @@ import MobileLink from "../MobileLink";
 
 export default function SideNavbar() {
   return (
-    <div className="bg-sidebar h-screen w-72 p-8">
+    <div className="bg-sidebar h-screen w-72 p-8 sticky top-0">
       <div className="flex items-center justify-between gap-4">
         <Logo />
       </div>
