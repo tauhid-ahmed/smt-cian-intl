@@ -1,5 +1,6 @@
 "use client";
 
+import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
 import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
 import {
   CustomTabs,
@@ -38,7 +39,9 @@ const ContentManagementPage = () => {
             <ProductCatalogTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab2">advved</CustomTabsContent>
+          <CustomTabsContent value="tab2">
+            <ArtistProfileTab />
+          </CustomTabsContent>
 
           <CustomTabsContent value="tab3">adadvad</CustomTabsContent>
 
