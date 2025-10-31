@@ -485,7 +485,7 @@ function MusicShop() {
                 {products.length} Products found
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 {/* View Toggle */}
                 <div className="flex items-center gap-2">
                   <span className="text-sm">View:</span>
