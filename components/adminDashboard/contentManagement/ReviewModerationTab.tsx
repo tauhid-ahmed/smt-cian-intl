@@ -40,30 +40,53 @@ export default function ReviewModerationTab() {
   const [reviewList, setReviewList] = useState(reviews);
 
   const handleApprove = (id) => {
-    setReviewList(
-      reviewList.map((review) =>
+    setReviewList((prev) =>
+      prev.map((review) =>
         review.id === id ? { ...review, status: "approved" } : review
       )
     );
   };
 
   const handleReject = (id) => {
-    setReviewList(
-      reviewList.map((review) =>
+    setReviewList((prev) =>
+      prev.map((review) =>
         review.id === id ? { ...review, status: "rejected" } : review
       )
     );
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating) => (
+    <div className="flex gap-0.5">
+      {[...Array(5)].map((_, i) => (
+        <span key={i} className="text-yellow-400 text-xl">
+          {i < rating ? "★" : "☆"}
+        </span>
+      ))}
+    </div>
+  );
+
+  const renderStatusBadge = (status) => {
+    let badgeStyle = "";
+    let badgeText = "";
+
+    switch (status) {
+      case "approved":
+        badgeStyle = "border-green-500 bg-green-500/20 text-green-400";
+        badgeText = "Approved";
+        break;
+      case "rejected":
+        badgeStyle = "border-red-500 bg-red-500/20 text-red-400";
+        badgeText = "Rejected";
+        break;
+      default:
+        badgeStyle = "border-[#FFA100] bg-[#FFA1001A] text-[#FFA100]";
+        badgeText = "Pending";
+    }
+
     return (
-      <div className="flex gap-0.5">
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className="text-yellow-400 text-xl">
-            {i < rating ? "★" : "☆"}
-          </span>
-        ))}
-      </div>
+      <span className={`px-3 py-1 text-xs rounded-full border ${badgeStyle}`}>
+        {badgeText}
+      </span>
     );
   };
 
@@ -83,14 +106,11 @@ export default function ReviewModerationTab() {
           <div
             key={review.id}
             className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
-            {/* Responsive flex layout */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
                   <h3 className="text-lg font-normal">{review.title}</h3>
-                  <span className="px-3 py-1 text-xs rounded-full border border-[#FFA100] bg-[#FFA1001A] text-[#FFA100]">
-                    Pending
-                  </span>
+                  {renderStatusBadge(review.status)}
                 </div>
 
                 <p className="text-[#808080] mb-3">{review.content}</p>
@@ -103,7 +123,6 @@ export default function ReviewModerationTab() {
                 </div>
               </div>
 
-              {/* Buttons responsive */}
               <div className="flex flex-col sm:flex-row gap-3 sm:ml-6 w-full sm:w-auto">
                 <button
                   onClick={() => handleApprove(review.id)}
