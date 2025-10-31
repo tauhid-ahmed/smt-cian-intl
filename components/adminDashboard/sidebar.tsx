@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Logo from "../Logo";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -64,17 +65,18 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           "fixed md:relative w-64 h-screen bg-[#1A1A1A] flex flex-col transition-transform duration-300 z-50 md:z-0",
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}>
-        <div className="p-6 flex items-center justify-between">
+        <div className="flex items-center justify-between sm:justify-center pt-4 sm:pt-8 px-4">
+          <Logo />
           <Button
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="md:hidden text-sidebar-foreground hover:bg-sidebar-accent">
+            className="md:hidden px-2 text-sidebar-foreground hover:bg-sidebar-accent">
             <X className="w-5 h-5" />
           </Button>
         </div>
 
-        <nav className="flex-1 px-2 space-y-5 py-6 mt-11">
+        <nav className="flex-1 px-2 space-y-5 py-6 mt-6 md:mt-11 border-t sm:border-none border-[#f2f2f248]">
           {menuItems.map((item) => {
             const Icon = item.icon;
 

@@ -6,6 +6,7 @@ import {
   CustomTabsList,
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
+import DonorCrmTab from "@/components/adminDashboard/donationManagement/DonorCrmTab";
 import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
 import ReviewModerationTab from "@/components/adminDashboard/donationManagement/ReviewModerationTab";
 import TaxReceiptsTab from "@/components/adminDashboard/donationManagement/TaxReceiptsTab";
@@ -48,7 +49,9 @@ const DonationManagementPage = () => {
             <TaxReceiptsTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab4">dvdav</CustomTabsContent>
+          <CustomTabsContent value="tab4">
+            <DonorCrmTab />
+          </CustomTabsContent>
         </CustomTabs>
       </div>
     </>
