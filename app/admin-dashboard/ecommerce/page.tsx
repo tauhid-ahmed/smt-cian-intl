@@ -17,8 +17,7 @@ const EcommerceManagementPage = () => {
     <>
       <DashboardPageHeader
         title="Analytics & Insights"
-        sub_title="Monitor your business performance and customer behavior"
-      />
+        sub_title="Monitor your business performance and customer behavior"></DashboardPageHeader>
 
       <div>
         <CustomTabs defaultValue="tab1">

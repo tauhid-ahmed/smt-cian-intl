@@ -1,6 +1,7 @@
 "use client";
 
 import { Eye } from "lucide-react";
+import { toast } from "sonner";
 
 // Mock data
 const contents = [
@@ -10,7 +11,7 @@ const contents = [
     title: "John Doe",
     author: "3 Items",
     total: "$120",
-    status: "Verified",
+    status: "Pending",
     date: "2025-10-31",
   },
   {
@@ -19,7 +20,7 @@ const contents = [
     title: "Jane Smith",
     author: "1 Item",
     total: "$45",
-    status: "Pending",
+    status: "Shifted",
     date: "2025-10-30",
   },
   {
@@ -28,12 +29,61 @@ const contents = [
     title: "Alice Johnson",
     author: "5 Items",
     total: "$250",
-    status: "Cancelled",
+    status: "Processing",
     date: "2025-10-29",
+  },
+  {
+    id: "SKU004",
+    type: "Online",
+    title: "Bob Brown",
+    author: "2 Items",
+    total: "$80",
+    status: "Delivered",
+    date: "2025-10-28",
   },
 ];
 
 const OrderProcessingTab = () => {
+  const handleEyeByStatus = (id: string) => {
+    const content = contents.find((c) => c.id === id);
+    if (!content) return;
+
+    let message = "";
+    let variant: "success" | "warning" | "info" = "info";
+
+    switch (content.status) {
+      case "Pending":
+        message = `${content.title}'s order is pending. Take necessary action.`;
+        variant = "warning";
+        break;
+      case "Shifted":
+        message = `${content.title}'s order has been shifted successfully.`;
+        variant = "info";
+        break;
+      case "Processing":
+        message = `${content.title}'s order is currently being processed.`;
+        variant = "info";
+        break;
+      case "Delivered":
+        message = `${content.title}'s order has been delivered.`;
+        variant = "success";
+        break;
+      default:
+        message = `${content.title}'s order status: ${content.status}`;
+        variant = "info";
+    }
+
+    // Low stock override
+    const numItems = parseInt(content.author.split(" ")[0], 10); // extract number from "2 Items"
+    if (numItems <= 2) {
+      message = `${content.author} running low on stock. Review inventory to prevent stockout.`;
+      variant = "warning";
+    }
+
+    // Trigger toast dynamically with proper variant
+    toast[variant](message);
+  };
+
   return (
     <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
       <div className="space-y-8">
@@ -79,11 +129,13 @@ const OrderProcessingTab = () => {
                   <td className="py-4 pr-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        content.status === "Verified"
-                          ? "bg-[#497FF51A] text-[#497FF5] border border-[#497FF5]"
-                          : content.status === "Pending"
+                        content.status === "Pending"
                           ? "bg-[#FFA1001A] text-[#FFA100] border border-[#FFA100]"
-                          : "bg-[#FF0000]/10 text-red-600 border border-red-600"
+                          : content.status === "Shifted"
+                          ? "bg-[#FF00FA1A] text-[#FF00FA] border border-[#FF00FA]"
+                          : content.status === "Processing"
+                          ? "bg-[#497FF51A] text-[#497FF5] border border-[#497FF5]"
+                          : "bg-[#00FF1A1A] text-green-600 border border-green-600"
                       }`}>
                       {content.status}
                     </span>
@@ -92,7 +144,9 @@ const OrderProcessingTab = () => {
                     {content.date}
                   </td>
                   <td className="pl-4 pt-4 pb-4 flex justify-end">
-                    <button className="text-white">
+                    <button
+                      className="text-white"
+                      onClick={() => handleEyeByStatus(content.id)}>
                       <Eye />
                     </button>
                   </td>
@@ -130,11 +184,13 @@ const OrderProcessingTab = () => {
                   <span className="text-gray-400">Status:</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-medium ml-2 ${
-                      content.status === "Verified"
-                        ? "bg-green-500/20 text-green-500"
-                        : content.status === "Pending"
+                      content.status === "Pending"
                         ? "bg-yellow-200 text-yellow-600"
-                        : "bg-red-200 text-red-600"
+                        : content.status === "Shifted"
+                        ? "bg-[#FF00FA1A] text-[#FF00FA]"
+                        : content.status === "Processing"
+                        ? "bg-blue-200 text-blue-600"
+                        : "bg-green-200 text-green-600"
                     }`}>
                     {content.status}
                   </span>
@@ -144,9 +200,10 @@ const OrderProcessingTab = () => {
                   <span className="text-white ml-2">{content.date}</span>
                 </div>
               </div>
-              {/* Mobile Action Button */}
               <div className="flex justify-end">
-                <button className="text-white">
+                <button
+                  className="text-white"
+                  onClick={() => handleEyeByStatus(content.id)}>
                   <Eye />
                 </button>
               </div>
