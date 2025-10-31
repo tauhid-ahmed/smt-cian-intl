@@ -1,0 +1,424 @@
+// import { Heading } from '@/components/Heading';
+// import Container from '@/components/layout/Container';
+
+// const ReviewPage = () => {
+//   return (
+//     <Container>
+
+//       <div>
+//         <Heading as="h2" size="h4" align="center" className="mt-4">
+//           Share Your Story
+//         </Heading>
+//         <p className='text-center'>Your review helps others discover great music</p>
+//       </div>
+
+//       <div>
+
+
+//       </div>
+
+
+
+//     </Container>
+//   );
+// };
+
+// export default ReviewPage;
+
+
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Heading } from "@/components/Heading"
+import Container from "@/components/layout/Container"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import Image from "next/image"
+
+interface FormData {
+  product: string
+  contentType: string
+  rating: number
+  review: string
+  reviewTitle: string
+  displayName: string
+  email: string
+  location: string
+  permissions: {
+    verify: boolean
+    consent: boolean
+    spotlight: boolean
+    emails: boolean
+  }
+}
+
+const ReviewPage = () => {
+  const [formData, setFormData] = useState<FormData>({
+    product: "",
+    contentType: "both",
+    rating: 0,
+    review: "",
+    reviewTitle: "",
+    displayName: "",
+    email: "",
+    location: "",
+    permissions: {
+      verify: false,
+      consent: false,
+      spotlight: false,
+      emails: false,
+    },
+  })
+
+  const products = [
+    { id: "hilling", name: "Hilling Song United People", image: "/img-1.jpg" },
+    { id: "worship", name: "Worship T-shirt", image: "/img-2.jpg" },
+    { id: "elevation", name: "Elevation Worship Lion", image: "/img-3.jpg" },
+  ]
+
+  const handleRatingClick = (star: number) => {
+    setFormData((prev) => ({ ...prev, rating: star }))
+  }
+
+  const handleCheckboxChange = (key: keyof FormData["permissions"]) => {
+    setFormData((prev) => ({
+      ...prev,
+      permissions: {
+        ...prev.permissions,
+        [key]: !prev.permissions[key],
+      },
+    }))
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("[Review Form Submitted]", formData)
+    alert("Review submitted! Check console for details.")
+  }
+
+  return (
+    <Container>
+      {/* Header Section */}
+      <div className="mb-10">
+        <Heading as="h2" size="h3" align="center" className="mb-2">
+          Share Your Story
+        </Heading>
+        <p className="text-center text-muted-foreground">Your review helps others discover great music</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Section 1: Product Selection */}
+        <Card className="border border-border bg-transparent p-6">
+          <h3 className="text-lg font-semibold mb-6">Select Product To Review:</h3>
+          <div className="space-y-4">
+            {products.map((product) => (
+              <label key={product.id} className="flex items-start gap-4 cursor-pointer hover:opacity-80 transition">
+                <input
+                  type="radio"
+                  name="product"
+                  value={product.id}
+                  checked={formData.product === product.id}
+                  onChange={handleInputChange}
+                  className="mt-2 w-5 h-5 cursor-pointer"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={product?.image}
+                      alt={product.name}
+                      className="w-16 h-16 rounded-lg object-cover"
+                      width={64}
+                      height={64}
+                    />
+                    <p className="font-medium">{product.name}</p>
+                  </div>
+                </div>
+              </label>
+            ))}
+          </div>
+        </Card>
+
+        {/* Section 2: Content Type & Rating */}
+        <Card className="border border-border bg-transparent p-6 space-y-8">
+          {/* Content Type Selection */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6">What Would You Like To Share?</h3>
+            <div className="space-y-3">
+              {[
+                { id: "review", label: "Product Review", desc: "Rate the quality, sound, packaging, etc." },
+                { id: "testimony", label: "Personal Testimony", desc: "Share how this music impacted your faith" },
+                { id: "both", label: "Both", desc: "Combine product review with your story" },
+              ].map((option) => (
+                <label key={option.id} className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="contentType"
+                    value={option.id}
+                    checked={formData.contentType === option.id}
+                    onChange={handleInputChange}
+                    className="mt-1 w-5 h-5 cursor-pointer"
+                  />
+                  <div>
+                    <p className="font-medium">{option.label}</p>
+                    <p className="text-sm text-muted-foreground">{option.desc}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Rating Section */}
+          <div className="border-t border-border pt-8">
+            <h3 className="text-base font-semibold mb-3">Overall Rating*</h3>
+            <p className="text-sm text-muted-foreground mb-4">How would you rate this product?</p>
+            <div className="flex items-center gap-2">
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => handleRatingClick(star)}
+                    className="focus:outline-none transition"
+                  >
+                    <svg
+                      className={`w-8 h-8 ${formData.rating >= star ? "fill-foreground text-foreground" : "text-border"
+                        }`}
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      fill="none"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground ml-2">
+                {formData.rating > 0 ? `${formData.rating} Star${formData.rating > 1 ? "s" : ""}` : ""}
+              </span>
+            </div>
+          </div>
+
+          {/* Review Textarea */}
+          <div className="border-t border-border pt-8">
+            <label className="block mb-2">
+              <span className="font-semibold">Your Review*</span>
+            </label>
+            <p className="text-sm text-muted-foreground mb-3">Share your thoughts about this product</p>
+            <Textarea
+              name="review"
+              value={formData.review}
+              onChange={handleInputChange}
+              placeholder="Share your thoughts about this product..."
+              className="min-h-32 resize-none  text-foreground placeholder:text-muted-foreground"
+            />
+            <p className="text-xs text-muted-foreground text-right mt-2">{formData.review.length}/500 chars</p>
+          </div>
+
+          {/* Review Title */}
+          <div className="border-t border-border pt-8">
+            <label className="block mb-2">
+              <span className="font-semibold">Review Title (Optional)</span>
+            </label>
+            <Input
+              type="text"
+              name="reviewTitle"
+              value={formData.reviewTitle}
+              onChange={handleInputChange}
+              placeholder="Give your review a title"
+              className=" text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
+
+          {/* Helpful Prompts */}
+          <div className="border-t border-border pt-8  rounded-lg p-6">
+            <h3 className="font-semibold mb-4">Helpful Prompts:</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex gap-3">
+                <span className="text-foreground">•</span>
+                <span>What did you love most about this product?</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-foreground">•</span>
+                <span>How has this music encouraged you?</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-foreground">•</span>
+                <span>Would you recommend it to others?</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-foreground">•</span>
+                <span>What makes this artist/album special?</span>
+              </li>
+            </ul>
+          </div>
+        </Card>
+
+        {/* Section 3: Media Upload */}
+        <Card className="border border-border bg-transparent p-6">
+          <h3 className="text-lg font-semibold mb-4">Add photos or video (Optional)</h3>
+          <p className="text-sm text-muted-foreground mb-6">Help others see your experience</p>
+          <div className="flex gap-6 mb-8">
+            <button
+              type="button"
+              className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
+            >
+              <svg className="w-8 h-8 text-foreground mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <span className="text-sm font-medium">Photo</span>
+            </button>
+            <button
+              type="button"
+              className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
+            >
+              <svg className="w-8 h-8 text-foreground mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+              </svg>
+              <span className="text-sm font-medium">Video</span>
+            </button>
+          </div>
+          <ul className="space-y-2 text-xs text-muted-foreground">
+            <li className="flex items-center gap-2">
+              <span>✓</span>
+              <span>Accepted formats: JPG, PNG, MP4, MOV</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span>✓</span>
+              <span>Max 5 photos or 1 video per review</span>
+            </li>
+          </ul>
+        </Card>
+
+        {/* Section 4: Reviewer Information */}
+        <Card className="border border-border bg-transparent p-6 space-y-6">
+          <h3 className="text-lg font-semibold">Reviewer Information</h3>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Display Name*</label>
+            <Input
+              type="text"
+              name="displayName"
+              value={formData.displayName}
+              onChange={handleInputChange}
+              placeholder="Your name"
+              className=" text-foreground placeholder:text-muted-foreground"
+            />
+            <p className="text-xs text-muted-foreground mt-2">(This is how your name will appear publicly)</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Email*</label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="your.email@example.com"
+              className=" text-foreground placeholder:text-muted-foreground"
+            />
+            <p className="text-xs text-muted-foreground mt-2">(Only for verification - never show publicly)</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Location (Optional)</label>
+            <Input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              placeholder="City, State/Country"
+              className="text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
+        </Card>
+
+        {/* Section 5: Permissions */}
+        <Card className="border border-border bg-transparent p-6">
+          <h3 className="text-lg font-semibold mb-6">Permissions</h3>
+          <div className="space-y-4">
+            {[
+              { key: "verify" as const, label: "I verify this is a genuine review based on my own experience" },
+              {
+                key: "consent" as const,
+                label:
+                  "I consent to CIAN Collective using my review and media in marketing materials (social media, website, emails)",
+              },
+              {
+                key: "spotlight" as const,
+                label: "I'd like to be featured as a Customer Spotlight story (may be contacted for more details)",
+              },
+              { key: "emails" as const, label: "Send me emails about similar products" },
+            ].map((permission) => (
+              <label key={permission.key} className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.permissions[permission.key]}
+                  onChange={() => handleCheckboxChange(permission.key)}
+                  className="mt-1 w-5 h-5 cursor-pointer"
+                />
+                <span className="text-sm">{permission.label}</span>
+              </label>
+            ))}
+          </div>
+        </Card>
+
+        {/* Review Reward Info */}
+        <Card className="border border-border p-6">
+          <div className="flex gap-4">
+            <svg className="w-6 h-6 text-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <div>
+              <h4 className="font-semibold mb-2">Review Reward</h4>
+              <p className="text-sm">
+                Share your story and get 15% OFF your next purchase! Discount code will be sent to your email after your
+                review is approved.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Submit Button & Footer */}
+        <div className="space-y-4 flex flex-col items-center justify-center">
+          <Button
+            type="submit"
+            className="md:w-[10%] lg:w-[20%] sm:w-[35%] bg-foreground text-background hover:opacity-90 transition py-2 h-auto"
+          >
+            Submit Review
+          </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            Your review will be checked by our team before appearing in the site (usually within 24 hours)
+          </p>
+          {/* Contact Support */}
+          <div className="border-t border-border pt-6 text-center">
+            <h4 className="font-semibold mb-2">Contact Support</h4>
+          </div>
+        </div>
+
+
+      </form>
+    </Container>
+  )
+}
+
+export default ReviewPage
