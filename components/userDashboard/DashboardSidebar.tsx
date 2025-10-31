@@ -35,13 +35,13 @@ const DashboardSidebar = () => {
 
   const items = [
     { icon: LayoutDashboard, label: "Overview", href: "/user-dashboard" },
-    { icon: ShoppingBag, label: "Orders", href: "/orders" },
-    { icon: Heart, label: "Wishlist", href: "/wishlist" },
-    { icon: Star, label: "Reviews", href: "/reviews" },
-    { icon: CreditCard, label: "Subscriptions", href: "/subscriptions" },
-    { icon: Truck, label: "Tracking", href: "/tracking" },
-    { icon: Users, label: "Donor Portal", href: "/donor-portal" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    { icon: ShoppingBag, label: "Orders", href: "/user-dashboard/orders" },
+    { icon: Heart, label: "Wishlist", href: "/user-dashboard/wishlist" },
+    { icon: Star, label: "Reviews", href: "/user-dashboard/reviews" },
+    { icon: CreditCard, label: "Subscriptions", href: "/user-dashboard/subscriptions" },
+    { icon: Truck, label: "Tracking", href: "/user-dashboard/tracking" },
+    { icon: Users, label: "Donor Portal", href: "/user-dashboard/donor-portal" },
+    { icon: Settings, label: "Settings", href: "/user-dashboard/settings" },
   ];
 
   const handleLogout = () => {
