@@ -27,7 +27,7 @@ export default function Explore({
       <div className="hidden lg:block w-full relative min-h-96 cursor-pointer">
         <Video
           sources={source}
-          className="w-full min-h-110 object-cover"
+          className="w-full min-h-110 max-h-110 object-cover"
           autoplayMode="viewport"
         />
 

@@ -15,7 +15,7 @@ export default function page() {
       <Explore
         source={[
           {
-            src: "https://artlist-dev.imgix.net/videos/visitor_homepage_v2/gen_ai_web.webm?auto=format",
+            src: "/video/video-1.mp4",
             type: "video/mp4",
           },
         ]}
@@ -27,7 +27,7 @@ export default function page() {
       <Explore
         source={[
           {
-            src: "https://artlist-dev.imgix.net/artlist/home-v2/vo_web.webm?auto=format",
+            src: "/video/video-2.mp4",
             type: "video/mp4",
           },
         ]}
@@ -39,7 +39,7 @@ export default function page() {
       <Explore
         source={[
           {
-            src: "https://artlist-dev.imgix.net/videos/visitor_homepage_v2/gen_ai_web.webm?auto=format",
+            src: "/video/video-3.mp4",
             type: "video/mp4",
           },
         ]}
