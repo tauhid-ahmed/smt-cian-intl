@@ -1,6 +1,9 @@
 "use client";
 
+import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
+import ContentApprovalTab from "@/components/adminDashboard/contentManagement/ContentApprovalTab";
 import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
+import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
 import {
   CustomTabs,
   CustomTabsContent,
@@ -38,11 +41,17 @@ const ContentManagementPage = () => {
             <ProductCatalogTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab2">advved</CustomTabsContent>
+          <CustomTabsContent value="tab2">
+            <ArtistProfileTab />
+          </CustomTabsContent>
 
-          <CustomTabsContent value="tab3">adadvad</CustomTabsContent>
+          <CustomTabsContent value="tab3">
+            <ReviewModerationTab />
+          </CustomTabsContent>
 
-          <CustomTabsContent value="tab4">adadv</CustomTabsContent>
+          <CustomTabsContent value="tab4">
+            <ContentApprovalTab />
+          </CustomTabsContent>
         </CustomTabs>
       </div>
     </>
