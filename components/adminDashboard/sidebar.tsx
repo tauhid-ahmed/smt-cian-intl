@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   BarChart3,
   FileText,
@@ -40,13 +40,13 @@ const menuItems = [
   {
     icon: Gift,
     label: "Donation Management",
-    href: "/donation",
+    href: "/admin-dashboard/donation",
     id: "donation",
   },
 ];
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("analytics");
+  const pathname = usePathname();
 
   return (
     <>
@@ -77,14 +77,25 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <nav className="flex-1 px-2 space-y-5 py-6 mt-11">
           {menuItems.map((item) => {
             const Icon = item.icon;
+
+            // Determine active link logic
+            let isActive = false;
+
+            if (item.href === "/admin-dashboard") {
+              // Only active on exact route "/admin-dashboard"
+              isActive = pathname === item.href;
+            } else {
+              // Active if pathname starts with link (for subpages)
+              isActive = pathname?.startsWith(item.href);
+            }
+
             return (
               <Link
                 key={item.id}
                 href={item.href}
-                onClick={() => setActiveItem(item.id)}
                 className={cn(
                   "w-full flex items-center gap-2.5 px-2 py-3 rounded-lg transition-all duration-200",
-                  activeItem === item.id
+                  isActive
                     ? "bg-[#262626] text-white"
                     : "text-white/85 hover:bg-[#262626]"
                 )}>
@@ -98,7 +109,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
-          <button className="w-full flex justify-center items-center gap-2.5 px-2 py-3 rounded-lg transition-all duration-200text-white hover:bg-[#262626]">
+          <button className="w-full flex justify-center items-center gap-2.5 px-2 py-3 rounded-lg transition-all duration-200 text-white hover:bg-[#262626]">
             <LogOut className="w-5 h-5 text-white" />
             <span>Logout</span>
           </button>
