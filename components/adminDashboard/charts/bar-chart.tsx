@@ -8,8 +8,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps,
 } from "recharts";
+import React from "react";
 
 // Type for one data point
 export interface ReviewData {
@@ -27,15 +27,11 @@ interface BarChartCardProps {
 }
 
 // Custom Tooltip
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<number, string>) => {
+const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const negative = payload.find((p: any) => p.dataKey === "negative");
-    const neutral = payload.find((p: any) => p.dataKey === "neutral");
-    const positive = payload.find((p: any) => p.dataKey === "positive");
+    const negative = payload.find((p) => p.dataKey === "negative");
+    const neutral = payload.find((p) => p.dataKey === "neutral");
+    const positive = payload.find((p) => p.dataKey === "positive");
 
     return (
       <div
@@ -100,7 +96,7 @@ export function BarChartCard({ title, subtitle, data }: BarChartCardProps) {
               tickLine={false}
             />
             <Tooltip
-              content={<CustomTooltip />}
+              content={<CustomTooltip active={{}} label={{}} payload={{}} />}
               cursor={{ fill: "#C7C7C7", opacity: 0.2 }}
             />
             <Bar dataKey="positive" stackId="a" fill="#FFFFFF" />
