@@ -345,7 +345,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className={`fixed left-0 right-0 bg-gradient-to-br from-gray-900 via-black to-gray-900 border-t border-gray-800 shadow-2xl z-50 ${
+            className={`fixed left-0 right-0 bg-linear-to-br from-gray-900 via-black to-gray-900 border-t border-gray-800 shadow-2xl z-50 ${
               isExpanded ? "bottom-0 h-screen" : "bottom-0 h-24"
             }`}
           >

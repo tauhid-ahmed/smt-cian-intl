@@ -16,6 +16,7 @@ import Container from "@/components/layout/Container";
 import { Heading } from "@/components/Heading";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -227,64 +228,68 @@ export function FilterPanel({
 // ==================== PRODUCT CARD COMPONENT ====================
 function ProductCard({ product: product }) {
   return (
-    <div className="rounded-lg overflow-hidden group relative border border-white/20">
-      {/* Wishlist Icon */}
-      <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors">
-        <Heart className="w-5 h-5 text-white" />
-      </button>
+    <Link href={`/shop/${product.id}`}>
+      <div className="rounded-lg overflow-hidden group relative border border-white/20">
+        {/* Wishlist Icon */}
+        <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors">
+          <Heart className="w-5 h-5 text-white" />
+        </button>
 
-      {/* Product Image */}
-      <div className="relative aspect-3/2 overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        {product.badge && (
-          <div className="absolute top-3 left-3 bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold uppercase">
-            {product.badge}
-          </div>
-        )}
-      </div>
-
-      {/* Product Info */}
-      <div className="p-4">
-        <p className="text-yellow-500 text-sm mb-1">{product.format}</p>
-        <h3 className="text-white font-semibold mb-1 line-clamp-1">
-          {product.artist}
-        </h3>
-        <p className="text-gray-400 text-sm mb-2 line-clamp-1">
-          {product.title}
-        </p>
-
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3 h-3 ${
-                  i < Math.floor(product.rating)
-                    ? "fill-yellow-500 text-yellow-500"
-                    : "fill-gray-600 text-gray-600"
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-gray-400">({product.reviews})</span>
+        {/* Product Image */}
+        <div className="relative aspect-3/2 overflow-hidden">
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {product.badge && (
+            <div className="absolute top-3 left-3 bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold uppercase">
+              {product.badge}
+            </div>
+          )}
         </div>
 
-        {/* Price and Cart */}
-        <div className="flex items-center justify-between">
-          <span className="text-white font-bold text-lg">${product.price}</span>
-          <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-2">
-            <ShoppingCart className="w-4 h-4" />
-            Add to Cart
-          </button>
+        {/* Product Info */}
+        <div className="p-4">
+          <p className="text-yellow-500 text-sm mb-1">{product.format}</p>
+          <h3 className="text-white font-semibold mb-1 line-clamp-1">
+            {product.artist}
+          </h3>
+          <p className="text-gray-400 text-sm mb-2 line-clamp-1">
+            {product.title}
+          </p>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-3 h-3 ${
+                    i < Math.floor(product.rating)
+                      ? "fill-yellow-500 text-yellow-500"
+                      : "fill-gray-600 text-gray-600"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-400">({product.reviews})</span>
+          </div>
+
+          {/* Price and Cart */}
+          <div className="flex items-center justify-between">
+            <span className="text-white font-bold text-lg">
+              ${product.price}
+            </span>
+            <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-2">
+              <ShoppingCart className="w-4 h-4" />
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

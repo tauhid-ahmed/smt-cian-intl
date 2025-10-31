@@ -9,6 +9,9 @@ import {
   Video,
   ChevronDown,
 } from "lucide-react";
+import { Heading } from "@/components/Heading";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
 
 // ==================== TYPE DEFINITIONS ====================
 interface Review {
@@ -71,16 +74,16 @@ const StarRating = ({
 // ==================== RATING BREAKDOWN COMPONENT ====================
 const RatingBreakdown = ({ ratings }: { ratings: RatingData[] }) => {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 w-full">
       {ratings.map((rating) => (
         <div key={rating.stars} className="flex items-center gap-4">
           <div className="text-lg font-medium w-3 text-white">
             {rating.stars}
           </div>
-          <Star className="w-5 h-5 fill-yellow-500 text-yellow-500 flex-shrink-0" />
-          <div className="flex-1 relative h-2 bg-gray-800 rounded-full overflow-hidden">
+          <Star className="w-5 h-5 fill-yellow-500 text-yellow-500 shrink-0" />
+          <div className="flex-1 w-full relative h-2 bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-yellow-500 rounded-full transition-all duration-500"
+              className="absolute inset-y-0 left-0 bg-yellow-500 rounded-full transition-all duration-500 h-full"
               style={{ width: `${rating.percentage}%` }}
             />
           </div>
@@ -128,27 +131,30 @@ const ReviewCard = ({ review }: { review: Review }) => {
   return (
     <div className="border-b border-zinc-800 pb-8">
       <div className="flex gap-4">
-        <div className="w-16 h-16 rounded-full bg-zinc-700 flex-shrink-0"></div>
-
         <div className="flex-1">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <StarRating rating={review.rating} size="sm" />
-              {review.badge && (
-                <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                  {review.badge}
-                </span>
-              )}
+          <div className="flex gap-4">
+            <div className="w-16 h-16 rounded-full bg-zinc-700 shrink-0"></div>
+            <div className="">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <StarRating rating={review.rating} size="sm" />
+                  {review.badge && (
+                    <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                      {review.badge}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <h3 className="text-white font-semibold text-lg mb-1">
+                {review.title}
+              </h3>
+
+              <p className="text-gray-400 text-sm mb-3">
+                by {review.author} | {review.date}
+              </p>
             </div>
           </div>
-
-          <h3 className="text-white font-semibold text-lg mb-1">
-            {review.title}
-          </h3>
-
-          <p className="text-gray-400 text-sm mb-3">
-            by {review.author} | {review.date}
-          </p>
 
           <p className="text-gray-300 leading-relaxed mb-4">{review.content}</p>
 
@@ -272,11 +278,11 @@ export default function CustomerReviewsSection({
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 py-20">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-16">
+    <Section>
+      <Container>
+        <Heading as="h2" size="h4">
           Customer Reviews & Testimonials
-        </h1>
+        </Heading>
 
         <div className="grid md:grid-cols-2 gap-12 mb-12">
           <div className="flex flex-col items-center md:items-start">
@@ -293,9 +299,9 @@ export default function CustomerReviewsSection({
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-12">
           <div className="flex flex-wrap gap-2">
-            <label className="text-sm font-medium text-white mr-2 self-center">
+            <label className="w-full font-medium text-white mr-2 self-center block">
               Filter Reviews:
             </label>
             {filters.map((filter) => (
@@ -314,8 +320,10 @@ export default function CustomerReviewsSection({
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-white">Short by:</label>
+          <div className="flex flex-col items-center gap-2">
+            <label className="text-sm font-medium text-white block w-full">
+              Short by:
+            </label>
             <div className="relative">
               <select
                 value={sortBy}
@@ -343,7 +351,7 @@ export default function CustomerReviewsSection({
             Load More Reviews
           </button>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
 }
