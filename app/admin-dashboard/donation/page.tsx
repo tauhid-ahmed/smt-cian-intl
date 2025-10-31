@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CustomTabs,
   CustomTabsContent,
@@ -5,6 +7,7 @@ import {
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
 import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
+import ReviewModerationTab from "@/components/adminDashboard/donationManagement/ReviewModerationTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const DonationManagementPage = () => {
@@ -36,7 +39,9 @@ const DonationManagementPage = () => {
             <OverviewTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab2">adsvgdavbd</CustomTabsContent>
+          <CustomTabsContent value="tab2">
+            <ReviewModerationTab />
+          </CustomTabsContent>
 
           <CustomTabsContent value="tab3">sv dv</CustomTabsContent>
 
