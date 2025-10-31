@@ -22,7 +22,7 @@ const menuItems = [
   {
     icon: BarChart3,
     label: "Analytics & Insights",
-    href: "/",
+    href: "/admin-dashboard",
     id: "analytics",
   },
   {
@@ -34,7 +34,7 @@ const menuItems = [
   {
     icon: ShoppingCart,
     label: "E-commerce Management",
-    href: "/ecommerce",
+    href: "/admin-dashboard/ecommerce",
     id: "ecommerce",
   },
   {

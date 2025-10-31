@@ -1,6 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { FileUpload } from "@/components/ui/file-upload";
+
+// Zod schema
+const productSchema = z.object({
+  productName: z.string().min(1, "Product name is required"),
+  price: z
+    .string()
+    .min(1, "Price is required")
+    .regex(/^\d+(\.\d{1,2})?$/, "Price must be a valid number"),
+  stock: z
+    .string()
+    .min(1, "Stock is required")
+    .regex(/^\d+$/, "Stock must be a non-negative integer"),
+  description: z.string().min(1, "Description is required"),
+});
+
+type ProductFormValues = z.infer<typeof productSchema>;
 
 interface Product {
   id: number;
@@ -12,7 +39,6 @@ interface Product {
 }
 
 const ProductCatalogTab = () => {
-  // Dynamic data
   const [products] = useState<Product[]>([
     {
       id: 1,
@@ -56,6 +82,33 @@ const ProductCatalogTab = () => {
     },
   ]);
 
+  const [files, setFiles] = useState<File[]>([]);
+  const handleFileUpload = (uploadedFiles: File[]) => {
+    setFiles(uploadedFiles);
+    console.log(uploadedFiles);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProductFormValues>({
+    resolver: zodResolver(productSchema),
+  });
+
+  const onSubmit = (data: ProductFormValues) => {
+    const productData = {
+      productName: data.productName,
+      price: Number(data.price),
+      stock: Number(data.stock),
+      description: data.description,
+    };
+    console.log("Product Submitted:", productData, files);
+    reset();
+    setFiles([]);
+  };
+
   return (
     <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
       <div className="space-y-8">
@@ -90,25 +143,140 @@ const ProductCatalogTab = () => {
                 className="bg-[#414141] rounded-[10px] pl-10 pr-4 py-2.5 text-white text-sm font-medium placeholder-[#818181] focus:outline-none focus:border-gray-500 w-full sm:w-72"
               />
             </div>
-            <button className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Add Product
-            </button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Add Product
+                </button>
+              </DialogTrigger>
+
+              <DialogContent className="bg-[#171717] border-none w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[714px]">
+                <DialogHeader>
+                  <DialogTitle className="md:text-xl text-lg font-semibold text-left">
+                    Add New Product
+                  </DialogTitle>
+
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mt-6 space-y-4">
+                    {/* Product Name */}
+                    <div className="flex flex-col space-y-2">
+                      <label
+                        htmlFor="productName"
+                        className="text-white text-sm md:text-lg text-left">
+                        Product Name
+                      </label>
+                      <input
+                        {...register("productName")}
+                        type="text"
+                        id="productName"
+                        placeholder="Enter your product name"
+                        className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
+                      />
+                      {errors.productName && (
+                        <span className="text-red-500 text-sm">
+                          {errors.productName.message}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Price & Stock */}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-4">
+                      <div className="flex flex-col space-y-2 flex-1">
+                        <label
+                          htmlFor="price"
+                          className="text-white text-sm md:text-lg text-left">
+                          Price
+                        </label>
+                        <input
+                          {...register("price")}
+                          type="text"
+                          id="price"
+                          placeholder="1899"
+                          className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
+                        />
+                        {errors.price && (
+                          <span className="text-red-500 text-sm">
+                            {errors.price.message}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col space-y-2 flex-1">
+                        <label
+                          htmlFor="stock"
+                          className="text-white text-sm md:text-lg text-left">
+                          Stock
+                        </label>
+                        <input
+                          {...register("stock")}
+                          type="text"
+                          id="stock"
+                          placeholder="344"
+                          className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
+                        />
+                        {errors.stock && (
+                          <span className="text-red-500 text-sm">
+                            {errors.stock.message}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="flex flex-col space-y-2">
+                      <label
+                        htmlFor="description"
+                        className="text-white text-sm md:text-lg text-left">
+                        Description
+                      </label>
+                      <textarea
+                        {...register("description")}
+                        id="description"
+                        placeholder="Product Description"
+                        className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg min-h-[70px] md:min-h-[116px] bg-transparent"
+                      />
+                      {errors.description && (
+                        <span className="text-red-500 text-sm">
+                          {errors.description.message}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* File Upload */}
+                    <div>
+                      <FileUpload onChange={handleFileUpload} />
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-center">
+                      <button
+                        type="submit"
+                        className="bg-white hover:bg-[#f2f2f2] cursor-pointer py-2 md:py-[12.5px] px-5 text-black text-base md:text-lg rounded-[10px] transition-all max-w-[344px] w-full">
+                        Save Product
+                      </button>
+                    </div>
+                  </form>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
-        {/* Desktop Table View */}
+        {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -137,7 +305,7 @@ const ProductCatalogTab = () => {
               {products.map((product) => (
                 <tr
                   key={product.id}
-                  className="border-b border-[#EFEFEF] hover:bg-[#414141]/40 ">
+                  className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
                   <td className="py-4 pr-4 text-white text-sm">
                     {product.name}
                   </td>
@@ -177,7 +345,7 @@ const ProductCatalogTab = () => {
           </table>
         </div>
 
-        {/* Mobile Card View */}
+        {/* Mobile Card */}
         <div className="md:hidden space-y-3">
           {products.map((product) => (
             <div
