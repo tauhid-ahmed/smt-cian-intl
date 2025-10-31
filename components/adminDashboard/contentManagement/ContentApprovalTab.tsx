@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, NotebookPen, X } from "lucide-react";
 
 // Mock contents data
 const mockContents = [
@@ -82,7 +82,10 @@ const ContentApprovalTab = () => {
                   key={content.id}
                   className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
                   <td className="py-4 pr-4 text-white text-sm">
-                    {content.type}
+                    <p className="border border-white rounded p-1.5 inline-flex items-center gap-1.5">
+                      <NotebookPen size={18} />
+                      {content.type}
+                    </p>
                   </td>
                   <td className="py-4 pr-4 text-white text-sm">
                     {content.title}
