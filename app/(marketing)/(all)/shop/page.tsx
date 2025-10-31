@@ -1,3 +1,5 @@
+import MusicShop from "./_components/Shop";
+
 export default function page() {
-  return <div>page</div>;
+  return <MusicShop />;
 }

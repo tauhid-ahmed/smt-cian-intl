@@ -58,7 +58,7 @@ export default function Intro() {
       />
       <div className="absolute inset-0 flex justify-center">
         <Container>
-          <div className="text-center mt-16 lg:mt-20">
+          <div className="text-center mt-24 lg:mt-32">
             <Heading as="h1" size="h1" font="serif" align="center">
               Feel the Rhythm of Your Soul
             </Heading>

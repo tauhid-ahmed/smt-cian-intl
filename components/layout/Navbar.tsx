@@ -12,7 +12,7 @@ import { useAuth } from "@/features/auth/provider/AuthProvider";
 export default function () {
   const { openSignUp, openSignIn } = useAuth();
   return (
-    <header className="bg-accent sticky top-0 z-50 shadow">
+    <header className="bg-accent/50 backdrop-blur sticky top-0 z-50 shadow">
       <Container>
         <nav className="py-3 flex">
           <div className="flex-1 flex items-center gap-4">

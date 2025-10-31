@@ -123,8 +123,9 @@
   }
 
   .intro-height {
-    height: 100vh;
+    height: calc(100vh + 3.5rem);
     max-height: clamp(44rem, 80vw, 132rem);
+    margin-top: -3.5rem;
   }
 
   @media (min-width: 1840px) {
