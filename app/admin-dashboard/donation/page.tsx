@@ -1,4 +1,4 @@
-"use client";
+"use client ";
 
 import {
   CustomTabs,
@@ -8,6 +8,7 @@ import {
 } from "@/components/adminDashboard/custom-tabs";
 import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
 import ReviewModerationTab from "@/components/adminDashboard/donationManagement/ReviewModerationTab";
+import TaxReceiptsTab from "@/components/adminDashboard/donationManagement/TaxReceiptsTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const DonationManagementPage = () => {
@@ -43,7 +44,9 @@ const DonationManagementPage = () => {
             <ReviewModerationTab />
           </CustomTabsContent>
 
-          <CustomTabsContent value="tab3">sv dv</CustomTabsContent>
+          <CustomTabsContent value="tab3">
+            <TaxReceiptsTab />
+          </CustomTabsContent>
 
           <CustomTabsContent value="tab4">dvdav</CustomTabsContent>
         </CustomTabs>
