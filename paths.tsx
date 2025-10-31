@@ -1,9 +1,13 @@
 import {
+  LucideBadgeDollarSign,
   LucideBookA,
   LucideCircleDollarSign,
+  LucideCloudDownload,
   LucideContact,
+  LucideDownload,
   LucideFlower,
   LucideHome,
+  LucideMusic,
   LucideStore,
 } from "lucide-react";
 
@@ -32,12 +36,17 @@ export const marketingNavbarData: NavbarItem[] = [
   {
     title: "Music",
     path: () => "/music",
-    icon: <LucideStore />,
+    icon: <LucideMusic />,
+  },
+  {
+    title: "Download",
+    path: () => "/download",
+    icon: <LucideCloudDownload />,
   },
   {
     title: "Subscriptions",
     path: () => "/subscriptions",
-    icon: <LucideStore />,
+    icon: <LucideBadgeDollarSign />,
   },
   {
     title: "About Us",
