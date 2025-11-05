@@ -6,6 +6,7 @@ import ShippingForm from "./shipping-form"
 import PaymentForm from "./payment-form"
 import ReviewOrder from "./review-order"
 import OrderConfirmed from "./order-confirmed"
+import Container from "@/components/layout/Container"
 
 type Step = 1 | 2 | 3 | 4
 
@@ -18,6 +19,7 @@ export interface CheckoutData {
   postCode: string
   country: string
   paymentMethod: string
+  subMethod: string
   cardNumber: string
   cardholderName: string
   expiryDate: string
@@ -58,7 +60,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-black px-4 py-12">
-      <div className="max-w-4xl mx-auto">
+      <Container >
         {currentStep < 4 && <StepIndicator currentStep={currentStep} />}
 
         {currentStep === 1 && <ShippingForm initialData={formData} onNext={handleNextStep} />}
@@ -77,7 +79,8 @@ export default function CheckoutPage() {
         )}
 
         {currentStep === 4 && <OrderConfirmed data={formData as CheckoutData} />}
-      </div>
+      </Container>
+
     </div>
   )
 }
