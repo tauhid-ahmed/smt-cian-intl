@@ -23,13 +23,13 @@ const buttonVariants = cva(
       },
 
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-10 text-sm",
-        lg: "h-12 px-10 text-base",
-        xl: "h-13.5 px-12 text-lg",
-        icon: "size-9",
-        "icon-sm": "size-8",
-        "icon-lg": "size-10",
+        sm: "h-7 px-2.5 text-xs sm:h-8 sm:px-3",
+        md: "h-9 px-4 text-xs sm:px-6 sm:text-sm md:h-10 md:px-8 lg:px-10",
+        lg: "h-10 px-6 text-sm sm:px-8 md:h-11 md:text-base lg:h-12 lg:px-10",
+        xl: "h-11 px-8 text-sm sm:px-10 sm:text-base md:h-12 md:px-12 lg:h-13.5 lg:text-lg",
+        icon: "size-8 sm:size-9",
+        "icon-sm": "size-7 sm:size-8",
+        "icon-lg": "size-9 sm:size-10 md:size-11",
       },
 
       shape: {
@@ -52,9 +52,10 @@ const buttonVariants = cva(
 
       width: {
         auto: "w-auto",
-        responsive: "w-full md:w-44",
+        responsive: "w-full sm:w-auto md:w-44",
+        full: "w-full",
         fixed: "w-45!",
-        xl: "w-[13.75rem]!",
+        xl: "w-full sm:w-auto md:w-[13.75rem]!",
       },
     },
 

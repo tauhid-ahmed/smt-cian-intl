@@ -15,7 +15,8 @@ export function Header({ onMenuClick }: HeaderProps) {
         variant="ghost"
         size="icon"
         onClick={onMenuClick}
-        className="md:hidden text-foreground hover:bg-secondary px-2.5">
+        className="md:hidden text-foreground hover:bg-secondary px-2.5"
+      >
         <Menu className="w-5 h-5" />
       </Button>
       <div className="flex-1" />
@@ -35,7 +36,8 @@ export function Header({ onMenuClick }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="text-foreground hover:bg-secondary">
+          className="text-foreground hover:bg-secondary"
+        >
           <Bell className="w-5 h-5" />
         </Button>
       </div>

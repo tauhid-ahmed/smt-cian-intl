@@ -11,6 +11,19 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import Image from "next/image";
+import {
   Play,
   Pause,
   SkipBack,
@@ -115,6 +128,8 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const close = () => {
     setIsOpen(false);
     setIsPlaying(false);
+    setIsExpanded(false);
+    setShowPlaylist(false);
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -338,136 +353,430 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
       }}
     >
       {children}
+
+      {/* Audio Element */}
+      {currentTrack && (
+        <audio
+          ref={audioRef}
+          src={currentTrack.url}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={handleEnded}
+        />
+      )}
+
+      {/* Mini Player */}
       <AnimatePresence>
-        {isOpen && currentTrack && (
+        {isOpen && currentTrack && !isExpanded && (
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className={`fixed left-0 right-0 bg-linear-to-br from-gray-900 via-black to-gray-900 border-t border-gray-800 shadow-2xl z-50 ${
-              isExpanded ? "bottom-0 h-screen" : "bottom-0 h-24"
-            }`}
+            className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shadow-2xl z-50 h-20 md:h-24"
           >
-            <audio
-              ref={audioRef}
-              src={currentTrack.url}
-              onTimeUpdate={handleTimeUpdate}
-              onLoadedMetadata={handleLoadedMetadata}
-              onEnded={handleEnded}
-            />
+            <div className="h-full flex flex-col md:flex-row items-center px-3 md:px-6 gap-2 md:gap-6">
+              {/* Mobile: Track Info + Controls */}
+              <div className="flex items-center w-full md:hidden gap-3">
+                <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src={currentTrack.artwork}
+                    alt={currentTrack.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-white font-medium truncate text-sm">
+                    {currentTrack.title}
+                  </h3>
+                  <p className="text-gray-400 text-xs truncate">
+                    {currentTrack.artist}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playPrevious}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipBack className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={togglePlay}
+                    className="w-9 h-9 rounded-full bg-white hover:bg-gray-200 text-black"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-4 h-4" />
+                    ) : (
+                      <Play className="w-4 h-4 ml-0.5" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playNext}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipForward className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsExpanded(true)}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
 
-            {/* Minimized Player */}
-            <AnimatePresence>
-              {!isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex items-center px-6 gap-6"
+              {/* Desktop: Full Layout */}
+              <div className="hidden md:flex items-center gap-4 flex-1 min-w-0">
+                <div className="relative w-14 h-14 rounded-lg overflow-hidden">
+                  <Image
+                    src={currentTrack.artwork}
+                    alt={currentTrack.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-white font-medium truncate text-sm">
+                    {currentTrack.title}
+                  </h3>
+                  <p className="text-gray-400 text-xs truncate">
+                    {currentTrack.artist}
+                  </p>
+                </div>
+              </div>
+
+              {/* Desktop: Controls */}
+              <div className="hidden md:flex flex-col items-center gap-2 flex-1">
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsShuffled(!isShuffled)}
+                    className={`${
+                      isShuffled ? "text-green-500" : "text-gray-400"
+                    } hover:text-white h-8 w-8`}
+                  >
+                    <Shuffle className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playPrevious}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipBack className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={togglePlay}
+                    className="w-10 h-10 rounded-full bg-white hover:bg-gray-200 text-black"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-5 h-5" />
+                    ) : (
+                      <Play className="w-5 h-5 ml-0.5" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playNext}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipForward className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleRepeat}
+                    className={`${
+                      repeatMode !== "off" ? "text-green-500" : "text-gray-400"
+                    } hover:text-white relative h-8 w-8`}
+                  >
+                    <Repeat className="w-4 h-4" />
+                    {repeatMode === "one" && (
+                      <span className="absolute bottom-0 right-0 text-[8px]">
+                        1
+                      </span>
+                    )}
+                  </Button>
+                </div>
+
+                {/* Progress */}
+                <div className="flex items-center gap-2 w-full max-w-md">
+                  <span className="text-xs text-gray-400">
+                    {formatTime(currentTime)}
+                  </span>
+                  <div className="flex-1 h-1 bg-gray-700 rounded-full relative group">
+                    <input
+                      type="range"
+                      min="0"
+                      max={duration || 0}
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div
+                      className="h-full bg-white rounded-full transition-all relative"
+                      style={{
+                        width: `${(currentTime / duration) * 100}%`,
+                      }}
+                    >
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-400">
+                    {formatTime(duration)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Desktop: Right Controls */}
+              <div className="hidden md:flex items-center gap-2 flex-1 justify-end">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => toggleLike(currentTrack.id)}
+                  className={`${
+                    likedTracks.has(currentTrack.id)
+                      ? "text-green-500"
+                      : "text-gray-400"
+                  } hover:text-green-500 h-8 w-8`}
                 >
-                  {/* Track Info */}
-                  <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <img
+                  <Heart
+                    className={`w-4 h-4 ${
+                      likedTracks.has(currentTrack.id) ? "fill-current" : ""
+                    }`}
+                  />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowPlaylist(true)}
+                  className="text-gray-400 hover:text-white h-8 w-8"
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleMute}
+                  className="text-gray-400 hover:text-white h-8 w-8"
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-4 h-4" />
+                  ) : (
+                    <Volume2 className="w-4 h-4" />
+                  )}
+                </Button>
+                <div className="relative w-24 h-1 bg-gray-700 rounded-full group">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                    aria-label="Volume"
+                  />
+                  <div
+                    className="h-full bg-white rounded-full transition-all relative"
+                    style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
+                  >
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsExpanded(true)}
+                  className="text-gray-400 hover:text-white h-8 w-8"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={close}
+                  className="text-gray-400 hover:text-white h-8 w-8"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Expanded Player Dialog */}
+      <Dialog open={isExpanded} onOpenChange={setIsExpanded}>
+        <DialogContent className="max-w-4xl h-[80vh] bg-gradient-to-br from-gray-900 via-black to-gray-900 border-gray-800 p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle className="text-2xl font-bold text-white">
+              Now Playing
+            </DialogTitle>
+          </DialogHeader>
+
+          {currentTrack && (
+            <div className="flex flex-col md:flex-row h-full overflow-hidden">
+              {/* Main Content */}
+              <div className="flex-1 flex flex-col p-6 items-center overflow-y-auto">
+                <div className="w-full max-w-2xl">
+                  <div className="relative w-full aspect-square max-w-md mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl">
+                    <Image
                       src={currentTrack.artwork}
                       alt={currentTrack.title}
-                      className="w-14 h-14 rounded-lg object-cover"
+                      fill
+                      className="object-cover"
                     />
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-white font-medium truncate text-sm">
-                        {currentTrack.title}
-                      </h3>
-                      <p className="text-gray-400 text-xs truncate">
-                        {currentTrack.artist}
+                  </div>
+
+                  <div className="text-center mb-6">
+                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                      {currentTrack.title}
+                    </h1>
+                    <p className="text-xl text-gray-400">
+                      {currentTrack.artist}
+                    </p>
+                    {currentTrack.album && (
+                      <p className="text-lg text-gray-500 mt-1">
+                        {currentTrack.album}
                       </p>
+                    )}
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mb-6">
+                    <div className="relative h-2 bg-gray-800 rounded-full mb-2 group">
+                      <input
+                        type="range"
+                        min="0"
+                        max={duration || 0}
+                        value={currentTime}
+                        onChange={handleSeek}
+                        className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                      />
+                      <div
+                        className="h-full bg-white rounded-full transition-all relative"
+                        style={{
+                          width: `${(currentTime / duration) * 100}%`,
+                        }}
+                      >
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-400">
+                      <span>{formatTime(currentTime)}</span>
+                      <span>{formatTime(duration)}</span>
                     </div>
                   </div>
 
                   {/* Controls */}
-                  <div className="flex flex-col items-center gap-2 flex-1">
+                  <div className="flex items-center justify-between mb-6">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleLike(currentTrack.id)}
+                      className={`${
+                        likedTracks.has(currentTrack.id)
+                          ? "text-green-500"
+                          : "text-gray-400"
+                      } hover:text-green-500 h-12 w-12`}
+                    >
+                      <Heart
+                        className={`w-6 h-6 ${
+                          likedTracks.has(currentTrack.id) ? "fill-current" : ""
+                        }`}
+                      />
+                    </Button>
+
                     <div className="flex items-center gap-4">
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={playPrevious}
-                        className="text-gray-400 hover:text-white h-8 w-8"
+                        onClick={() => setIsShuffled(!isShuffled)}
+                        className={`${
+                          isShuffled ? "text-green-500" : "text-gray-400"
+                        } hover:text-white h-10 w-10`}
                       >
-                        <SkipBack className="w-4 h-4" />
+                        <Shuffle className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={playPrevious}
+                        className="text-gray-400 hover:text-white h-10 w-10"
+                      >
+                        <SkipBack className="w-5 h-5" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={togglePlay}
-                        className="w-10 h-10 rounded-full bg-white hover:bg-gray-200 text-black"
+                        className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black"
                       >
                         {isPlaying ? (
-                          <Pause className="w-5 h-5" />
+                          <Pause className="w-8 h-8" />
                         ) : (
-                          <Play className="w-5 h-5 ml-0.5" />
+                          <Play className="w-8 h-8 ml-1" />
                         )}
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={playNext}
-                        className="text-gray-400 hover:text-white h-8 w-8"
+                        className="text-gray-400 hover:text-white h-10 w-10"
                       >
-                        <SkipForward className="w-4 h-4" />
+                        <SkipForward className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleRepeat}
+                        className={`${
+                          repeatMode !== "off"
+                            ? "text-green-500"
+                            : "text-gray-400"
+                        } hover:text-white relative h-10 w-10`}
+                      >
+                        <Repeat className="w-5 h-5" />
+                        {repeatMode === "one" && (
+                          <span className="absolute bottom-1 right-1 text-[10px]">
+                            1
+                          </span>
+                        )}
                       </Button>
                     </div>
 
-                    {/* Progress */}
-                    <div className="flex items-center gap-2 w-full max-w-md">
-                      <span className="text-xs text-gray-400">
-                        {formatTime(currentTime)}
-                      </span>
-                      <div className="flex-1 h-1 bg-gray-700 rounded-full relative">
-                        <input
-                          type="range"
-                          min="0"
-                          max={duration || 0}
-                          value={currentTime}
-                          onChange={handleSeek}
-                          className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                        />
-                        <div
-                          className="h-full bg-white rounded-full"
-                          style={{
-                            width: `${(currentTime / duration) * 100}%`,
-                          }}
-                        />
-                      </div>
-                      <span className="text-xs text-gray-400">
-                        {formatTime(duration)}
-                      </span>
-                    </div>
+                    <div className="w-12" />
                   </div>
 
-                  {/* Right Controls */}
-                  <div className="flex items-center gap-2 flex-1 justify-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowPlaylist(!showPlaylist)}
-                      className={`${
-                        showPlaylist ? "text-green-500" : "text-gray-400"
-                      } hover:text-white h-8 w-8`}
-                    >
-                      <List className="w-4 h-4" />
-                    </Button>
+                  {/* Volume */}
+                  <div className="flex items-center gap-4">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={toggleMute}
-                      className="text-gray-400 hover:text-white h-8 w-8"
+                      className="text-gray-400 hover:text-white h-10 w-10"
                     >
                       {isMuted ? (
-                        <VolumeX className="w-4 h-4" />
+                        <VolumeX className="w-5 h-5" />
                       ) : (
-                        <Volume2 className="w-4 h-4" />
+                        <Volume2 className="w-5 h-5" />
                       )}
                     </Button>
-                    <div className="relative w-24 h-1 bg-gray-700 rounded-full group">
+                    <div className="relative flex-1 h-2 bg-gray-800 rounded-full group">
                       <input
                         type="range"
                         min="0"
@@ -475,335 +784,129 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         step="0.01"
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
-                        className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                        aria-label="Volume"
+                        className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                        aria-label="Volume control"
                       />
                       <div
-                        className="h-full bg-white rounded-full transition-all"
-                        style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
-                      >
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsExpanded(true)}
-                      className="text-gray-400 hover:text-white h-8 w-8"
-                    >
-                      <Maximize2 className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={close}
-                      className="text-gray-400 hover:text-white h-8 w-8"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Expanded Player */}
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex"
-                >
-                  <div className="flex-1 flex flex-col p-8 justify-center items-center">
-                    <div className="w-full max-w-2xl">
-                      <div className="flex justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-white">
-                          Now Playing
-                        </h2>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowPlaylist(!showPlaylist)}
-                            className={`${
-                              showPlaylist ? "text-green-500" : "text-gray-400"
-                            } hover:text-white`}
-                          >
-                            <List className="w-5 h-5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setIsExpanded(false)}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <Minimize2 className="w-5 h-5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={close}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <X className="w-5 h-5" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <img
-                        src={currentTrack.artwork}
-                        alt={currentTrack.title}
-                        className="w-full aspect-square rounded-2xl object-cover shadow-2xl mb-6"
-                      />
-
-                      <h1 className="text-4xl font-bold text-white mb-2">
-                        {currentTrack.title}
-                      </h1>
-                      <p className="text-xl text-gray-400 mb-6">
-                        {currentTrack.artist}
-                      </p>
-
-                      {/* Progress Bar */}
-                      <div className="mb-6">
-                        <div className="relative h-2 bg-gray-800 rounded-full mb-2">
-                          <input
-                            type="range"
-                            min="0"
-                            max={duration || 0}
-                            value={currentTime}
-                            onChange={handleSeek}
-                            className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
-                          />
-                          <div
-                            className="h-full bg-white rounded-full"
-                            style={{
-                              width: `${(currentTime / duration) * 100}%`,
-                            }}
-                          />
-                        </div>
-                        <div className="flex justify-between text-sm text-gray-400">
-                          <span>{formatTime(currentTime)}</span>
-                          <span>{formatTime(duration)}</span>
-                        </div>
-                      </div>
-
-                      {/* Controls */}
-                      <div className="flex items-center justify-between mb-6">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => toggleLike(currentTrack.id)}
-                          className={`${
-                            likedTracks.has(currentTrack.id)
-                              ? "text-green-500"
-                              : "text-gray-400"
-                          } hover:text-green-500`}
-                        >
-                          <Heart
-                            className={`w-6 h-6 ${
-                              likedTracks.has(currentTrack.id)
-                                ? "fill-current"
-                                : ""
-                            }`}
-                          />
-                        </Button>
-
-                        <div className="flex items-center gap-6">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setIsShuffled(!isShuffled)}
-                            className={`${
-                              isShuffled ? "text-green-500" : "text-gray-400"
-                            } hover:text-white`}
-                          >
-                            <Shuffle className="w-5 h-5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={playPrevious}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <SkipBack className="w-6 h-6" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={togglePlay}
-                            className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black"
-                          >
-                            {isPlaying ? (
-                              <Pause className="w-8 h-8" />
-                            ) : (
-                              <Play className="w-8 h-8 ml-1" />
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={playNext}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <SkipForward className="w-6 h-6" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={toggleRepeat}
-                            className={`${
-                              repeatMode !== "off"
-                                ? "text-green-500"
-                                : "text-gray-400"
-                            } hover:text-white relative`}
-                          >
-                            <Repeat className="w-5 h-5" />
-                            {repeatMode === "one" && (
-                              <span className="absolute bottom-1 right-1 text-[10px]">
-                                1
-                              </span>
-                            )}
-                          </Button>
-                        </div>
-
-                        <div className="w-10" />
-                      </div>
-
-                      {/* Volume */}
-                      <div className="flex items-center gap-4">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={toggleMute}
-                          className="text-gray-400 hover:text-white"
-                        >
-                          {isMuted ? (
-                            <VolumeX className="w-5 h-5" />
-                          ) : (
-                            <Volume2 className="w-5 h-5" />
-                          )}
-                        </Button>
-                        <div className="relative flex-1 h-2 bg-gray-800 rounded-full group">
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.01"
-                            value={isMuted ? 0 : volume}
-                            onChange={handleVolumeChange}
-                            className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
-                            aria-label="Volume control"
-                          />
-                          <div
-                            className="h-full bg-white rounded-full transition-all relative"
-                            style={{
-                              width: `${(isMuted ? 0 : volume) * 100}%`,
-                            }}
-                          >
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Playlist */}
-                  <AnimatePresence>
-                    {showPlaylist && (
-                      <motion.div
-                        initial={{ x: "100%" }}
-                        animate={{ x: 0 }}
-                        exit={{ x: "100%" }}
-                        transition={{
-                          type: "spring",
-                          damping: 30,
-                          stiffness: 300,
+                        className="h-full bg-white rounded-full transition-all relative"
+                        style={{
+                          width: `${(isMuted ? 0 : volume) * 100}%`,
                         }}
-                        className="w-96 border-l border-gray-800 bg-black bg-opacity-50 backdrop-blur-xl flex flex-col"
                       >
-                        <div className="p-6 border-b border-gray-800">
-                          <h3 className="text-xl font-bold text-white">
-                            Queue
-                          </h3>
-                          <p className="text-sm text-gray-400">
-                            {playlist.length} tracks
-                          </p>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Playlist Sheet */}
+      <Sheet open={showPlaylist} onOpenChange={setShowPlaylist}>
+        <SheetContent
+          side="right"
+          className="w-full sm:max-w-md bg-gray-900 border-gray-800 overflow-hidden p-0"
+        >
+          <SheetHeader className="p-6 border-b border-gray-800">
+            <SheetTitle className="text-xl font-bold text-white">
+              Queue
+            </SheetTitle>
+            <p className="text-sm text-gray-400">{playlist.length} tracks</p>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto h-full">
+            <div className="p-2">
+              {playlist.map((track, index) => (
+                <div
+                  key={track.id}
+                  onClick={() => playTrack(track)}
+                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                    currentTrack?.id === track.id
+                      ? "bg-gray-800 bg-opacity-50"
+                      : "hover:bg-gray-800"
+                  }`}
+                >
+                  <div className="relative flex-shrink-0">
+                    <div className="w-12 h-12 rounded overflow-hidden">
+                      <Image
+                        src={track.artwork}
+                        alt={track.title}
+                        width={48}
+                        height={48}
+                        className="object-cover"
+                      />
+                    </div>
+                    {currentTrack?.id === track.id && isPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded">
+                        <div className="flex gap-1">
+                          <div
+                            className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
+                            style={{ animationDelay: "0ms" }}
+                          />
+                          <div
+                            className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
+                            style={{ animationDelay: "150ms" }}
+                          />
+                          <div
+                            className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
+                            style={{ animationDelay: "300ms" }}
+                          />
                         </div>
-                        <div className="flex-1 overflow-y-auto">
-                          {playlist.map((track) => (
-                            <motion.div
-                              key={track.id}
-                              initial={{ opacity: 0, x: 20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              onClick={() => playTrack(track)}
-                              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-800 transition-colors ${
-                                currentTrack.id === track.id
-                                  ? "bg-gray-800 bg-opacity-50"
-                                  : ""
-                              }`}
-                            >
-                              <div className="relative flex-shrink-0">
-                                <img
-                                  src={track.artwork}
-                                  alt={track.title}
-                                  className="w-12 h-12 rounded object-cover"
-                                />
-                                {currentTrack.id === track.id && isPlaying && (
-                                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded">
-                                    <div className="flex gap-1">
-                                      <div
-                                        className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
-                                        style={{ animationDelay: "0ms" }}
-                                      />
-                                      <div
-                                        className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
-                                        style={{ animationDelay: "150ms" }}
-                                      />
-                                      <div
-                                        className="w-1 h-3 bg-green-500 animate-pulse rounded-full"
-                                        style={{ animationDelay: "300ms" }}
-                                      />
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p
-                                  className={`text-sm font-medium truncate ${
-                                    currentTrack.id === track.id
-                                      ? "text-green-500"
-                                      : "text-white"
-                                  }`}
-                                >
-                                  {track.title}
-                                </p>
-                                <p className="text-xs text-gray-400 truncate">
-                                  {track.artist}
-                                </p>
-                              </div>
-                              {track.duration && (
-                                <span className="text-xs text-gray-500">
-                                  {track.duration}
-                                </span>
-                              )}
-                            </motion.div>
-                          ))}
-                        </div>
-                      </motion.div>
+                      </div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={`text-sm font-medium truncate ${
+                        currentTrack?.id === track.id
+                          ? "text-green-500"
+                          : "text-white"
+                      }`}
+                    >
+                      {track.title}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {track.artist}
+                    </p>
+                  </div>
+                  {track.duration && (
+                    <span className="text-xs text-gray-500 px-2">
+                      {track.duration}
+                    </span>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(track.id);
+                    }}
+                    className={`h-8 w-8 ${
+                      likedTracks.has(track.id)
+                        ? "text-green-500"
+                        : "text-gray-400"
+                    } hover:text-green-500`}
+                  >
+                    <Heart
+                      className={`w-4 h-4 ${
+                        likedTracks.has(track.id) ? "fill-current" : ""
+                      }`}
+                    />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </MusicPlayerContext.Provider>
   );
 }
 
-// Demo
+// Demo Component
 const DEMO_TRACKS: Track[] = [
   {
     id: 1,
@@ -838,35 +941,56 @@ const DEMO_TRACKS: Track[] = [
 ];
 
 export default function MusicPlayerDemo() {
-  const { open } = useMusicPlayer();
-
   return (
     <MusicPlayerProvider>
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black p-8">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold text-white mb-12">Music Player</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 md:mb-12 text-center">
+            Music Player Demo
+          </h1>
 
-          <div className="grid grid-cols-3 gap-4 mb-32">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-24 md:mb-32">
             {DEMO_TRACKS.map((track) => (
-              <div
-                key={track.id}
-                onClick={() => open(track, DEMO_TRACKS)}
-                className="bg-gray-900 bg-opacity-50 rounded-xl p-4 cursor-pointer hover:bg-gray-800 transition-all"
-              >
-                <img
-                  src={track.artwork}
-                  alt={track.title}
-                  className="w-full aspect-square object-cover rounded-lg mb-3"
-                />
-                <h3 className="text-white font-semibold truncate">
-                  {track.title}
-                </h3>
-                <p className="text-sm text-gray-400 truncate">{track.artist}</p>
-              </div>
+              <TrackCard key={track.id} track={track} />
             ))}
           </div>
         </div>
       </div>
     </MusicPlayerProvider>
+  );
+}
+
+function TrackCard({ track }: { track: Track }) {
+  const { open } = useMusicPlayer();
+
+  return (
+    <div
+      onClick={() => open(track, DEMO_TRACKS)}
+      className="group bg-gray-900 bg-opacity-50 rounded-xl p-4 cursor-pointer hover:bg-gray-800 transition-all duration-300 hover:scale-105"
+    >
+      <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3">
+        <Image
+          src={track.artwork}
+          alt={track.title}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+          <div className="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+            <Play className="w-5 h-5 text-black ml-1" />
+          </div>
+        </div>
+      </div>
+      <h3 className="text-white font-semibold truncate text-lg">
+        {track.title}
+      </h3>
+      <p className="text-gray-400 truncate">{track.artist}</p>
+      {track.album && (
+        <p className="text-sm text-gray-500 truncate mt-1">{track.album}</p>
+      )}
+      {track.duration && (
+        <p className="text-xs text-gray-500 mt-2">{track.duration}</p>
+      )}
+    </div>
   );
 }

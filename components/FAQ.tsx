@@ -39,7 +39,7 @@ export default function FAQ({ items, className }: FaqProps) {
               size="icon"
               onClick={() => toggle(index)}
               className={cn(
-                "w-full text-left py-4 flex justify-between items-center font-medium text-lg",
+                "w-full! text-left py-4 flex justify-between items-center font-medium text-lg",
                 index === openIndex && "text-white"
               )}
             >

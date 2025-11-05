@@ -33,7 +33,10 @@ const profiles = [
 export default function Overview() {
   return (
     <Section className="text-left" padding="sm">
-      <div className="relative left-1/2 right-1/2 w-screen -mx-[50vw]">
+      {/* <div className="relative left-1/2 right-1/2 w-screen -mx-[50vw]">
+        
+      </div> */}
+      <Container>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {profiles.map((profile, idx) => (
             <div key={idx} className="flex flex-col gap-2">
@@ -57,7 +60,7 @@ export default function Overview() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }
@@ -70,6 +73,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import Container from "@/components/layout/Container";
 
 const testimonials = [
   {

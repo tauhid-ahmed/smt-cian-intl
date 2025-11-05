@@ -88,7 +88,7 @@ export default function TextCarousel({ data, className }: Props) {
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
-            onDragEnd={(e, { offset, velocity }) => {
+            onDragEnd={(e, { offset }) => {
               const swipeThreshold = 50;
               if (offset.x > swipeThreshold) {
                 goToPrevious();

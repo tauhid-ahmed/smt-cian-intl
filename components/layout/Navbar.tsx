@@ -32,10 +32,12 @@ export default function () {
               })}
             </ul>
           </div>
-          <div className="flex-1 flex gap-4 justify-end">
-            <Button size="sm" onClick={openSignUp}>
-              Start Free Now
-            </Button>
+          <div className="flex-1 flex items-center gap-4 justify-end">
+            <div className="hidden md:block">
+              <Button size="sm" onClick={openSignUp}>
+                Start Free Now
+              </Button>
+            </div>
             <Button
               variant="ghost"
               weight="normal"

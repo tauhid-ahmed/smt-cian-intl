@@ -23,7 +23,7 @@ const features = [
 
 export default function Features() {
   return (
-    <Section padding="lg">
+    <Section padding="md">
       <Container>
         <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
           {/* Image */}
