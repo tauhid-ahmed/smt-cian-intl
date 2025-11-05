@@ -231,15 +231,11 @@ export default function QuickAnswerSection() {
               }}
               className={`
                 flex items-center gap-4 px-6 py-5 rounded-2xl
-                transition-all duration-300 transform hover:scale-105
+                transition-all duration-300 transform
                 ${
                   selectedCategory === category.id
-                    ? category.variant === "white"
-                      ? "bg-white text-black"
-                      : "bg-zinc-700 text-white border-2 border-white"
-                    : category.variant === "white"
                     ? "bg-white text-black hover:bg-gray-100"
-                    : "bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700"
+                    : "bg-zinc-800 text-white hover:bg-zinc-800 border border-zinc-700"
                 }
               `}
             >
@@ -257,7 +253,7 @@ export default function QuickAnswerSection() {
             {currentCategory?.faqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700"
+                className="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-700"
               >
                 <button
                   onClick={() => toggleFAQ(index)}

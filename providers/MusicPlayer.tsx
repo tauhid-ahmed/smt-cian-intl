@@ -89,7 +89,6 @@ interface MusicPlayerProviderProps {
   children: ReactNode;
 }
 
-// Music Player Provider
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);

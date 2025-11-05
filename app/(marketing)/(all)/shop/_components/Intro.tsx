@@ -6,7 +6,7 @@ export default function Intro() {
   return (
     <div className="intro-height relative bg-black">
       <Image
-        src="https://images.unsplash.com/photo-1640533575664-bf2d5bc7b638?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171"
+        src="https://images.unsplash.com/photo-1734228974762-26174330e6dc?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
         alt="Intro Image"
         fill
         className="size-full object-cover"

@@ -1,6 +1,7 @@
 import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Image from "next/image";
+import Stats from "./Stats";
 
 export default function Intro() {
   return (
@@ -24,6 +25,9 @@ export default function Intro() {
             </div>
           </div>
         </Container>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 translate-y-1/2">
+        <Stats />
       </div>
     </div>
   );
