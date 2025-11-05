@@ -1,3 +1,4 @@
+import { Heading } from "@/components/Heading"
 import { Package, CreditCard, CheckCircle } from "lucide-react"
 
 interface StepIndicatorProps {
@@ -13,16 +14,17 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
   return (
     <div className="text-center mb-12">
-      <h1 className="text-4xl font-bold mb-2 text-white">Checkout</h1>
-      <p className="text-gray-400 mb-10">Complete your purchase in 3 steps</p>
 
-      <div className="flex items-center justify-center gap-4 md:gap-8">
+      <Heading align='center' as="h2" size="h2" className="mb-4 text-white" >Checkout</Heading>
+      <p className="text-white text-base mb-12">Complete your purchase in 3 steps</p>
+
+      <div className="flex items-center justify-center gap-4 md:gap-8 mb-12">
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center gap-4 md:gap-8">
             <div
-              className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${currentStep >= step.number
-                  ? "bg-white border-white text-black"
-                  : "bg-gray-800 border-gray-600 text-gray-400"
+              className={`flex items-center justify-center w-12 h-12 rounded-full border-none transition-all ${currentStep >= step.number
+                ? "bg-white  text-black"
+                : "bg-gray-800  text-gray-400"
                 }`}
             >
               <step.icon className="w-6 h-6" />
@@ -30,7 +32,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
             {index < steps.length - 1 && (
               <div
-                className={`hidden md:block h-1 w-16 transition-all ${currentStep > step.number ? "bg-white" : "bg-gray-700"
+                className={`hidden md:block h-0.5 w-16 transition-all ${currentStep > step.number ? "bg-white" : "bg-gray-700"
                   }`}
               />
             )}

@@ -33,13 +33,6 @@ export function Header({ onMenuClick }: HeaderProps) {
             <AvatarFallback>SM</AvatarFallback>
           </Avatar>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-foreground hover:bg-secondary"
-        >
-          <Bell className="w-5 h-5" />
-        </Button>
       </div>
     </header>
   );
