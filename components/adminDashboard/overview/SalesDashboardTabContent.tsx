@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Percent, ShoppingBag, Star } from "lucide-react";
+import { MessagesSquare, ShoppingBag, Star, TrendingUp, Users } from "lucide-react";
 import { MetricsGrid } from "../metrics-grid";
 import { RevenueChart } from "../charts/revenue-chart";
 import { TopProductsCard } from "../top-products";
@@ -9,17 +9,17 @@ const metricsData = [
   {
     title: "Total Revenue",
     value: "$45,230",
-    icon: DollarSign,
+    icon: TrendingUp,
   },
   {
     title: "Conversion Rate",
     value: "12.4%",
-    icon: Percent,
+    icon: MessagesSquare,
   },
   {
     title: "Total Orders",
     value: "1,278",
-    icon: ShoppingBag,
+    icon: Users,
   },
   {
     title: "Reviews",

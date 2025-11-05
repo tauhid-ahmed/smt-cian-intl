@@ -137,7 +137,7 @@ export default function ShippingForm({ initialData, onNext }: ShippingFormProps)
           </div>
         </div>
 
-        <div className="flex justify-end pt-6">
+        <div className="flex lg:justify-end md:justify-end pt-6">
           <Button type="submit" className="bg-white text-black hover:bg-gray-200 px-8 h-11 font-medium rounded-lg">
             Continue to Payment
           </Button>
