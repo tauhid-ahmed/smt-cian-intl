@@ -37,6 +37,7 @@ import {
   Shuffle,
   List,
   Heart,
+  PictureInPicture2,
 } from "lucide-react";
 
 // Types
@@ -68,6 +69,8 @@ interface MusicPlayerContextType {
   currentIndex: number;
   likedTracks: Set<string | number>;
   toggleLike: (trackId: string | number) => void;
+  playerMode: "bottom" | "popout";
+  setPlayerMode: (mode: "bottom" | "popout") => void;
 }
 
 // Context
@@ -104,6 +107,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [likedTracks, setLikedTracks] = useState<Set<string | number>>(
     new Set()
   );
+  const [playerMode, setPlayerMode] = useState<"bottom" | "popout">("bottom");
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -256,6 +260,10 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     });
   };
 
+  const togglePlayerMode = () => {
+    setPlayerMode((prev) => (prev === "bottom" ? "popout" : "bottom"));
+  };
+
   const formatTime = (time: number): string => {
     if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -321,6 +329,13 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
         case "L":
           if (currentTrack) toggleLike(currentTrack.id);
           break;
+        case "p":
+        case "P":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            togglePlayerMode();
+          }
+          break;
       }
     };
 
@@ -350,6 +365,8 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
         currentIndex,
         likedTracks,
         toggleLike,
+        playerMode,
+        setPlayerMode,
       }}
     >
       {children}
@@ -365,9 +382,9 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
         />
       )}
 
-      {/* Mini Player */}
+      {/* Bottom Player */}
       <AnimatePresence>
-        {isOpen && currentTrack && !isExpanded && (
+        {isOpen && currentTrack && !isExpanded && playerMode === "bottom" && (
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -528,9 +545,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     />
                     <div
                       className="h-full bg-white rounded-full transition-all relative"
-                      style={{
-                        width: `${(currentTime / duration) * 100}%`,
-                      }}
+                      style={{ width: `${(currentTime / duration) * 100}%` }}
                     >
                       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -600,6 +615,15 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={togglePlayerMode}
+                  className="text-gray-400 hover:text-white h-8 w-8"
+                  title="Toggle player mode (Ctrl+P)"
+                >
+                  <PictureInPicture2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setIsExpanded(true)}
                   className="text-gray-400 hover:text-white h-8 w-8"
                 >
@@ -613,6 +637,170 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                 >
                   <X className="w-4 h-4" />
                 </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Popout Player */}
+      <AnimatePresence>
+        {isOpen && currentTrack && !isExpanded && playerMode === "popout" && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="fixed bottom-4 left-4 w-80 bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl z-50 overflow-hidden"
+          >
+            <div className="p-4">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden">
+                    <Image
+                      src={currentTrack.artwork}
+                      alt={currentTrack.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-white font-medium truncate text-sm">
+                      {currentTrack.title}
+                    </h3>
+                    <p className="text-gray-400 text-xs truncate">
+                      {currentTrack.artist}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={togglePlayerMode}
+                    className="text-gray-400 hover:text-white h-6 w-6"
+                    title="Back to bottom player"
+                  >
+                    <Minimize2 className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={close}
+                    className="text-gray-400 hover:text-white h-6 w-6"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Progress */}
+              <div className="mb-3">
+                <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                  <span>{formatTime(currentTime)}</span>
+                  <div className="flex-1 h-1 bg-gray-700 rounded-full relative group">
+                    <input
+                      type="range"
+                      min="0"
+                      max={duration || 0}
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div
+                      className="h-full bg-white rounded-full transition-all"
+                      style={{ width: `${(currentTime / duration) * 100}%` }}
+                    />
+                  </div>
+                  <span>{formatTime(duration)}</span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsShuffled(!isShuffled)}
+                    className={`${
+                      isShuffled ? "text-green-500" : "text-gray-400"
+                    } hover:text-white h-8 w-8`}
+                  >
+                    <Shuffle className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playPrevious}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipBack className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={togglePlay}
+                    className="w-9 h-9 rounded-full bg-white hover:bg-gray-200 text-black"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-4 h-4" />
+                    ) : (
+                      <Play className="w-4 h-4 ml-0.5" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={playNext}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <SkipForward className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleRepeat}
+                    className={`${
+                      repeatMode !== "off" ? "text-green-500" : "text-gray-400"
+                    } hover:text-white relative h-8 w-8`}
+                  >
+                    <Repeat className="w-3 h-3" />
+                    {repeatMode === "one" && (
+                      <span className="absolute bottom-0 right-0 text-[6px]">
+                        1
+                      </span>
+                    )}
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleLike(currentTrack.id)}
+                    className={`${
+                      likedTracks.has(currentTrack.id)
+                        ? "text-green-500"
+                        : "text-gray-400"
+                    } hover:text-green-500 h-8 w-8`}
+                  >
+                    <Heart
+                      className={`w-3 h-3 ${
+                        likedTracks.has(currentTrack.id) ? "fill-current" : ""
+                      }`}
+                    />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsExpanded(true)}
+                    className="text-gray-400 hover:text-white h-8 w-8"
+                  >
+                    <Maximize2 className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -669,9 +857,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                       />
                       <div
                         className="h-full bg-white rounded-full transition-all relative"
-                        style={{
-                          width: `${(currentTime / duration) * 100}%`,
-                        }}
+                        style={{ width: `${(currentTime / duration) * 100}%` }}
                       >
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
                       </div>
@@ -789,13 +975,25 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                       />
                       <div
                         className="h-full bg-white rounded-full transition-all relative"
-                        style={{
-                          width: `${(isMuted ? 0 : volume) * 100}%`,
-                        }}
+                        style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
                       >
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Player Mode Toggle */}
+                  <div className="flex justify-center mt-6">
+                    <Button
+                      variant="outline"
+                      onClick={togglePlayerMode}
+                      className="text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white"
+                    >
+                      <PictureInPicture2 className="w-4 h-4 mr-2" />
+                      {playerMode === "bottom"
+                        ? "Switch to Popout Player"
+                        : "Switch to Bottom Player"}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -903,94 +1101,5 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
         </SheetContent>
       </Sheet>
     </MusicPlayerContext.Provider>
-  );
-}
-
-// Demo Component
-const DEMO_TRACKS: Track[] = [
-  {
-    id: 1,
-    title: "Midnight Dreams",
-    artist: "Luna Eclipse",
-    album: "Stellar Nights",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    artwork:
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop",
-    duration: "3:45",
-  },
-  {
-    id: 2,
-    title: "Urban Legends",
-    artist: "Metro Beats",
-    album: "City Lights",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    artwork:
-      "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=500&h=500&fit=crop",
-    duration: "3:56",
-  },
-  {
-    id: 3,
-    title: "Cosmic Journey",
-    artist: "Space Cadets",
-    album: "Beyond the Stars",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    artwork:
-      "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=500&h=500&fit=crop",
-    duration: "4:33",
-  },
-];
-
-export default function MusicPlayerDemo() {
-  return (
-    <MusicPlayerProvider>
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black p-4 md:p-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 md:mb-12 text-center">
-            Music Player Demo
-          </h1>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-24 md:mb-32">
-            {DEMO_TRACKS.map((track) => (
-              <TrackCard key={track.id} track={track} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </MusicPlayerProvider>
-  );
-}
-
-function TrackCard({ track }: { track: Track }) {
-  const { open } = useMusicPlayer();
-
-  return (
-    <div
-      onClick={() => open(track, DEMO_TRACKS)}
-      className="group bg-gray-900 bg-opacity-50 rounded-xl p-4 cursor-pointer hover:bg-gray-800 transition-all duration-300 hover:scale-105"
-    >
-      <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3">
-        <Image
-          src={track.artwork}
-          alt={track.title}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-          <div className="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <Play className="w-5 h-5 text-black ml-1" />
-          </div>
-        </div>
-      </div>
-      <h3 className="text-white font-semibold truncate text-lg">
-        {track.title}
-      </h3>
-      <p className="text-gray-400 truncate">{track.artist}</p>
-      {track.album && (
-        <p className="text-sm text-gray-500 truncate mt-1">{track.album}</p>
-      )}
-      {track.duration && (
-        <p className="text-xs text-gray-500 mt-2">{track.duration}</p>
-      )}
-    </div>
   );
 }

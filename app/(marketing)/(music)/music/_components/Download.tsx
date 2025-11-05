@@ -5,16 +5,18 @@ import { Play, Pause, Download, Heart, ChevronDown } from "lucide-react";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
 import Image from "next/image";
+import { useMusicPlayer } from "@/providers/MusicPlayer";
+import { motion } from "framer-motion";
 import { Heading } from "@/components/Heading";
 
 interface Track {
-  id: number;
+  id: string | number;
   title: string;
   artist: string;
-  duration: string;
-  cover: string;
-  isNew?: boolean;
-  src?: string;
+  album?: string;
+  url: string;
+  artwork: string;
+  duration?: string;
 }
 
 interface SpectrumBarProps {
@@ -23,7 +25,6 @@ interface SpectrumBarProps {
 }
 
 interface WaveformSpectrumProps {
-  isPlaying: boolean;
   trackId: number;
   playingId: number | null;
 }
@@ -37,80 +38,78 @@ const MusicPlaylist = () => {
       title: "Roll the Dice",
       artist: "DG Pacino, RGA04",
       duration: "02:54",
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     },
     {
       id: 2,
       title: "Willie",
       artist: "Assaf Ayalon feat. Roy Young",
       duration: "06:08",
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
     },
     {
       id: 3,
       title: "Good Vibe",
       artist: "Alex MakeMusic",
       duration: "02:02",
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
     },
     {
       id: 4,
       title: "Are You Ready for Me Baby",
       artist: "Funky Giraffe",
       duration: "03:14",
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
     },
     {
       id: 5,
       title: "How About That",
       artist: "Foxxi",
       duration: "03:10",
-      isNew: true,
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
     },
     {
       id: 6,
       title: "Bring It Back",
       artist: "Notixx",
       duration: "01:52",
-      cover:
+      artwork:
         "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop",
-      src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
     },
   ];
 
   const SpectrumBar: React.FC<SpectrumBarProps> = ({ index, isPlaying }) => {
-    const [height, setHeight] = useState<number>(30);
+    const [height, setHeight] = useState<number>(4);
 
     useEffect(() => {
       if (!isPlaying) {
-        setHeight(30);
+        setHeight(4);
         return;
       }
 
       const interval = setInterval(() => {
-        const base = 20;
-        const variation = Math.random() * 70;
-        setHeight(base + variation);
-      }, 80 + index * 10);
+        const newHeight = 4 + Math.random() * 20;
+        setHeight(newHeight);
+      }, 120 + index * 8);
 
       return () => clearInterval(interval);
     }, [isPlaying, index]);
 
     return (
-      <div
-        className="w-px bg-gray-600/80 transition-all duration-75 ease-out"
-        style={{ height: `${height}%` }}
+      <motion.div
+        className="w-[1.5px] bg-gray-500 rounded-full transition-all duration-200 ease-out"
+        style={{ height: `${height}px` }}
       />
     );
   };
@@ -120,29 +119,29 @@ const MusicPlaylist = () => {
     playingId,
   }) => {
     const isCurrentlyPlaying = playingId === trackId;
-    const [barCount, setBarCount] = useState<number>(80);
+    const [barCount, setBarCount] = useState<number>(60);
 
-    useEffect(() => {
-      const updateBarCount = () => {
-        const width = window.innerWidth;
-        if (width < 640) {
-          setBarCount(60); // Mobile
-        } else if (width < 768) {
-          setBarCount(100); // Small tablets
-        } else if (width < 1024) {
-          setBarCount(100); // Tablets
-        } else {
-          setBarCount(160); // Desktop
-        }
-      };
+    // useEffect(() => {
+    //   const updateBarCount = () => {
+    //     const width = window.innerWidth;
+    //     if (width < 640) {
+    //       setBarCount(40);
+    //     } else if (width < 768) {
+    //       setBarCount(50);
+    //     } else if (width < 1024) {
+    //       setBarCount(70);
+    //     } else {
+    //       setBarCount(90);
+    //     }
+    //   };
 
-      updateBarCount();
-      window.addEventListener("resize", updateBarCount);
-      return () => window.removeEventListener("resize", updateBarCount);
-    }, []);
+    //   updateBarCount();
+    //   window.addEventListener("resize", updateBarCount);
+    //   return () => window.removeEventListener("resize", updateBarCount);
+    // }, []);
 
     return (
-      <div className="flex items-center h-8 sm:h-10 md:h-12 w-full gap-px">
+      <div className="flex items-end justify-center h-8 w-full gap-[1.5px]">
         {Array.from({ length: barCount }).map((_, i) => (
           <SpectrumBar key={i} index={i} isPlaying={isCurrentlyPlaying} />
         ))}
@@ -150,18 +149,25 @@ const MusicPlaylist = () => {
     );
   };
 
-  const togglePlay = (id: number): void => {
-    setPlayingId(playingId === id ? null : id);
+  const { open: openMusic, close: closeMusic } = useMusicPlayer();
+
+  const togglePlay = (track: Track): void => {
+    if (playingId === track.id) {
+      setPlayingId(null);
+      closeMusic();
+    } else {
+      setPlayingId(track.id as number);
+      openMusic(track);
+    }
   };
 
   return (
     <Section padding="sm">
       <Container>
-        <Heading as="h2" size="h5" weight="medium" className="mb-4 sm:mb-6">
+        <Heading as="h2" size="h5" weight="medium" className="mb-6">
           Download
         </Heading>
         <div className="max-w-full mx-auto">
-          {/* Header Filters - Hidden on mobile, shown on tablet+ */}
           <div className="hidden md:flex gap-4 lg:gap-8 mb-6 text-xs sm:text-sm flex-wrap">
             <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
               <span>Genre</span>
@@ -181,19 +187,16 @@ const MusicPlaylist = () => {
             </button>
           </div>
 
-          {/* Track List */}
           <div className="space-y-0">
             {tracks.map((track) => (
               <div
                 key={track.id}
                 className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 py-3 sm:py-2 hover:bg-white/5 transition-colors border-b border-white/5 sm:border-0"
               >
-                {/* Top Row: Cover, Info, Duration (Mobile) */}
                 <div className="flex items-center gap-3 w-full sm:w-auto">
-                  {/* Album Cover & Play Button */}
                   <div className="relative shrink-0">
                     <Image
-                      src={track.cover}
+                      src={track.artwork}
                       alt={track.title}
                       className="w-12 h-12 sm:w-14 sm:h-14 rounded object-cover"
                       width={56}
@@ -201,7 +204,7 @@ const MusicPlaylist = () => {
                     />
                     <button
                       onClick={() => {
-                        togglePlay(track.id);
+                        togglePlay(track);
                       }}
                       className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded"
                       aria-label={playingId === track.id ? "Pause" : "Play"}
@@ -214,46 +217,34 @@ const MusicPlaylist = () => {
                     </button>
                   </div>
 
-                  {/* Track Info */}
                   <div className="flex-1 min-w-0 sm:w-48 md:w-64 sm:shrink-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-white text-sm sm:text-base truncate">
                         {track.title}
                       </h3>
-                      {track.isNew && (
-                        <span className="px-1.5 py-0.5 text-[9px] bg-green-500 text-black font-bold rounded uppercase tracking-wider">
-                          NEW
-                        </span>
-                      )}
                     </div>
                     <p className="text-white/50 text-xs sm:text-sm truncate mt-0.5">
                       {track.artist}
                     </p>
                   </div>
 
-                  {/* Duration - visible on mobile */}
                   <div className="text-white/50 text-xs tabular-nums shrink-0 sm:hidden">
                     {track.duration}
                   </div>
                 </div>
 
-                {/* Bottom Row: Waveform & Actions (Mobile) / Inline (Desktop) */}
                 <div className="flex items-center gap-3 w-full sm:w-auto sm:flex-1">
-                  {/* Duration - hidden on mobile, visible on sm+ */}
                   <div className="hidden sm:block text-white/50 text-xs tabular-nums w-12 shrink-0">
                     {track.duration}
                   </div>
 
-                  {/* Waveform/Spectrum */}
                   <div className="flex-1 min-w-0">
                     <WaveformSpectrum
-                      trackId={track.id}
+                      trackId={track.id as number}
                       playingId={playingId}
-                      isPlaying={false}
                     />
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="flex items-center gap-0 shrink-0">
                     <button
                       className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors"

@@ -21,7 +21,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  marketing,
   children,
 }: Readonly<{
   marketing?: React.ReactNode;
