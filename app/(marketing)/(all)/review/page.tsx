@@ -1,31 +1,3 @@
-// import { Heading } from '@/components/Heading';
-// import Container from '@/components/layout/Container';
-
-// const ReviewPage = () => {
-//   return (
-//     <Container>
-
-//       <div>
-//         <Heading as="h2" size="h4" align="center" className="mt-4">
-//           Share Your Story
-//         </Heading>
-//         <p className='text-center'>Your review helps others discover great music</p>
-//       </div>
-
-//       <div>
-
-
-//       </div>
-
-
-
-//     </Container>
-//   );
-// };
-
-// export default ReviewPage;
-
-
 "use client"
 
 import type React from "react"

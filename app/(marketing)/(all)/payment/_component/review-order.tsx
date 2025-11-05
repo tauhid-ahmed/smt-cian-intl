@@ -3,6 +3,10 @@
 import { Button } from "@/components/ui/button"
 import type { CheckoutData } from "./checkout-page"
 import { ArrowLeft, Loader2 } from "lucide-react"
+import { Heading } from "@/components/Heading"
+import Image from "next/image"
+import product1 from "../../../../../public/img-3.jpg";
+import product2 from "../../../../../public/example.jpg"
 
 interface ReviewOrderProps {
   data: CheckoutData
@@ -18,14 +22,14 @@ export default function ReviewOrder({ data, onConfirm, onBack, isProcessing }: R
       name: "Professional Studio Headphones",
       qty: 1,
       price: 299.99,
-      image: "/orange-headphones.jpg",
+      image: product1,
     },
     {
       id: 2,
       name: "Professional Studio Headphones",
       qty: 2,
       price: 299.99,
-      image: "/pink-diamond.jpg",
+      image: product2,
     },
   ]
 
@@ -36,17 +40,21 @@ export default function ReviewOrder({ data, onConfirm, onBack, isProcessing }: R
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">Review Your Order</h2>
+      <Heading as="h4" size="h4" className="font-semibold text-white mb-8">
+        Review Your Order
+      </Heading>
 
       {/* Order Summary */}
       <div className="border border-gray-700 rounded-lg p-6 space-y-4">
         <h3 className="font-semibold text-white mb-4">Order Summary</h3>
         {products.map((product) => (
-          <div key={product.id} className="flex gap-4 pb-4 border-b border-gray-700 last:border-0 last:pb-0">
-            <img
-              src={product.image || "/placeholder.svg"}
+          <div key={product.id} className="flex sm:flex-row flex-col gap-4 pb-4 border-b border-gray-700 last:border-0 last:pb-0">
+            <Image
+              src={product.image}
               alt={product.name}
               className="w-20 h-20 rounded object-cover"
+              height={20}
+              width={20}
             />
             <div className="flex-1">
               <h4 className="font-medium text-white">{product.name}</h4>
@@ -59,8 +67,8 @@ export default function ReviewOrder({ data, onConfirm, onBack, isProcessing }: R
 
       {/* Shipping Information */}
       <div className="border border-gray-700 rounded-lg p-6">
-        <h3 className="font-semibold text-white mb-4">Shipping Information</h3>
-        <div className="space-y-1 text-sm text-gray-300">
+        <Heading as="h4" size="h4" className="font-semibold text-white mb-8">Shipping Information</Heading>
+        <div className="space-y-1 text-sm md:text-base lg:text-lg text-gray-300">
           <p>{data.fullName}</p>
           <p>City: {data.city}</p>
           <p>Post code: {data.postCode}</p>
@@ -101,13 +109,13 @@ export default function ReviewOrder({ data, onConfirm, onBack, isProcessing }: R
         </div>
       </div>
 
-      <div className="flex gap-4 pt-6">
+      <div className="flex flex-wrap gap-4 pt-6">
         <Button
           type="button"
           onClick={onBack}
           disabled={isProcessing}
           variant="outline"
-          className="gap-2 border-gray-700 text-white hover:bg-gray-900 h-11 rounded-lg bg-transparent"
+          className="gap-2 border-gray-700 text-white hover:bg-gray-900 hover:text-white h-11 rounded-lg bg-transparent"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -115,7 +123,7 @@ export default function ReviewOrder({ data, onConfirm, onBack, isProcessing }: R
         <Button
           onClick={onConfirm}
           disabled={isProcessing}
-          className="ml-auto bg-white text-black hover:bg-gray-200 px-8 h-11 font-medium rounded-lg gap-2"
+          className="md:ml-auto lg:ml-auto bg-white text-black hover:bg-gray-200 px-8 h-11 font-medium rounded-lg gap-2"
         >
           {isProcessing && <Loader2 className="w-4 h-4 animate-spin" />}
           {isProcessing ? "Processing" : "Confirm Order"}
