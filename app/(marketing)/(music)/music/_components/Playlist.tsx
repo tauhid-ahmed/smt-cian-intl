@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Download, Heart, ChevronDown } from "lucide-react";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
@@ -21,15 +21,25 @@ interface Track {
 interface SpectrumBarProps {
   index: number;
   isPlaying: boolean;
+  intensity: number;
 }
 
 interface WaveformSpectrumProps {
   trackId: number;
-  playingId: number | null;
+  isCurrentlyPlaying: boolean;
+  isGlobalPlaying: boolean;
 }
 
 const MusicPlaylist = () => {
-  const [playingId, setPlayingId] = useState<number | null>(null);
+  const {
+    open: openMusicPlayer,
+    currentTrack,
+    isPlaying: isGlobalPlaying,
+    togglePlay,
+    toggleLike,
+    likedTracks,
+    playTrack,
+  } = useMusicPlayer();
 
   const tracks: Track[] = [
     {
@@ -88,76 +98,108 @@ const MusicPlaylist = () => {
     },
   ];
 
-  const SpectrumBar: React.FC<SpectrumBarProps> = ({ index, isPlaying }) => {
+  function SpectrumBar({ index, isPlaying, intensity }: SpectrumBarProps) {
     const [height, setHeight] = useState<number>(4);
+    const animationRef = useRef<number>(0);
 
     useEffect(() => {
       if (!isPlaying) {
         setHeight(4);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
         return;
       }
 
-      const interval = setInterval(() => {
-        const newHeight = 4 + Math.random() * 20;
-        setHeight(newHeight);
-      }, 120 + index * 8);
+      const animate = () => {
+        // Create wave pattern
+        const time = Date.now() * 0.003;
+        const frequency = 0.3 + index * 0.08;
+        const wave = Math.sin(time * frequency + index * 0.3);
 
-      return () => clearInterval(interval);
-    }, [isPlaying, index]);
+        // Base height with wave pattern and intensity
+        const baseHeight = 4 + Math.abs(wave) * 20 * intensity;
+        // Add random variation
+        const variation = 0.8 + Math.random() * 0.4;
+        const newHeight = Math.max(4, baseHeight * variation);
+
+        setHeight(newHeight);
+        animationRef.current = requestAnimationFrame(animate);
+      };
+
+      animationRef.current = requestAnimationFrame(animate);
+
+      return () => {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      };
+    }, [isPlaying, index, intensity]);
 
     return (
       <motion.div
-        className="w-[1.5px] bg-gray-500 rounded-full transition-all duration-200 ease-out"
+        className="w-0.5 bg-gray-400 rounded-full"
         style={{ height: `${height}px` }}
+        animate={{ height: `${height}px` }}
+        transition={{ duration: 0.15 }}
       />
     );
-  };
+  }
 
   const WaveformSpectrum: React.FC<WaveformSpectrumProps> = ({
-    trackId,
-    playingId,
+    isCurrentlyPlaying,
+    isGlobalPlaying,
   }) => {
-    const isCurrentlyPlaying = playingId === trackId;
-    const [barCount, setBarCount] = useState<number>(60);
+    const isActive = isCurrentlyPlaying && isGlobalPlaying;
+    const barCount = 50;
 
-    // useEffect(() => {
-    //   const updateBarCount = () => {
-    //     const width = window.innerWidth;
-    //     if (width < 640) {
-    //       setBarCount(40);
-    //     } else if (width < 768) {
-    //       setBarCount(50);
-    //     } else if (width < 1024) {
-    //       setBarCount(70);
-    //     } else {
-    //       setBarCount(90);
-    //     }
-    //   };
-
-    //   updateBarCount();
-    //   window.addEventListener("resize", updateBarCount);
-    //   return () => window.removeEventListener("resize", updateBarCount);
-    // }, []);
+    // Create intensity pattern - higher in middle, lower on edges
+    const getIntensity = (index: number, total: number) => {
+      const center = total / 2;
+      const distanceFromCenter = Math.abs(index - center);
+      const maxDistance = center;
+      return Math.max(0.2, 1 - (distanceFromCenter / maxDistance) * 0.8);
+    };
 
     return (
-      <div className="flex items-end justify-center h-8 w-full gap-[1.5px]">
+      <div className="flex items-end justify-center h-8 w-full gap-[1.5px] px-2">
         {Array.from({ length: barCount }).map((_, i) => (
-          <SpectrumBar key={i} index={i} isPlaying={isCurrentlyPlaying} />
+          <SpectrumBar
+            key={i}
+            index={i}
+            isPlaying={isActive}
+            intensity={getIntensity(i, barCount)}
+          />
         ))}
       </div>
     );
   };
 
-  const { open: openMusic, close: closeMusic } = useMusicPlayer();
-
-  const togglePlay = (track: Track): void => {
-    if (playingId === track.id) {
-      setPlayingId(null);
-      closeMusic();
+  const handlePlayTrack = (track: Track): void => {
+    if (currentTrack?.id === track.id) {
+      // If clicking the same track, toggle play/pause
+      togglePlay();
     } else {
-      setPlayingId(track.id as number);
-      openMusic(track);
+      // If clicking a different track, open it and play
+      openMusicPlayer(track, tracks);
     }
+  };
+
+  const isTrackPlaying = (trackId: string | number) => {
+    return currentTrack?.id === trackId && isGlobalPlaying;
+  };
+
+  const isTrackLiked = (trackId: string | number) => {
+    return likedTracks.has(trackId);
+  };
+
+  const isCurrentTrack = (trackId: string | number) => {
+    return currentTrack?.id === trackId;
+  };
+
+  // Show play button overlay only when NOT playing this track
+  const shouldShowPlayOverlay = (trackId: string | number) => {
+    return !isTrackPlaying(trackId);
   };
 
   return (
@@ -189,7 +231,7 @@ const MusicPlaylist = () => {
                 key={track.id}
                 className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 py-3 sm:py-2 hover:bg-white/5 transition-colors border-b border-white/5 sm:border-0"
               >
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-3 w-full sm:w-auto cursor-pointer">
                   <div className="relative shrink-0">
                     <Image
                       src={track.artwork}
@@ -198,24 +240,67 @@ const MusicPlaylist = () => {
                       width={56}
                       height={56}
                     />
-                    <button
-                      onClick={() => {
-                        togglePlay(track);
-                      }}
-                      className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded"
-                      aria-label={playingId === track.id ? "Pause" : "Play"}
-                    >
-                      {playingId === track.id ? (
-                        <Pause className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
-                      ) : (
-                        <Play className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white ml-0.5" />
-                      )}
-                    </button>
+
+                    {/* Play/Pause Button Overlay - Only show when track is NOT playing */}
+                    {shouldShowPlayOverlay(track.id) && (
+                      <button
+                        onClick={() => handlePlayTrack(track)}
+                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-200 rounded"
+                        aria-label={isTrackPlaying(track.id) ? "Pause" : "Play"}
+                      >
+                        <Play className="w-5 h-5 sm:w-6 sm:h-6 text-white ml-0.5" />
+                      </button>
+                    )}
+
+                    {/* Equalizer Animation - Only show when track IS playing */}
+                    {isTrackPlaying(track.id) && (
+                      <button
+                        onClick={() => handlePlayTrack(track)}
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 rounded cursor-pointer"
+                        aria-label="Pause"
+                      >
+                        <div className="flex gap-0.5">
+                          <motion.div
+                            className="w-1 h-3 bg-white rounded-full"
+                            animate={{ height: ["3px", "12px", "3px"] }}
+                            transition={{
+                              duration: 0.8,
+                              repeat: Infinity,
+                              delay: 0,
+                            }}
+                          />
+                          <motion.div
+                            className="w-1 h-3 bg-white rounded-full"
+                            animate={{ height: ["3px", "8px", "3px"] }}
+                            transition={{
+                              duration: 0.8,
+                              repeat: Infinity,
+                              delay: 0.2,
+                            }}
+                          />
+                          <motion.div
+                            className="w-1 h-3 bg-white rounded-full"
+                            animate={{ height: ["3px", "16px", "3px"] }}
+                            transition={{
+                              duration: 0.8,
+                              repeat: Infinity,
+                              delay: 0.4,
+                            }}
+                          />
+                        </div>
+                      </button>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0 sm:w-48 md:w-64 sm:shrink-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-white text-sm sm:text-base truncate">
+                      <h3
+                        className={`text-sm sm:text-base truncate ${
+                          isCurrentTrack(track.id)
+                            ? "text-white font-medium"
+                            : "text-white"
+                        }`}
+                      >
                         {track.title}
                       </h3>
                     </div>
@@ -237,7 +322,8 @@ const MusicPlaylist = () => {
                   <div className="flex-1 min-w-0">
                     <WaveformSpectrum
                       trackId={track.id as number}
-                      playingId={playingId}
+                      isCurrentlyPlaying={currentTrack?.id === track.id}
+                      isGlobalPlaying={isGlobalPlaying}
                     />
                   </div>
 
@@ -246,13 +332,22 @@ const MusicPlaylist = () => {
                       className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors"
                       aria-label="Download track"
                     >
-                      <Download className="w-4 h-4 text-white/50" />
+                      <Download className="w-4 h-4 text-white/50 hover:text-white" />
                     </button>
                     <button
+                      onClick={() => toggleLike(track.id)}
                       className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors"
-                      aria-label="Like track"
+                      aria-label={
+                        isTrackLiked(track.id) ? "Unlike track" : "Like track"
+                      }
                     >
-                      <Heart className="w-4 h-4 text-white/50" />
+                      <Heart
+                        className={`w-4 h-4 ${
+                          isTrackLiked(track.id)
+                            ? "text-white fill-white"
+                            : "text-white/50 hover:text-white"
+                        }`}
+                      />
                     </button>
                   </div>
                 </div>

@@ -279,7 +279,7 @@ export default function CustomerReviewsSection({
 
   return (
     <Section>
-      <Container>
+      <Container className="max-w-7xl mx-auto">
         <Heading as="h2" size="h4">
           Customer Reviews & Testimonials
         </Heading>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 import {
   Star,
   Play,
@@ -15,6 +15,9 @@ import {
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
+import Image from "next/image";
+import Section from "@/components/layout/Section";
+import Container from "@/components/layout/Container";
 
 // ==================== TYPE DEFINITIONS ====================
 interface Track {
@@ -253,281 +256,289 @@ const ProductDetailSection = ({ product }: { product: Product }) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* LEFT SIDE - Image Gallery & Track Preview */}
-          <div className="space-y-6">
-            {/* Main Product Image */}
-            <div className="aspect-square bg-zinc-900 rounded-2xl overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center text-gray-600">
-                [Product Image]
-              </div>
-            </div>
-
-            {/* Thumbnail Gallery */}
-            <div className="flex gap-4 overflow-x-auto">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <button
-                  key={i}
-                  className="w-20 h-20 bg-zinc-900 rounded-lg flex-shrink-0 hover:ring-2 hover:ring-white transition-all"
-                >
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">
-                    {i}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Track Preview */}
-            <div className="bg-zinc-900 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Volume2 className="w-5 h-5 text-white" />
-                <h3 className="text-white font-semibold">
-                  Track Preview (30-90s samples)
-                </h3>
-              </div>
-
-              <div className="space-y-1">
-                {product.tracks.map((track, index) => (
-                  <TrackListItem
-                    key={track.id}
-                    track={track}
-                    index={index + 1}
+    <Section>
+      <div className="min-h-screen bg-black text-white">
+        <Container className="max-w-7xl! mx-auto!">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* LEFT SIDE - Image Gallery & Track Preview */}
+            <div className="space-y-6">
+              {/* Main Product Image */}
+              <div className="aspect-square bg-zinc-900 rounded-2xl overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center text-gray-600 relative">
+                  <Image
+                    src="https://images.unsplash.com/photo-1619983081563-430f63602796?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
+                    alt="Product Image"
+                    fill
                   />
+                </div>
+              </div>
+
+              {/* Thumbnail Gallery */}
+              <div className="flex gap-4 overflow-x-auto">
+                {[1, 2, 3].map((i) => (
+                  <button
+                    key={i}
+                    className="w-20 h-20 bg-zinc-900 rounded-lg flex-shrink-0 hover:ring-2 hover:ring-white transition-all"
+                  >
+                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">
+                      {i}
+                    </div>
+                  </button>
                 ))}
               </div>
-            </div>
-          </div>
 
-          {/* RIGHT SIDE - Product Details */}
-          <div className="space-y-6">
-            {/* Header */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-black text-xs font-bold">E</span>
+              {/* Track Preview */}
+              <div className="bg-zinc-900 rounded-2xl p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Volume2 className="w-5 h-5 text-white" />
+                  <h3 className="text-white font-semibold">
+                    Track Preview (30-90s samples)
+                  </h3>
                 </div>
-                <span className="text-gray-400">{product.vendor}</span>
-              </div>
 
-              <h1 className="text-4xl font-bold mb-3">{product.title}</h1>
-
-              <div className="flex items-center gap-4">
-                <StarRating
-                  rating={product.rating}
-                  count={product.reviewCount}
-                />
-                <span className="text-gray-400 text-sm">
-                  {product.testimonialCount} Testimonies
-                </span>
+                <div className="space-y-1">
+                  {product.tracks.map((track, index) => (
+                    <TrackListItem
+                      key={track.id}
+                      track={track}
+                      index={index + 1}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Format Selection */}
-            <div className="space-y-4">
-              <h3 className="font-semibold">Formate Selection</h3>
+            {/* RIGHT SIDE - Product Details */}
+            <div className="space-y-6">
+              {/* Header */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                    <span className="text-black text-xs font-bold">E</span>
+                  </div>
+                  <span className="text-gray-400">{product.vendor}</span>
+                </div>
 
-              {product.formats.map((format) => (
+                <h1 className="text-4xl font-bold mb-3">{product.title}</h1>
+
+                <div className="flex items-center gap-4">
+                  <StarRating
+                    rating={product.rating}
+                    count={product.reviewCount}
+                  />
+                  <span className="text-gray-400 text-sm">
+                    {product.testimonialCount} Testimonies
+                  </span>
+                </div>
+              </div>
+
+              {/* Format Selection */}
+              <div className="space-y-4">
+                <h3 className="font-semibold">Formate Selection</h3>
+
+                {product.formats.map((format) => (
+                  <button
+                    key={format.id}
+                    onClick={() => handleFormatChange(format)}
+                    className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                      selectedFormat.id === format.id
+                        ? "border-white bg-zinc-900"
+                        : "border-zinc-800 hover:border-zinc-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium">{format.name}</span>
+                      {format.badge && (
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            format.badgeColor === "red"
+                              ? "bg-red-600"
+                              : "bg-zinc-700"
+                          }`}
+                        >
+                          {format.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {format.originalPrice && (
+                        <span className="text-gray-500 line-through">
+                          ${format.originalPrice.toFixed(2)}
+                        </span>
+                      )}
+                      <span className="font-bold">
+                        ${format.price.toFixed(2)}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+
+                {/* Color Selection */}
+                {selectedFormat.colors && selectedFormat.colors.length > 0 && (
+                  <div>
+                    <label className="text-sm text-gray-400 mb-2 block">
+                      Color:
+                    </label>
+                    <ColorSelector
+                      colors={selectedFormat.colors}
+                      selected={selectedColor}
+                      onSelect={setSelectedColor}
+                    />
+                  </div>
+                )}
+
+                {/* Stock Badges */}
+                <div className="flex gap-3">
+                  {selectedFormat.badge && (
+                    <span className="px-4 py-2 bg-red-600 rounded-lg text-sm font-medium">
+                      {selectedFormat.badge}
+                    </span>
+                  )}
+                  <span className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">
+                    Limited Edition
+                  </span>
+                  <span className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">
+                    In Stock
+                  </span>
+                </div>
+              </div>
+
+              {/* Quantity Selector */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Quantity
+                </label>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleQuantityChange(-1)}
+                    disabled={quantity <= 1}
+                    className="w-12 h-12 bg-zinc-800 rounded-lg flex items-center justify-center hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <span className="text-2xl">-</span>
+                  </button>
+                  <span className="text-2xl font-bold w-12 text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => handleQuantityChange(1)}
+                    disabled={quantity >= selectedFormat.stock}
+                    className="w-12 h-12 bg-zinc-800 rounded-lg flex items-center justify-center hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <span className="text-2xl">+</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <button className="flex-1 bg-white text-black py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                  <ShoppingCart className="w-5 h-5" />
+                  ADD TO CART - ${(selectedFormat.price * quantity).toFixed(2)}
+                </button>
+
                 <button
-                  key={format.id}
-                  onClick={() => handleFormatChange(format)}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
-                    selectedFormat.id === format.id
-                      ? "border-white bg-zinc-900"
-                      : "border-zinc-800 hover:border-zinc-700"
+                  onClick={() => setIsFavorite(!isFavorite)}
+                  className={`w-14 h-14 rounded-xl border-2 transition-all flex items-center justify-center ${
+                    isFavorite
+                      ? "bg-red-500 border-red-500"
+                      : "border-zinc-700 hover:border-zinc-600"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">{format.name}</span>
-                    {format.badge && (
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          format.badgeColor === "red"
-                            ? "bg-red-600"
-                            : "bg-zinc-700"
-                        }`}
-                      >
-                        {format.badge}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    {format.originalPrice && (
-                      <span className="text-gray-500 line-through">
-                        ${format.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                    <span className="font-bold">
-                      ${format.price.toFixed(2)}
-                    </span>
-                  </div>
-                </button>
-              ))}
-
-              {/* Color Selection */}
-              {selectedFormat.colors && selectedFormat.colors.length > 0 && (
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block">
-                    Color:
-                  </label>
-                  <ColorSelector
-                    colors={selectedFormat.colors}
-                    selected={selectedColor}
-                    onSelect={setSelectedColor}
+                  <Heart
+                    className={`w-6 h-6 ${isFavorite ? "fill-white" : ""}`}
                   />
-                </div>
-              )}
+                </button>
+              </div>
 
-              {/* Stock Badges */}
-              <div className="flex gap-3">
-                {selectedFormat.badge && (
-                  <span className="px-4 py-2 bg-red-600 rounded-lg text-sm font-medium">
-                    {selectedFormat.badge}
+              {/* Trust Badges */}
+              <div className="space-y-3 pt-4 border-t border-zinc-800">
+                <div className="flex items-center gap-3 text-sm">
+                  <Shield className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-300">
+                    Secure Checkout - SSL Encrypted
                   </span>
-                )}
-                <span className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">
-                  Limited Edition
-                </span>
-                <span className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">
-                  In Stock
-                </span>
-              </div>
-            </div>
-
-            {/* Quantity Selector */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Quantity</label>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => handleQuantityChange(-1)}
-                  disabled={quantity <= 1}
-                  className="w-12 h-12 bg-zinc-800 rounded-lg flex items-center justify-center hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <span className="text-2xl">-</span>
-                </button>
-                <span className="text-2xl font-bold w-12 text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => handleQuantityChange(1)}
-                  disabled={quantity >= selectedFormat.stock}
-                  className="w-12 h-12 bg-zinc-800 rounded-lg flex items-center justify-center hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <span className="text-2xl">+</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-4">
-              <button className="flex-1 bg-white text-black py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
-                ADD TO CART - ${(selectedFormat.price * quantity).toFixed(2)}
-              </button>
-
-              <button
-                onClick={() => setIsFavorite(!isFavorite)}
-                className={`w-14 h-14 rounded-xl border-2 transition-all flex items-center justify-center ${
-                  isFavorite
-                    ? "bg-red-500 border-red-500"
-                    : "border-zinc-700 hover:border-zinc-600"
-                }`}
-              >
-                <Heart
-                  className={`w-6 h-6 ${isFavorite ? "fill-white" : ""}`}
-                />
-              </button>
-            </div>
-
-            {/* Trust Badges */}
-            <div className="space-y-3 pt-4 border-t border-zinc-800">
-              <div className="flex items-center gap-3 text-sm">
-                <Shield className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-300">
-                  Secure Checkout - SSL Encrypted
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <CreditCard className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-300">
-                  Payment Options: Credit Card, PayPal, Apple Pay
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Truck className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-300">
-                  Free Shipping on orders over $50
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <RotateCcw className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-300">30-Day Return Policy</span>
-              </div>
-            </div>
-
-            {/* Payment Options */}
-            <div className="pt-4">
-              <p className="text-sm text-gray-400 mb-2">
-                Or pay in 4 interest-free payments of $
-                {(selectedFormat.price / 4).toFixed(2)}
-              </p>
-              <div className="flex gap-2">
-                <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
-                  Affirm
-                </span>
-                <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
-                  Afterpay
-                </span>
-                <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
-                  Klarna
-                </span>
-              </div>
-            </div>
-
-            {/* Accordion Sections */}
-            <div>
-              <AccordionSection title="Description" defaultOpen>
-                <p>{product.description}</p>
-              </AccordionSection>
-
-              <AccordionSection title="Track list">
-                <div className="space-y-2">
-                  {product.tracks.map((track, i) => (
-                    <div key={track.id} className="flex justify-between">
-                      <span>
-                        {i + 1}. {track.title}
-                      </span>
-                      <span className="text-gray-500">{track.duration}</span>
-                    </div>
-                  ))}
                 </div>
-              </AccordionSection>
+                <div className="flex items-center gap-3 text-sm">
+                  <CreditCard className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-300">
+                    Payment Options: Credit Card, PayPal, Apple Pay
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <Truck className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-300">
+                    Free Shipping on orders over $50
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <RotateCcw className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-300">30-Day Return Policy</span>
+                </div>
+              </div>
 
-              <AccordionSection title="Shipping & Returns">
-                <p>
-                  Free standard shipping on orders over $50. Express and
-                  overnight shipping available. 30-day return policy for
-                  unopened items in original condition.
+              {/* Payment Options */}
+              <div className="pt-4">
+                <p className="text-sm text-gray-400 mb-2">
+                  Or pay in 4 interest-free payments of $
+                  {(selectedFormat.price / 4).toFixed(2)}
                 </p>
-              </AccordionSection>
-
-              <AccordionSection title="Technical Details">
-                <div className="space-y-2">
-                  {product.technicalDetails?.map((detail, i) => (
-                    <div key={i} className="flex justify-between">
-                      <span className="text-gray-400">{detail.label}:</span>
-                      <span>{detail.value}</span>
-                    </div>
-                  ))}
+                <div className="flex gap-2">
+                  <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
+                    Affirm
+                  </span>
+                  <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
+                    Afterpay
+                  </span>
+                  <span className="px-3 py-1 bg-zinc-800 rounded-lg text-xs border border-zinc-700">
+                    Klarna
+                  </span>
                 </div>
-              </AccordionSection>
+              </div>
+
+              {/* Accordion Sections */}
+              <div>
+                <AccordionSection title="Description" defaultOpen>
+                  <p>{product.description}</p>
+                </AccordionSection>
+
+                <AccordionSection title="Track list">
+                  <div className="space-y-2">
+                    {product.tracks.map((track, i) => (
+                      <div key={track.id} className="flex justify-between">
+                        <span>
+                          {i + 1}. {track.title}
+                        </span>
+                        <span className="text-gray-500">{track.duration}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionSection>
+
+                <AccordionSection title="Shipping & Returns">
+                  <p>
+                    Free standard shipping on orders over $50. Express and
+                    overnight shipping available. 30-day return policy for
+                    unopened items in original condition.
+                  </p>
+                </AccordionSection>
+
+                <AccordionSection title="Technical Details">
+                  <div className="space-y-2">
+                    {product.technicalDetails?.map((detail, i) => (
+                      <div key={i} className="flex justify-between">
+                        <span className="text-gray-400">{detail.label}:</span>
+                        <span>{detail.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionSection>
+              </div>
             </div>
           </div>
-        </div>
+        </Container>
       </div>
-    </div>
+    </Section>
   );
 };
 
