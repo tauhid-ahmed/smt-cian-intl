@@ -2,6 +2,7 @@ import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Image from "next/image";
 import Stats from "./Stats";
+import BlurSeparator from "@/components/BlurFrame";
 
 export default function Intro() {
   return (
@@ -26,9 +27,10 @@ export default function Intro() {
           </div>
         </Container>
       </div>
-      <div className="absolute inset-x-0 bottom-0 translate-y-1/2">
+      <div className="absolute inset-x-0 bottom-0 translate-y-1/2 z-20">
         <Stats />
       </div>
+      <BlurSeparator />
     </div>
   );
 }

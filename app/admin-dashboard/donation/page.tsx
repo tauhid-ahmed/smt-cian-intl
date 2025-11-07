@@ -20,40 +20,38 @@ const DonationManagementPage = () => {
         sub_title="Monitor your business performance and customer behavior"
       />
 
-      <div>
-        <CustomTabs defaultValue="tab1">
-          <CustomTabsList variant="bordered">
-            <CustomTabsTrigger value="tab1" variant="bordered">
-              Overview
-            </CustomTabsTrigger>
-            <CustomTabsTrigger value="tab2" variant="bordered">
-              Review Moderation
-            </CustomTabsTrigger>
-            <CustomTabsTrigger value="tab3" variant="bordered">
-              Tax Receipts
-            </CustomTabsTrigger>
-            <CustomTabsTrigger value="tab4" variant="bordered">
-              Donor CRM
-            </CustomTabsTrigger>
-          </CustomTabsList>
+      <CustomTabs defaultValue="tab1">
+        <CustomTabsList variant="bordered">
+          <CustomTabsTrigger value="tab1" variant="bordered">
+            Overview
+          </CustomTabsTrigger>
+          <CustomTabsTrigger value="tab2" variant="bordered">
+            Review Moderation
+          </CustomTabsTrigger>
+          <CustomTabsTrigger value="tab3" variant="bordered">
+            Tax Receipts
+          </CustomTabsTrigger>
+          <CustomTabsTrigger value="tab4" variant="bordered">
+            Donor CRM
+          </CustomTabsTrigger>
+        </CustomTabsList>
 
-          <CustomTabsContent value="tab1">
-            <OverviewTab />
-          </CustomTabsContent>
+        <CustomTabsContent value="tab1">
+          <OverviewTab />
+        </CustomTabsContent>
 
-          <CustomTabsContent value="tab2">
-            <ReviewModerationTab />
-          </CustomTabsContent>
+        <CustomTabsContent value="tab2">
+          <ReviewModerationTab />
+        </CustomTabsContent>
 
-          <CustomTabsContent value="tab3">
-            <TaxReceiptsTab />
-          </CustomTabsContent>
+        <CustomTabsContent value="tab3">
+          <TaxReceiptsTab />
+        </CustomTabsContent>
 
-          <CustomTabsContent value="tab4">
-            <DonorCrmTab />
-          </CustomTabsContent>
-        </CustomTabs>
-      </div>
+        <CustomTabsContent value="tab4">
+          <DonorCrmTab />
+        </CustomTabsContent>
+      </CustomTabs>
     </>
   );
 };

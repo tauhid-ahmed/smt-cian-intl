@@ -5,6 +5,7 @@ import { useForm, FormProvider, Controller } from "react-hook-form";
 import { Heart, GraduationCap, Home, Utensils, DollarSign } from "lucide-react";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface DonationFormData {
   frequency: "one-time" | "monthly";
@@ -72,6 +73,7 @@ const campaigns = [
 ];
 
 export default function DonationForm() {
+  const router = useRouter();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(25);
   const [isCustomAmount, setIsCustomAmount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -156,16 +158,14 @@ export default function DonationForm() {
 
   const onSubmit = async (data: DonationFormData) => {
     setIsSubmitting(true);
+    router.push("/thank-you");
 
-    const finalData = {
-      ...data,
-      amount: totalAmount,
-    };
+    // const finalData = {
+    //   ...data,
+    //   amount: totalAmount,
+    // };
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    console.log("Donation submitted:", finalData);
-    alert(`Thank you for your donation of $${totalAmount}!`);
     setIsSubmitting(false);
   };
 
@@ -327,7 +327,7 @@ export default function DonationForm() {
                   <div className="relative">
                     <select
                       {...field}
-                      className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-500"
+                      className="w-full bg-accent border border-sidebar rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-500"
                     >
                       <option value="">
                         Choose where you'd like your donation to make the
@@ -786,7 +786,8 @@ export default function DonationForm() {
             <div className="px-4 md:px-10 lg:px-20">
               <Button
                 type="button"
-                onClick={handleSubmit(onSubmit)}
+                // onClick={handleSubmit(onSubmit)}
+                onClick={() => router.push("/thank-you")}
                 disabled={isSubmitting}
                 variant="secondary"
                 className="w-full"
