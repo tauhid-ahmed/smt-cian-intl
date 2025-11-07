@@ -1,4 +1,4 @@
-export default function BlurFrame({ blurAmount = "2xl", children }) {
+export default function BlurFrame({ blurAmount = "2xl" }) {
   const blurMap = {
     sm: "4px",
     md: "8px",
@@ -11,7 +11,6 @@ export default function BlurFrame({ blurAmount = "2xl", children }) {
     <div
       className={`pointer-events-none absolute z-10 inset-0 overflow-hidden`}
     >
-      {children}
       <div
         className="size-full"
         style={{
