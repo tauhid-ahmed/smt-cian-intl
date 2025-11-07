@@ -25,7 +25,7 @@ export default function Mission() {
           }}
         />
       </Container>
-      <div className="text-center max-w-2xl mx-auto">
+      <div className="text-center max-w-3xl mx-auto text-2xl text-gray-300">
         <blockquote>
           &apos;&apos;To amplify voices that glorify God and create a community
           where faith and music intersect to change lives.&apos;&apos;

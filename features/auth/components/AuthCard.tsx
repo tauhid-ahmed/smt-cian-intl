@@ -42,12 +42,17 @@ export default function AuthCard({
               variant === "signin" ||
               variant === "forgot-password" ||
               variant === "email-verified",
-            "bg-white text-primary-foreground": variant === "signup",
+            "bg-white text-white": variant === "signup",
           }
         )}
       >
         <DialogTitle asChild>
-          <Heading as="h2" size="h4" align="center">
+          <Heading
+            as="h2"
+            size="h4"
+            align="center"
+            className={cn(variant === "signup" && "text-black")}
+          >
             {title}
           </Heading>
         </DialogTitle>

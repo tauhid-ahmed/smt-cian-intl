@@ -90,7 +90,7 @@ const CTASection: React.FC = () => {
   ];
 
   return (
-    <Section padding="sm">
+    <Section padding="sm" className="overflow-x-hidden">
       <Container className="relative">
         <div className="text-center font-black">
           <span className="text-outline text-[100px] text-center whitespace-nowrap truncate leading-none">

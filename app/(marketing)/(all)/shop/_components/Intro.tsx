@@ -1,3 +1,4 @@
+import BlurSeparator from "@/components/BlurFrame";
 import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Image from "next/image";
@@ -25,6 +26,7 @@ export default function Intro() {
           </div>
         </Container>
       </div>
+      <BlurSeparator />
     </div>
   );
 }

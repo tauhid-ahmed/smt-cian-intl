@@ -3,6 +3,7 @@ import Container from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Check } from "lucide-react";
+import BlurSeparator from "@/components/BlurFrame";
 
 interface Feature {
   id: number;
@@ -37,6 +38,7 @@ export default function Intro() {
           </div>
         </Container>
       </div>
+      <BlurSeparator />
     </div>
   );
 }

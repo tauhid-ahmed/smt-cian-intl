@@ -113,72 +113,43 @@ const BoxShowcase: React.FC<BoxShowcaseProps> = ({
 
   const currentBox = boxes[currentIndex];
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-    }),
-  };
-
-  const itemVariants = {
-    enter: {
-      opacity: 0,
-      y: 20,
-    },
-    center: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-      },
-    }),
-    exit: {
-      opacity: 0,
-      y: -20,
-      transition: {
-        duration: 0.3,
-      },
-    },
-  };
-
   return (
-    <Section>
+    <Section padding="xl">
       <Container>
-        {/* Title */}
         <Heading as="h2" size="h3" align="center" className="mb-10">
           What's in Your Box?
         </Heading>
         <div className="max-w-2xl mx-auto overflow-hidden">
           {/* Image Container with Animation */}
-          <div className="relative mb-8">
+          <div className="relative mb-8 h-[300px] md:h-[400px]">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.div
                 key={currentBox.id}
                 custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
+                initial={{
+                  x: direction > 0 ? "100%" : "-100%",
+                  opacity: 0,
+                }}
+                animate={{
+                  x: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  x: direction < 0 ? "100%" : "-100%",
+                  opacity: 0,
+                }}
                 transition={{
                   x: { type: "spring", stiffness: 300, damping: 30 },
                   opacity: { duration: 0.3 },
                 }}
-                className="rounded-3xl overflow-hidden aspect-4/2"
+                className="absolute inset-0 rounded-3xl overflow-hidden will-change-transform"
               >
                 <Image
                   src={currentBox.image}
                   alt={currentBox.title}
                   className="w-full h-full object-cover"
                   fill
+                  priority
                 />
               </motion.div>
             </AnimatePresence>
@@ -188,16 +159,16 @@ const BoxShowcase: React.FC<BoxShowcaseProps> = ({
           <div className="flex items-center justify-between mb-12">
             <Button variant="outline" onClick={handlePrevious}>
               <ChevronLeft className="w-5 h-5" />
-              Previous Box
+              Previous
             </Button>
 
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentBox.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className="text-center"
               >
                 <h2 className="text-xl md:text-2xl font-semibold">
@@ -206,7 +177,7 @@ const BoxShowcase: React.FC<BoxShowcaseProps> = ({
               </motion.div>
             </AnimatePresence>
 
-            <Button variant="outline" onClick={handlePrevious}>
+            <Button variant="outline" onClick={handleNext}>
               Next
               <ChevronRight className="w-5 h-5" />
             </Button>
@@ -215,46 +186,49 @@ const BoxShowcase: React.FC<BoxShowcaseProps> = ({
           {/* Items Included */}
           <div className="mb-12">
             <AnimatePresence mode="wait">
-              <motion.h3
-                key={`${currentBox.id}-title`}
+              <motion.div
+                key={currentBox.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="text-2xl md:text-3xl font-semibold text-center mb-8"
               >
-                {currentBox.title} Included:
-              </motion.h3>
-            </AnimatePresence>
+                <h3 className="text-2xl md:text-3xl font-semibold text-center mb-8">
+                  {currentBox.title} Included:
+                </h3>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <AnimatePresence mode="wait">
-                {currentBox.items.map((item, index) => (
-                  <motion.div
-                    key={`${currentBox.id}-${item.name}`}
-                    custom={index}
-                    variants={itemVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    className="bg-transparent border-2 border-white rounded-2xl p-4 text-center hover:bg-white hover:text-black transition-all flex flex-col justify-center"
-                  >
-                    <h4 className="text-lg font-semibold mb-2">{item.name}</h4>
-                    <p className="text-base md:text-lg">${item.value} val</p>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {currentBox.items.map((item, index) => (
+                    <motion.div
+                      key={item.name}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: index * 0.1,
+                        duration: 0.3,
+                        ease: [0.4, 0, 0.2, 1],
+                      }}
+                      className="bg-transparent border-2 border-white rounded-2xl p-4 text-center hover:bg-white hover:text-black transition-all flex flex-col justify-center"
+                    >
+                      <h4 className="text-lg font-semibold mb-2">
+                        {item.name}
+                      </h4>
+                      <p className="text-base md:text-lg">${item.value} val</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Total Value */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`${currentBox.id}-price`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
               className="text-center"
             >
               <p className="text-xl md:text-2xl">

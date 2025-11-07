@@ -467,7 +467,7 @@ function MusicShop() {
   };
 
   return (
-    <Section padding="none">
+    <Section padding="md">
       <Container>
         <div className="flex flex-col lg:flex-row gap-6">
           <FilterPanel

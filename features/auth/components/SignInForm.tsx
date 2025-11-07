@@ -104,7 +104,7 @@ export default function SignInForm() {
         <div className="flex justify-between items-center gap-4">
           <Button
             variant="ghost"
-            className="px-0"
+            className="px-0!"
             type="button"
             onClick={openForgotPassword}
           >

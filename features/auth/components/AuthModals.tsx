@@ -24,7 +24,7 @@ export default function AuthModals() {
           <p className="text-sm text-gray-600">
             Already have an account?
             <Button
-              className="px-1"
+              className="px-1!"
               onClick={() => switchMode("signin")}
               variant="link"
             >
@@ -49,7 +49,7 @@ export default function AuthModals() {
             <Button
               onClick={() => switchMode("signup")}
               variant="link"
-              className="px-0"
+              className="px-1!"
             >
               Sign up
             </Button>
@@ -72,7 +72,7 @@ export default function AuthModals() {
             <Button
               onClick={() => switchMode("signin")}
               variant="link"
-              className="px-0"
+              className="px-1!"
             >
               Sign In
             </Button>

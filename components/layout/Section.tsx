@@ -8,7 +8,7 @@ type SectionProps = {
   description?: string;
   children?: React.ReactNode;
   variant?: "default" | "muted" | "highlight";
-  padding?: "none" | "sm" | "md" | "lg";
+  padding?: "none" | "sm" | "md" | "lg" | "xl";
   align?: "left" | "center" | "right";
   className?: string;
 };
@@ -33,9 +33,10 @@ export default function Section({
 
   const paddings: Record<typeof padding, string> = {
     none: "",
-    sm: "py-6 sm:py-8",
-    md: "py-10 sm:py-14",
-    lg: "py-16 sm:py-24",
+    sm: "py-6 lg:py-8",
+    md: "py-10 md:py-12 lg:py-14",
+    lg: "py-16 md:py-20 lg:py-24",
+    xl: "py-16 sm:py-24 md:py-28 lg:py-36",
   };
 
   const alignClass =

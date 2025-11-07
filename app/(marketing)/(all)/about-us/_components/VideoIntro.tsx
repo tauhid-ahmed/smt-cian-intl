@@ -157,7 +157,7 @@ const VideoIntro: React.FC<VideoPlayerProps> = ({
   };
 
   return (
-    <Section className="bg-accent">
+    <Section className="bg-accent" padding="lg">
       <Container>
         <div
           ref={containerRef}

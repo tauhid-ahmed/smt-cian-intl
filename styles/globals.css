@@ -145,3 +145,17 @@
     width: 1px;
   }
 }
+
+@keyframes equalizer {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+
+.animate-equalizer {
+  animation: equalizer 0.8s ease-in-out infinite;
+}
