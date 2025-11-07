@@ -89,7 +89,6 @@ interface MusicPlayerProviderProps {
   children: ReactNode;
 }
 
-// Music Player Provider
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -262,6 +261,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
 
   const togglePlayerMode = () => {
     setPlayerMode((prev) => (prev === "bottom" ? "popout" : "bottom"));
+    setIsExpanded(false);
   };
 
   const formatTime = (time: number): string => {
@@ -809,7 +809,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
 
       {/* Expanded Player Dialog */}
       <Dialog open={isExpanded} onOpenChange={setIsExpanded}>
-        <DialogContent className="max-w-4xl h-[80vh] bg-gradient-to-br from-gray-900 via-black to-gray-900 border-gray-800 p-0 overflow-hidden">
+        <DialogContent className="max-w-4xl h-[80vh] bg-linear-to-br from-gray-900 via-black to-gray-900 border-gray-800 p-0 overflow-hidden">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-2xl font-bold text-white">
               Now Playing
@@ -819,9 +819,9 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
           {currentTrack && (
             <div className="flex flex-col md:flex-row h-full overflow-hidden">
               {/* Main Content */}
-              <div className="flex-1 flex flex-col p-6 items-center overflow-y-auto">
+              <div className="flex-1 flex flex-col p-6 items-center overflow-hidden">
                 <div className="w-full max-w-2xl">
-                  <div className="relative w-full aspect-square max-w-md mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="relative w-full aspect-2/1 max-w-md mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl">
                     <Image
                       src={currentTrack.artwork}
                       alt={currentTrack.title}

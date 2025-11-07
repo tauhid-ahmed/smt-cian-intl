@@ -20,7 +20,9 @@ const CTACardComponent: React.FC<{ card: CTACard }> = ({ card }) => {
   return (
     <div
       className={`rounded-2xl p-6 sm:p-8 md:p-10 flex flex-col ${
-        isLight ? "bg-gray-100 text-gray-900" : "bg-accent text-white"
+        isLight
+          ? "bg-gray-100 text-gray-900"
+          : "bg-sidebar text-white border border-white"
       }`}
     >
       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
@@ -111,7 +113,7 @@ const CTASection: React.FC = () => {
         />
       </Container>
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-6xl mx-auto mt-10 lg:mt-20">
           {ctaCards.map((card) => (
             <CTACardComponent key={card.id} card={card} />
           ))}

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { Heart, GraduationCap, Home, Utensils, DollarSign } from "lucide-react";
+import Section from "@/components/layout/Section";
+import { Button } from "@/components/ui/button";
 
 interface DonationFormData {
   frequency: "one-time" | "monthly";
@@ -160,7 +162,6 @@ export default function DonationForm() {
       amount: totalAmount,
     };
 
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     console.log("Donation submitted:", finalData);
@@ -169,7 +170,7 @@ export default function DonationForm() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 py-12">
+    <Section padding="lg" className="lg:pt-40!">
       <div className="max-w-4xl mx-auto">
         <FormProvider {...methods}>
           <div className="space-y-8">
@@ -185,11 +186,9 @@ export default function DonationForm() {
                     type="button"
                     onClick={() => handleAmountClick(option.amount)}
                     className={`p-6 rounded-xl border-2 transition-all ${
-                      option.amount === 25
+                      selectedAmount === option.amount
                         ? "bg-white text-black border-white"
-                        : selectedAmount === option.amount
-                        ? "bg-zinc-700 border-white text-white"
-                        : "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600"
+                        : "bg-zinc-900 border-zinc-700 text-white hover:border-zinc-600"
                     }`}
                   >
                     <div className="flex flex-col items-center text-center gap-2">
@@ -208,8 +207,8 @@ export default function DonationForm() {
                     onClick={() => handleAmountClick(option.amount)}
                     className={`p-6 rounded-xl border-2 transition-all ${
                       selectedAmount === option.amount
-                        ? "bg-zinc-700 border-white text-white"
-                        : "bg-zinc-800 border-zinc-700 text-white hover:border-zinc-600"
+                        ? "bg-white text-black border-white"
+                        : "bg-zinc-900 border-zinc-700 text-white hover:border-zinc-600"
                     }`}
                   >
                     <div className="flex flex-col items-center text-center gap-2">
@@ -234,7 +233,7 @@ export default function DonationForm() {
                   className={`py-4 rounded-xl font-medium transition-all ${
                     frequency === "one-time"
                       ? "bg-white text-black"
-                      : "bg-zinc-800 text-white border border-zinc-700"
+                      : "bg-zinc-900 text-white border border-zinc-700"
                   }`}
                 >
                   One-Time Gift
@@ -245,7 +244,7 @@ export default function DonationForm() {
                   className={`py-4 rounded-xl font-medium transition-all ${
                     frequency === "monthly"
                       ? "bg-white text-black"
-                      : "bg-zinc-800 text-white border border-zinc-700"
+                      : "bg-zinc-900 text-white border border-zinc-700"
                   }`}
                 >
                   Monthly Giving
@@ -267,7 +266,7 @@ export default function DonationForm() {
                     className={`py-4 rounded-xl font-bold text-lg transition-all ${
                       selectedAmount === amount && !isCustomAmount
                         ? "bg-white text-black"
-                        : "bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-600"
+                        : "bg-zinc-900 text-white border border-zinc-700 hover:border-zinc-600"
                     }`}
                   >
                     ${amount}
@@ -304,7 +303,7 @@ export default function DonationForm() {
                       field.onChange(e);
                       handleCustomAmountChange(e.target.value);
                     }}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                    className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                   />
                 )}
               />
@@ -328,7 +327,7 @@ export default function DonationForm() {
                   <div className="relative">
                     <select
                       {...field}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-500"
+                      className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-500"
                     >
                       <option value="">
                         Choose where you'd like your donation to make the
@@ -361,7 +360,7 @@ export default function DonationForm() {
             </div>
 
             {/* Total Gift */}
-            <div className="bg-zinc-800 rounded-xl p-4 flex justify-between items-center">
+            <div className="bg-zinc-900 rounded-xl p-4 flex justify-between items-center">
               <span className="font-semibold">Total Gift</span>
               <span className="text-2xl font-bold">
                 ${totalAmount.toFixed(2)}
@@ -456,7 +455,7 @@ export default function DonationForm() {
                         onChange={(e) =>
                           field.onChange(formatCardNumber(e.target.value))
                         }
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -491,7 +490,7 @@ export default function DonationForm() {
                           onChange={(e) =>
                             field.onChange(formatExpiry(e.target.value))
                           }
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                          className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                         />
                       )}
                     />
@@ -522,7 +521,7 @@ export default function DonationForm() {
                           type="text"
                           placeholder="123"
                           maxLength={4}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                          className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                         />
                       )}
                     />
@@ -554,7 +553,7 @@ export default function DonationForm() {
                         {...field}
                         type="text"
                         placeholder="Type here"
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -578,7 +577,7 @@ export default function DonationForm() {
                         {...field}
                         type="text"
                         placeholder="Type here"
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -609,7 +608,7 @@ export default function DonationForm() {
                       {...field}
                       type="email"
                       placeholder="Type your email"
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                      className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                     />
                   )}
                 />
@@ -633,7 +632,7 @@ export default function DonationForm() {
                       {...field}
                       type="text"
                       placeholder="Type here"
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                      className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                     />
                   )}
                 />
@@ -656,7 +655,7 @@ export default function DonationForm() {
                         {...field}
                         type="text"
                         placeholder="Type here"
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -680,7 +679,7 @@ export default function DonationForm() {
                         {...field}
                         type="text"
                         placeholder="Type here"
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -711,7 +710,7 @@ export default function DonationForm() {
                         type="text"
                         placeholder="Type here"
                         maxLength={5}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                       />
                     )}
                   />
@@ -725,7 +724,7 @@ export default function DonationForm() {
             </div>
 
             {/* Tax Deduction Information */}
-            <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6">
+            <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-5 h-5 rounded-full border border-white flex items-center justify-center flex-shrink-0 mt-1">
                   <div className="w-2 h-2 rounded-full bg-white"></div>
@@ -764,7 +763,7 @@ export default function DonationForm() {
             </div>
 
             {/* Newsletter Checkbox */}
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer mt-10">
               <Controller
                 name="newsletter"
                 control={control}
@@ -784,20 +783,19 @@ export default function DonationForm() {
             </label>
 
             {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
-                isSubmitting
-                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-black hover:bg-gray-100"
-              }`}
-            >
-              {isSubmitting
-                ? "Processing..."
-                : `Complete Donation of $${totalAmount.toFixed(2)}`}
-            </button>
+            <div className="px-4 md:px-10 lg:px-20">
+              <Button
+                type="button"
+                onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+                variant="secondary"
+                className="w-full"
+              >
+                {isSubmitting
+                  ? "Processing..."
+                  : `Complete Donation of $${totalAmount.toFixed(2)}`}
+              </Button>
+            </div>
 
             {/* Footer Text */}
             <p className="text-xs text-center text-gray-400">
@@ -807,6 +805,6 @@ export default function DonationForm() {
           </div>
         </FormProvider>
       </div>
-    </div>
+    </Section>
   );
 }

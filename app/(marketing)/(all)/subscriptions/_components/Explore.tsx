@@ -30,9 +30,10 @@ export default function Explore() {
         <div className="text-center text-white font-semibold">
           Join 5,000+ faith-filled music lovers
         </div>
-        <Button shape="pill" className="w-fit mx-auto">
+        <Button shape="pill" className="w-fit mx-auto mt-10 lg:mt-20">
           Start Your Subscription
         </Button>
+        <div className="mt-6 text-center">Cancel anytime • No commitments</div>
       </div>
     </Section>
   );

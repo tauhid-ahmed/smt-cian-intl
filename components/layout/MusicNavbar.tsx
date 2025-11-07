@@ -9,7 +9,7 @@ export default function MusicNavbar() {
         <Logo />
       </div>
 
-      <ul className="space-y-2 mt-6">
+      <ul className="space-y-2 mt-10">
         {musicNavbarData.map((item) => {
           return (
             <li key={item.path()}>

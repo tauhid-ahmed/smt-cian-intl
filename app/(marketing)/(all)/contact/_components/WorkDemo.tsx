@@ -67,50 +67,26 @@ export default function WorkDemo() {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className={`rounded-3xl p-8 border-2 transition-transform hover:scale-105 ${
-                  category.variant === "light"
-                    ? "bg-white border-gray-200"
-                    : "bg-zinc-800 border-zinc-700"
-                }`}
+                className={`rounded-3xl p-8 border-2 transition-transform ${"bg-zinc-800 border-zinc-700"}`}
               >
                 <div className="flex flex-col items-center text-center h-full">
                   {/* Icon */}
-                  <div
-                    className={`mb-6 ${
-                      category.variant === "light" ? "text-black" : "text-white"
-                    }`}
-                  >
-                    {category.icon}
-                  </div>
+                  <div className={`mb-6 ${"text-white"}`}>{category.icon}</div>
 
                   {/* Title */}
-                  <h3
-                    className={`text-2xl font-bold mb-4 ${
-                      category.variant === "light" ? "text-black" : "text-white"
-                    }`}
-                  >
+                  <h3 className={`text-2xl font-bold mb-4 ${"text-white"}`}>
                     {category.title}
                   </h3>
 
                   {/* Description */}
-                  <p
-                    className={`text-base mb-8 grow ${
-                      category.variant === "light"
-                        ? "text-gray-700"
-                        : "text-gray-300"
-                    }`}
-                  >
+                  <p className={`text-base mb-8 grow ${"text-gray-300"}`}>
                     {category.description}
                   </p>
 
                   {/* Button */}
                   <button
                     onClick={category.buttonAction}
-                    className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
-                      category.variant === "light"
-                        ? "bg-black text-white hover:bg-gray-800"
-                        : "bg-white text-black hover:bg-gray-100"
-                    }`}
+                    className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${"bg-white text-black hover:bg-gray-100"}`}
                   >
                     {category.buttonText}
                   </button>

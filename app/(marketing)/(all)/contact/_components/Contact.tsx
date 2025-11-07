@@ -103,9 +103,9 @@ export default function ContactMethodsSection() {
             {contactMethods.map((method) => (
               <div
                 key={method.id}
-                className="bg-linear-to-br from-zinc-800 to-zinc-900 rounded-3xl p-8 border border-zinc-700 hover:border-zinc-600 transition-all"
+                className="bg-linear-to-br from-zinc-900 to-zinc-900 rounded-3xl p-8 border border-zinc-700 hover:border-zinc-600 transition-all"
               >
-                <div className="bg-zinc-700 rounded-2xl p-6">
+                <div className="bg-zinc-800 rounded-2xl p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="text-white">{method.icon}</div>
                     <h3 className="text-white text-xl font-bold">

@@ -167,7 +167,7 @@ const MusicPlaylist = () => {
         <Heading as="h2" size="h5" weight="medium" className="mb-6">
           Download
         </Heading>
-        <div className="max-w-full mx-auto">
+        <div className="max-w-full mx-auto pb-201">
           <div className="hidden md:flex gap-4 lg:gap-8 mb-6 text-xs sm:text-sm flex-wrap">
             <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
               <span>Genre</span>
