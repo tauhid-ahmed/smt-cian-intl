@@ -36,14 +36,9 @@ export function Header({ onMenuClick }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-<<<<<<<<< Temporary merge branch 1
           className="text-foreground hover:bg-secondary"
         >
           <Bell className="w-5 h-5" />
-=========
-          className="text-foreground hover:bg-secondary">
-          <Bell className="w-8! h-8!" />
->>>>>>>>> Temporary merge branch 2
         </Button>
       </div>
     </header>
