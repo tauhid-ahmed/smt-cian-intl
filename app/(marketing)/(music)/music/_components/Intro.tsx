@@ -66,15 +66,14 @@ const icons = [
 ];
 
 function IconGallery() {
-  // Duplicate icons for seamless infinite scroll
-  const duplicatedIcons = [...icons, ...icons];
+  // Triple the icons for seamless loop
+  const scrollingIcons = [...icons, ...icons, ...icons];
 
   return (
     <div className="w-full max-w-8xl mx-auto overflow-hidden bg-black/50 backdrop-blur-3xl">
-      <div className="relative flex py-2">
-        {/* First scrolling set */}
-        <div className="flex animate-scroll gap-6 sm:gap-8 md:gap-10 lg:gap-12 min-w-max px-3 sm:px-4 md:px-5">
-          {duplicatedIcons.map((icon, index) => (
+      <div className="flex animate-scroll py-2">
+        <div className="flex gap-6 sm:gap-8 md:gap-10 lg:gap-12 min-w-max px-3 sm:px-4 md:px-5">
+          {scrollingIcons.map((icon, index) => (
             <div
               key={`${icon}-${index}`}
               className="relative flex items-center justify-center shrink-0"
@@ -89,27 +88,6 @@ function IconGallery() {
             </div>
           ))}
         </div>
-
-        {/* Second scrolling set for seamless loop */}
-        <div
-          className="flex animate-scroll gap-6 sm:gap-8 md:gap-10 lg:gap-12 min-w-max px-3 sm:px-4 md:px-5"
-          aria-hidden="true"
-        >
-          {duplicatedIcons.map((icon, index) => (
-            <div
-              key={`duplicate-${icon}-${index}`}
-              className="relative flex items-center justify-center shrink-0"
-            >
-              <Image
-                src={`/icons/${icon}`}
-                alt=""
-                width={80}
-                height={40}
-                className="h-6 w-auto sm:h-8 md:h-10 max-w-12 sm:max-w-16 md:max-w-20 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
-              />
-            </div>
-          ))}
-        </div>
       </div>
 
       <style jsx>{`
@@ -118,12 +96,12 @@ function IconGallery() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(calc(-100% / 3));
           }
         }
 
         .animate-scroll {
-          animation: scroll 30s linear infinite;
+          animation: scroll 45s linear infinite;
         }
 
         .animate-scroll:hover {

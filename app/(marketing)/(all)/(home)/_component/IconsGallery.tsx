@@ -15,15 +15,14 @@ const icons = [
 ];
 
 export default function IconGallery() {
-  // Duplicate icons for seamless loop
-  const duplicatedIcons = [...icons, ...icons];
+  // Triple the icons for seamless loop
+  const scrollingIcons = [...icons, ...icons, ...icons];
 
   return (
-    <div className="w-full overflow-hidden py-8 md:py-12">
-      <div className="relative flex">
-        {/* First set of logos */}
-        <div className="flex animate-scroll-left gap-8 md:gap-12 lg:gap-16 min-w-max">
-          {duplicatedIcons.map((icon, index) => (
+    <div className="w-full max-w-8xl mx-auto overflow-hidden py-8">
+      <div className="flex animate-scroll py-2">
+        <div className="flex gap-6 sm:gap-8 md:gap-10 lg:gap-12 min-w-max px-3 sm:px-4 md:px-5">
+          {scrollingIcons.map((icon, index) => (
             <div
               key={`${icon}-${index}`}
               className="relative flex items-center justify-center shrink-0"
@@ -31,30 +30,9 @@ export default function IconGallery() {
               <Image
                 src={`/icons/${icon}`}
                 alt={icon.replace(".svg", "")}
-                width={120}
+                width={70}
                 height={40}
-                className="h-6 w-auto md:h-8 lg:h-10 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Second set for seamless loop */}
-        <div
-          className="flex animate-scroll-left gap-8 md:gap-12 lg:gap-16 min-w-max"
-          aria-hidden="true"
-        >
-          {duplicatedIcons.map((icon, index) => (
-            <div
-              key={`duplicate-${icon}-${index}`}
-              className="relative flex items-center justify-center shrink-0"
-            >
-              <Image
-                src={`/icons/${icon}`}
-                alt=""
-                width={120}
-                height={40}
-                className="h-6 w-auto md:h-8 lg:h-10 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                className="h-6 w-auto sm:h-8 max-w-10 lg:max-w-20 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
               />
             </div>
           ))}
@@ -62,20 +40,20 @@ export default function IconGallery() {
       </div>
 
       <style jsx>{`
-        @keyframes scroll-left {
+        @keyframes scroll {
           0% {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(calc(-100% / 3));
           }
         }
 
-        .animate-scroll-left {
-          animation: scroll-left 40s linear infinite;
+        .animate-scroll {
+          animation: scroll 45s linear infinite;
         }
 
-        .animate-scroll-left:hover {
+        .animate-scroll:hover {
           animation-play-state: paused;
         }
       `}</style>
