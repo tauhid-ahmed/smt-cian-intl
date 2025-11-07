@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 shrink-0 whitespace-nowrap font-medium transition-all cursor-pointer outline-none " +
-    "focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:border-ring " +
-    "disabled:opacity-50 disabled:pointer-events-none leading-none " +
-    "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
+  "focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:border-ring " +
+  "disabled:opacity-50 disabled:pointer-events-none leading-none " +
+  "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -71,7 +71,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { MessagesSquare, ShoppingBag, Star, TrendingUp, Users } from "lucide-react";
+import { MessagesSquare, Star, TrendingUp, Users } from "lucide-react";
 import { MetricsGrid } from "../metrics-grid";
 import { RevenueChart } from "../charts/revenue-chart";
 import { TopProductsCard } from "../top-products";

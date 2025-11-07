@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import { Gift } from "lucide-react"
+import Link from "next/link"
 
 interface FormData {
   product: string
@@ -47,9 +49,9 @@ const ReviewPage = () => {
   })
 
   const products = [
-    { id: "hilling", name: "Hilling Song United People", image: "/img-1.jpg" },
+    { id: "hilling", name: "Hilling Song United People", subTitle: "Hillsong Worship", image: "/img-1.jpg" },
     { id: "worship", name: "Worship T-shirt", image: "/img-2.jpg" },
-    { id: "elevation", name: "Elevation Worship Lion", image: "/img-3.jpg" },
+    { id: "elevation", name: "Elevation Worship Lion", subTitle: "Hillsong Worship", image: "/img-3.jpg" },
   ]
 
   const handleRatingClick = (star: number) => {
@@ -80,14 +82,14 @@ const ReviewPage = () => {
   return (
     <Container>
       {/* Header Section */}
-      <div className="mb-10">
-        <Heading as="h2" size="h3" align="center" className="mb-2">
+      <div className="mb-24">
+        <Heading as="h1" size="h1" font="serif" align="center" className="mt-6 mb-2">
           Share Your Story
         </Heading>
-        <p className="text-center text-muted-foreground">Your review helps others discover great music</p>
+        <p className="text-center font-light text-2xl text-[#FFFFFF]">Your review helps others discover great music</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-24">
         {/* Section 1: Product Selection */}
         <Card className="border border-border bg-transparent p-6">
           <h3 className="text-lg font-semibold mb-6">Select Product To Review:</h3>
@@ -111,7 +113,10 @@ const ReviewPage = () => {
                       width={64}
                       height={64}
                     />
-                    <p className="font-medium">{product.name}</p>
+                    <div className="flex-1">
+                      <p className="font-medium text-2xl">{product.name}</p>
+                      <p className="text-lg font-light text-white">{product.subTitle}</p>
+                    </div>
                   </div>
                 </div>
               </label>
@@ -140,66 +145,66 @@ const ReviewPage = () => {
                     className="mt-1 w-5 h-5 cursor-pointer"
                   />
                   <div>
-                    <p className="font-medium">{option.label}</p>
-                    <p className="text-sm text-muted-foreground">{option.desc}</p>
+                    <p className="font-medium text-2xl">{option.label}<span className="text-lg font-light">{" "} {option.desc}</span></p>
+
                   </div>
                 </label>
               ))}
             </div>
           </div>
-
+        </Card>
+        <Card className="border border-border bg-transparent p-6 space-y-10">
           {/* Rating Section */}
-          <div className="border-t border-border pt-8">
-            <h3 className="text-base font-semibold mb-3">Overall Rating*</h3>
-            <p className="text-sm text-muted-foreground mb-4">How would you rate this product?</p>
-            <div className="flex items-center gap-2">
-              <div className="flex gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => handleRatingClick(star)}
-                    className="focus:outline-none transition"
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Overall Rating*</h3>
+            <p className="text-base">How would you rate this product?</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => handleRatingClick(star)}
+                  className="focus:outline-none transition"
+                >
+                  <svg
+                    className={`w-8 h-8 ${formData.rating >= star ? "fill-foreground text-foreground" : "text-border-white"
+                      }`}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    fill="none"
                   >
-                    <svg
-                      className={`w-8 h-8 ${formData.rating >= star ? "fill-foreground text-foreground" : "text-border"
-                        }`}
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </button>
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground ml-2">
-                {formData.rating > 0 ? `${formData.rating} Star${formData.rating > 1 ? "s" : ""}` : ""}
-              </span>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </button>
+              ))}
             </div>
+            <span className="text-lg text-white font-light ml-2">
+              {formData.rating > 0 ? `${formData.rating} Star${formData.rating > 1 ? "s" : ""}` : ""}
+            </span>
           </div>
+        </Card>
 
-          {/* Review Textarea */}
-          <div className="border-t border-border pt-8">
-            <label className="block mb-2">
-              <span className="font-semibold">Your Review*</span>
-            </label>
-            <p className="text-sm text-muted-foreground mb-3">Share your thoughts about this product</p>
-            <Textarea
-              name="review"
-              value={formData.review}
-              onChange={handleInputChange}
-              placeholder="Share your thoughts about this product..."
-              className="min-h-32 resize-none  text-foreground placeholder:text-muted-foreground"
-            />
-            <p className="text-xs text-muted-foreground text-right mt-2">{formData.review.length}/500 chars</p>
+        {/* Review Textarea */}
+        <Card className="border border-border bg-transparent p-6">
+          <div>
+            <h3 className="text-lg font-semibold">Your Review*</h3>
+            <p className="text-base font-normal">Share your thoughts about this product</p>
           </div>
-
-          {/* Review Title */}
-          <div className="border-t border-border pt-8">
+          <Textarea
+            name="review"
+            value={formData.review}
+            onChange={handleInputChange}
+            placeholder="Share your thoughts about this product..."
+            className="min-h-32 resize-none  text-foreground placeholder:text-muted-foreground bg-[#3B3B3B]"
+          />
+          <p className="text-xs text-right">{formData.review.length}/500 chars</p>
+          <div className="mt-7">
+            {/* Review Title */}
             <label className="block mb-2">
-              <span className="font-semibold">Review Title (Optional)</span>
+              <span className="font-semibold text-lg">Review Title (Optional)</span>
             </label>
             <Input
               type="text"
@@ -207,14 +212,15 @@ const ReviewPage = () => {
               value={formData.reviewTitle}
               onChange={handleInputChange}
               placeholder="Give your review a title"
-              className=" text-foreground placeholder:text-muted-foreground"
+              className=" text-foreground h-13.5 placeholder:py-2 placeholder:text-muted-foreground bg-[#3B3B3B]"
             />
           </div>
 
-          {/* Helpful Prompts */}
-          <div className="border-t border-border pt-8  rounded-lg p-6">
-            <h3 className="font-semibold mb-4">Helpful Prompts:</h3>
-            <ul className="space-y-3 text-sm">
+          <div className="mt-7">
+            {/* Helpful Prompts */}
+
+            <h3 className="font-semibold text-lg mb-4">Helpful Prompts:</h3>
+            <ul className="space-y-3 font-normal rounded-lg text-lg bg-[#3B3B3B] p-4">
               <li className="flex gap-3">
                 <span className="text-foreground">•</span>
                 <span>What did you love most about this product?</span>
@@ -232,17 +238,21 @@ const ReviewPage = () => {
                 <span>What makes this artist/album special?</span>
               </li>
             </ul>
+
           </div>
+
         </Card>
 
         {/* Section 3: Media Upload */}
         <Card className="border border-border bg-transparent p-6">
-          <h3 className="text-lg font-semibold mb-4">Add photos or video (Optional)</h3>
-          <p className="text-sm text-muted-foreground mb-6">Help others see your experience</p>
+          <div>
+            <h3 className="text-lg font-semibold">Add photos or video (Optional)</h3>
+            <p className="text-base font-normal">Help others see your experience</p>
+          </div>
           <div className="flex gap-6 mb-8">
             <button
               type="button"
-              className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
+              className="border-[0.5] border-dashed border-white rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
             >
               <svg className="w-8 h-8 text-foreground mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -256,7 +266,7 @@ const ReviewPage = () => {
             </button>
             <button
               type="button"
-              className="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
+              className="border-[0.5] border-dashed border-white rounded-lg p-8 flex flex-col items-center justify-center min-w-32 hover:bg-muted transition"
             >
               <svg className="w-8 h-8 text-foreground mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -269,57 +279,61 @@ const ReviewPage = () => {
               <span className="text-sm font-medium">Video</span>
             </button>
           </div>
-          <ul className="space-y-2 text-xs text-muted-foreground">
+          <ul className="space-y-2 text-base">
             <li className="flex items-center gap-2">
-              <span>✓</span>
+              <span className="flex items-center justify-center w-6 h-6 rounded-full border border-white text-sm">
+                ✓
+              </span>
               <span>Accepted formats: JPG, PNG, MP4, MOV</span>
             </li>
             <li className="flex items-center gap-2">
-              <span>✓</span>
+              <span className="flex items-center justify-center w-6 h-6 rounded-full border border-white text-sm">
+                ✓
+              </span>
               <span>Max 5 photos or 1 video per review</span>
             </li>
           </ul>
         </Card>
 
         {/* Section 4: Reviewer Information */}
-        <Card className="border border-border bg-transparent p-6 space-y-6">
+        <Card className="border border-border bg-transparent p-6 space-y-7">
           <h3 className="text-lg font-semibold">Reviewer Information</h3>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Display Name*</label>
+            <label className="block text-lg font-semibold mb-2">Display Name*</label>
             <Input
               type="text"
               name="displayName"
               value={formData.displayName}
               onChange={handleInputChange}
               placeholder="Your name"
-              className=" text-foreground placeholder:text-muted-foreground"
+              className="text-foreground h-15 bg-[#3B3B3B] placeholder:text-muted-foreground"
             />
-            <p className="text-xs text-muted-foreground mt-2">(This is how your name will appear publicly)</p>
+            <p className="text-base font-normal mt-2">(This is how your name will appear publicly)</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Email*</label>
+            <label className="block text-lg font-semibold mb-2">Email*</label>
             <Input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               placeholder="your.email@example.com"
-              className=" text-foreground placeholder:text-muted-foreground"
+              className=" text-foreground h-15 bg-[#3B3B3B] placeholder:text-muted-foreground"
             />
-            <p className="text-xs text-muted-foreground mt-2">(Only for verification - never show publicly)</p>
+            <p className="text-base font-normal mt-2">(Only for verification - never show publicly)</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Location (Optional)</label>
+            <label className="block text-lg font-semibold mb-2">Location (Optional)</label>
             <Input
               type="text"
               name="location"
               value={formData.location}
               onChange={handleInputChange}
               placeholder="City, State/Country"
-              className="text-foreground placeholder:text-muted-foreground"
+              className="text-foreground h-15 bg-[#3B3B3B] placeholder:text-muted-foreground"
             />
           </div>
         </Card>
@@ -327,7 +341,7 @@ const ReviewPage = () => {
         {/* Section 5: Permissions */}
         <Card className="border border-border bg-transparent p-6">
           <h3 className="text-lg font-semibold mb-6">Permissions</h3>
-          <div className="space-y-4">
+          <div className="space-y-7">
             {[
               { key: "verify" as const, label: "I verify this is a genuine review based on my own experience" },
               {
@@ -341,28 +355,26 @@ const ReviewPage = () => {
               },
               { key: "emails" as const, label: "Send me emails about similar products" },
             ].map((permission) => (
-              <label key={permission.key} className="flex items-start gap-3 cursor-pointer">
+              <label key={permission.key} className="flex items-center justify-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.permissions[permission.key]}
                   onChange={() => handleCheckboxChange(permission.key)}
                   className="mt-1 w-5 h-5 cursor-pointer"
                 />
-                <span className="text-sm">{permission.label}</span>
+                <span className="text-sm font-normal">{permission.label}</span>
               </label>
             ))}
           </div>
         </Card>
 
         {/* Review Reward Info */}
-        <Card className="border border-border p-6">
+        <Card className="border border-border p-6 bg-[#3B3B3B]">
           <div className="flex gap-4">
-            <svg className="w-6 h-6 text-foreground flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
+            <Gift className="w-6 h-6 text-yellow-400" />
             <div>
-              <h4 className="font-semibold mb-2">Review Reward</h4>
-              <p className="text-sm">
+              <h4 className="font-semibold text-lg mb-2">Review Reward</h4>
+              <p className="text-base font-normal">
                 Share your story and get 15% OFF your next purchase! Discount code will be sent to your email after your
                 review is approved.
               </p>
@@ -378,16 +390,14 @@ const ReviewPage = () => {
           >
             Submit Review
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center font-normal text-base">
             Your review will be checked by our team before appearing in the site (usually within 24 hours)
           </p>
           {/* Contact Support */}
-          <div className="border-t border-border pt-6 text-center">
-            <h4 className="font-semibold mb-2">Contact Support</h4>
-          </div>
+          <Link href="/#" className="pt-6 text-center">
+            <h4 className="font-semibold mb-2 text-lg">Contact Support</h4>
+          </Link>
         </div>
-
-
       </form>
     </Container>
   )
