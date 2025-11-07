@@ -44,7 +44,7 @@ export default function Intro() {
               </Button>
             </div>
           </div>
-          <div className="absolute bottom-0">
+          <div className="absolute bottom-0 translate-y-0.5 -inset-x-1">
             <IconGallery />
           </div>
         </div>
