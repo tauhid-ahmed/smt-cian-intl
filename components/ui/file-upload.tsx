@@ -5,6 +5,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { IconUpload, IconX } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
+import Image from "next/image";
 
 const mainVariant = {
   initial: { x: 0, y: 0 },
@@ -44,7 +45,7 @@ export const FileUpload = ({
     <div className="w-full" {...getRootProps()}>
       <motion.div
         onClick={handleClick}
-        whileHover="animate"
+        // whileHover="animate"
         className="p-2 group/file block rounded-lg cursor-pointer w-full relative 
                    overflow-hidden bg-transparent border-2 border-dashed border-[#3B3B3B]
                    max-h-[250px] sm:max-h-[300px]">
@@ -73,10 +74,12 @@ export const FileUpload = ({
                     "relative flex-shrink-0 bg-neutral-800 p-1 rounded-md shadow-sm flex flex-col items-center justify-center w-20 h-20 sm:w-24 sm:h-24"
                   )}>
                   {file.type.startsWith("image/") ? (
-                    <img
+                    <Image
                       src={URL.createObjectURL(file)}
                       alt={file.name}
                       className="object-cover w-full h-14 sm:h-16 rounded-md"
+                      width={100}
+                      height={100}
                     />
                   ) : (
                     <div className="flex items-center justify-center w-full h-14 sm:h-16 bg-neutral-700 rounded-md text-neutral-300 text-[8px] sm:text-[10px] p-1 text-center">
@@ -135,11 +138,10 @@ export function GridPattern() {
           return (
             <div
               key={`${col}-${row}`}
-              className={`w-3 sm:w-4 h-3 sm:h-4 flex shrink-0 rounded-[1px] ${
-                index % 2 === 0
-                  ? "bg-neutral-950"
-                  : "bg-neutral-900 shadow-[0px_0px_1px_1px_rgba(0,0,0,0.5)_inset]"
-              }`}
+              className={`w-3 sm:w-4 h-3 sm:h-4 flex shrink-0 rounded-[1px] ${index % 2 === 0
+                ? "bg-neutral-950"
+                : "bg-neutral-900 shadow-[0px_0px_1px_1px_rgba(0,0,0,0.5)_inset]"
+                }`}
             />
           );
         })

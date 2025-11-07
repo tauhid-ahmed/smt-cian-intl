@@ -398,8 +398,6 @@ const ReviewPage = () => {
             <h4 className="font-semibold mb-2 text-lg">Contact Support</h4>
           </Link>
         </div>
-
-
       </form>
     </Container>
   )

@@ -1,6 +1,6 @@
 "use client";
 
-import { ContactRound, CornerRightUp, Users } from "lucide-react";
+import { ContactRound, MessagesSquare, TrendingUp, Users } from "lucide-react";
 import { MetricsGrid } from "../metrics-grid";
 import { RevenueChart } from "../charts/revenue-chart";
 import { PieChartCard } from "../charts/pie-chart";
@@ -10,12 +10,12 @@ const metricsData = [
   {
     title: "Total Donation",
     value: "$45,230",
-    icon: CornerRightUp,
+    icon: TrendingUp,
   },
   {
     title: "Active Donors",
     value: "12.4%",
-    icon: ContactRound,
+    icon: MessagesSquare,
   },
   {
     title: "Avg. Donation",
@@ -201,13 +201,12 @@ const OverviewTab = () => {
                     </td>
                     <td className="py-4 pr-4 flex justify-end">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          donation.status === "Completed"
-                            ? "bg-[#89FF7233] text-[#22FF00] border border-[#22FF00]"
-                            : donation.status === "Pending"
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${donation.status === "Completed"
+                          ? "bg-[#89FF7233] text-[#22FF00] border border-[#22FF00]"
+                          : donation.status === "Pending"
                             ? "bg-[#FFF27233] text-[#FFD700] border border-[#FFD700]"
                             : "bg-[#FF727233] text-[#FF0000] border border-[#FF0000]"
-                        }`}>
+                          }`}>
                         {donation.status}
                       </span>
                     </td>
@@ -228,13 +227,12 @@ const OverviewTab = () => {
                     {donation.donor}
                   </h3>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      donation.status === "Completed"
-                        ? "bg-[#89FF7233] text-[#22FF00] border border-[#22FF00]"
-                        : donation.status === "Pending"
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${donation.status === "Completed"
+                      ? "bg-[#89FF7233] text-[#22FF00] border border-[#22FF00]"
+                      : donation.status === "Pending"
                         ? "bg-[#FFF27233] text-[#FFD700] border border-[#FFD700]"
                         : "bg-[#FF727233] text-[#FF0000] border border-[#FF0000]"
-                    }`}>
+                      }`}>
                     {donation.status}
                   </span>
                 </div>
