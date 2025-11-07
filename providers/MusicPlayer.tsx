@@ -89,6 +89,110 @@ interface MusicPlayerProviderProps {
   children: ReactNode;
 }
 
+// Touch-responsive slider component
+const TouchSlider = ({
+  min = 0,
+  max = 100,
+  value = 0,
+  onChange,
+  className = "",
+  ariaLabel = "slider",
+}: {
+  min?: number;
+  max?: number;
+  value: number;
+  onChange: (value: number) => void;
+  className?: string;
+  ariaLabel?: string;
+}) => {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const updateValue = (clientX: number) => {
+    if (!sliderRef.current) return;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const percentage = Math.max(
+      0,
+      Math.min(1, (clientX - rect.left) / rect.width)
+    );
+    const newValue = min + percentage * (max - min);
+    onChange(newValue);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    updateValue(e.clientX);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    updateValue(e.touches[0].clientX);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        updateValue(e.clientX);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+        updateValue(e.touches[0].clientX);
+      }
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleEnd);
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("touchend", handleEnd);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleEnd);
+    };
+  }, [isDragging]);
+
+  const percentage = ((value - min) / (max - min)) * 100;
+
+  return (
+    <div
+      ref={sliderRef}
+      className={`relative h-full rounded-full bg-gray-700 cursor-pointer touch-none select-none ${className}`}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      role="slider"
+      aria-label={ariaLabel}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={value}
+      tabIndex={0}
+    >
+      <div
+        className="h-full bg-white rounded-full transition-all relative"
+        style={{ width: `${percentage}%` }}
+      >
+        <div
+          className={`absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg transition-opacity ${
+            isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
+        />
+      </div>
+    </div>
+  );
+};
+
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -201,8 +305,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     }
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
+  const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
@@ -222,8 +325,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     }
   };
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
+  const handleSeek = (newTime: number) => {
     setCurrentTime(newTime);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
@@ -390,12 +492,12 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shadow-2xl z-50 h-20 md:h-24"
+            className="fixed bottom-0 left-0 right-0 bg-linear-to-r from-gray-900 to-black border-t border-gray-800 shadow-2xl z-50 h-20 md:h-24 py-2"
           >
             <div className="h-full flex flex-col md:flex-row items-center px-3 md:px-6 gap-2 md:gap-6">
               {/* Mobile: Track Info + Controls */}
               <div className="flex items-center w-full md:hidden gap-3">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0">
                   <Image
                     src={currentTrack.artwork}
                     alt={currentTrack.title}
@@ -416,7 +518,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={playPrevious}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-10 w-10 active:scale-95 transition-transform"
                   >
                     <SkipBack className="w-4 h-4" />
                   </Button>
@@ -424,7 +526,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={togglePlay}
-                    className="w-9 h-9 rounded-full bg-white hover:bg-gray-200 text-black"
+                    className="w-11 h-11 rounded-full bg-white hover:bg-gray-200 text-black active:scale-95 transition-transform"
                   >
                     {isPlaying ? (
                       <Pause className="w-4 h-4" />
@@ -436,7 +538,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={playNext}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-10 w-10 active:scale-95 transition-transform"
                   >
                     <SkipForward className="w-4 h-4" />
                   </Button>
@@ -444,7 +546,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsExpanded(true)}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-10 w-10 active:scale-95 transition-transform"
                   >
                     <Maximize2 className="w-4 h-4" />
                   </Button>
@@ -480,7 +582,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     onClick={() => setIsShuffled(!isShuffled)}
                     className={`${
                       isShuffled ? "text-green-500" : "text-gray-400"
-                    } hover:text-white h-8 w-8`}
+                    } hover:text-white h-8 w-8 active:scale-95 transition-transform`}
                   >
                     <Shuffle className="w-4 h-4" />
                   </Button>
@@ -488,7 +590,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={playPrevious}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                   >
                     <SkipBack className="w-4 h-4" />
                   </Button>
@@ -496,7 +598,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={togglePlay}
-                    className="w-10 h-10 rounded-full bg-white hover:bg-gray-200 text-black"
+                    className="w-10 h-10 rounded-full bg-white hover:bg-gray-200 text-black active:scale-95 transition-transform"
                   >
                     {isPlaying ? (
                       <Pause className="w-5 h-5" />
@@ -508,7 +610,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={playNext}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                   >
                     <SkipForward className="w-4 h-4" />
                   </Button>
@@ -518,7 +620,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     onClick={toggleRepeat}
                     className={`${
                       repeatMode !== "off" ? "text-green-500" : "text-gray-400"
-                    } hover:text-white relative h-8 w-8`}
+                    } hover:text-white relative h-8 w-8 active:scale-95 transition-transform`}
                   >
                     <Repeat className="w-4 h-4" />
                     {repeatMode === "one" && (
@@ -534,21 +636,14 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   <span className="text-xs text-gray-400">
                     {formatTime(currentTime)}
                   </span>
-                  <div className="flex-1 h-1 bg-gray-700 rounded-full relative group">
-                    <input
-                      type="range"
-                      min="0"
+                  <div className="flex-1 h-1 group">
+                    <TouchSlider
+                      min={0}
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                      ariaLabel="Seek track"
                     />
-                    <div
-                      className="h-full bg-white rounded-full transition-all relative"
-                      style={{ width: `${(currentTime / duration) * 100}%` }}
-                    >
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
                   </div>
                   <span className="text-xs text-gray-400">
                     {formatTime(duration)}
@@ -566,7 +661,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     likedTracks.has(currentTrack.id)
                       ? "text-green-500"
                       : "text-gray-400"
-                  } hover:text-green-500 h-8 w-8`}
+                  } hover:text-green-500 h-8 w-8 active:scale-95 transition-transform`}
                 >
                   <Heart
                     className={`w-4 h-4 ${
@@ -578,7 +673,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowPlaylist(true)}
-                  className="text-gray-400 hover:text-white h-8 w-8"
+                  className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                 >
                   <List className="w-4 h-4" />
                 </Button>
@@ -586,7 +681,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   variant="ghost"
                   size="icon"
                   onClick={toggleMute}
-                  className="text-gray-400 hover:text-white h-8 w-8"
+                  className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                 >
                   {isMuted ? (
                     <VolumeX className="w-4 h-4" />
@@ -594,29 +689,20 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     <Volume2 className="w-4 h-4" />
                   )}
                 </Button>
-                <div className="relative w-24 h-1 bg-gray-700 rounded-full group">
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
+                <div className="w-24 h-1 group">
+                  <TouchSlider
+                    min={0}
+                    max={1}
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
-                    aria-label="Volume"
+                    ariaLabel="Volume"
                   />
-                  <div
-                    className="h-full bg-white rounded-full transition-all relative"
-                    style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
-                  >
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={togglePlayerMode}
-                  className="text-gray-400 hover:text-white h-8 w-8"
+                  className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                   title="Toggle player mode (Ctrl+P)"
                 >
                   <PictureInPicture2 className="w-4 h-4" />
@@ -625,7 +711,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExpanded(true)}
-                  className="text-gray-400 hover:text-white h-8 w-8"
+                  className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                 >
                   <Maximize2 className="w-4 h-4" />
                 </Button>
@@ -633,7 +719,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   variant="ghost"
                   size="icon"
                   onClick={close}
-                  className="text-gray-400 hover:text-white h-8 w-8"
+                  className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -679,7 +765,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={togglePlayerMode}
-                    className="text-gray-400 hover:text-white h-6 w-6"
+                    className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                     title="Back to bottom player"
                   >
                     <Minimize2 className="w-3 h-3" />
@@ -688,7 +774,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={close}
-                    className="text-gray-400 hover:text-white h-6 w-6"
+                    className="text-gray-400 hover:text-white h-8 w-8 active:scale-95 transition-transform"
                   >
                     <X className="w-3 h-3" />
                   </Button>
@@ -699,18 +785,13 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
               <div className="mb-3">
                 <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
                   <span>{formatTime(currentTime)}</span>
-                  <div className="flex-1 h-1 bg-gray-700 rounded-full relative group">
-                    <input
-                      type="range"
-                      min="0"
+                  <div className="flex-1 h-1 group">
+                    <TouchSlider
+                      min={0}
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
-                    />
-                    <div
-                      className="h-full bg-white rounded-full transition-all"
-                      style={{ width: `${(currentTime / duration) * 100}%` }}
+                      ariaLabel="Seek track"
                     />
                   </div>
                   <span>{formatTime(duration)}</span>
@@ -723,68 +804,12 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setIsShuffled(!isShuffled)}
-                    className={`${
-                      isShuffled ? "text-green-500" : "text-gray-400"
-                    } hover:text-white h-8 w-8`}
-                  >
-                    <Shuffle className="w-3 h-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={playPrevious}
-                    className="text-gray-400 hover:text-white h-8 w-8"
-                  >
-                    <SkipBack className="w-3 h-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={togglePlay}
-                    className="w-9 h-9 rounded-full bg-white hover:bg-gray-200 text-black"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-4 h-4" />
-                    ) : (
-                      <Play className="w-4 h-4 ml-0.5" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={playNext}
-                    className="text-gray-400 hover:text-white h-8 w-8"
-                  >
-                    <SkipForward className="w-3 h-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={toggleRepeat}
-                    className={`${
-                      repeatMode !== "off" ? "text-green-500" : "text-gray-400"
-                    } hover:text-white relative h-8 w-8`}
-                  >
-                    <Repeat className="w-3 h-3" />
-                    {repeatMode === "one" && (
-                      <span className="absolute bottom-0 right-0 text-[6px]">
-                        1
-                      </span>
-                    )}
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
                     onClick={() => toggleLike(currentTrack.id)}
                     className={`${
                       likedTracks.has(currentTrack.id)
                         ? "text-green-500"
                         : "text-gray-400"
-                    } hover:text-green-500 h-8 w-8`}
+                    } hover:text-green-500 h-9 w-9 active:scale-95 transition-transform`}
                   >
                     <Heart
                       className={`w-3 h-3 ${
@@ -796,7 +821,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsExpanded(true)}
-                    className="text-gray-400 hover:text-white h-8 w-8"
+                    className="text-gray-400 hover:text-white h-9 w-9 active:scale-95 transition-transform"
                   >
                     <Maximize2 className="w-3 h-3" />
                   </Button>
@@ -809,7 +834,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
 
       {/* Expanded Player Dialog */}
       <Dialog open={isExpanded} onOpenChange={setIsExpanded}>
-        <DialogContent className="max-w-4xl h-[80vh] bg-linear-to-br from-gray-900 via-black to-gray-900 border-gray-800 p-0 overflow-hidden">
+        <DialogContent className="max-w-4xl h-[80vh] bg-gradient-to-br from-gray-900 via-black to-gray-900 border-gray-800 p-0 overflow-hidden">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-2xl font-bold text-white">
               Now Playing
@@ -819,7 +844,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
           {currentTrack && (
             <div className="flex flex-col md:flex-row h-full overflow-hidden">
               {/* Main Content */}
-              <div className="flex-1 flex flex-col p-6 items-center overflow-hidden">
+              <div className="flex-1 flex flex-col p-6 items-center overflow-auto">
                 <div className="w-full max-w-2xl">
                   <div className="relative w-full aspect-2/1 max-w-md mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl">
                     <Image
@@ -846,21 +871,15 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
 
                   {/* Progress Bar */}
                   <div className="mb-6">
-                    <div className="relative h-2 bg-gray-800 rounded-full mb-2 group">
-                      <input
-                        type="range"
-                        min="0"
+                    <div className="relative h-2 mb-2 group">
+                      <TouchSlider
+                        min={0}
                         max={duration || 0}
                         value={currentTime}
                         onChange={handleSeek}
-                        className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                        ariaLabel="Seek track"
+                        className="h-2"
                       />
-                      <div
-                        className="h-full bg-white rounded-full transition-all relative"
-                        style={{ width: `${(currentTime / duration) * 100}%` }}
-                      >
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
-                      </div>
                     </div>
                     <div className="flex justify-between text-sm text-gray-400">
                       <span>{formatTime(currentTime)}</span>
@@ -878,7 +897,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         likedTracks.has(currentTrack.id)
                           ? "text-green-500"
                           : "text-gray-400"
-                      } hover:text-green-500 h-12 w-12`}
+                      } hover:text-green-500 h-12 w-12 active:scale-95 transition-transform`}
                     >
                       <Heart
                         className={`w-6 h-6 ${
@@ -894,7 +913,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         onClick={() => setIsShuffled(!isShuffled)}
                         className={`${
                           isShuffled ? "text-green-500" : "text-gray-400"
-                        } hover:text-white h-10 w-10`}
+                        } hover:text-white h-12 w-12 active:scale-95 transition-transform`}
                       >
                         <Shuffle className="w-5 h-5" />
                       </Button>
@@ -902,7 +921,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         variant="ghost"
                         size="icon"
                         onClick={playPrevious}
-                        className="text-gray-400 hover:text-white h-10 w-10"
+                        className="text-gray-400 hover:text-white h-12 w-12 active:scale-95 transition-transform"
                       >
                         <SkipBack className="w-5 h-5" />
                       </Button>
@@ -910,7 +929,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         variant="ghost"
                         size="icon"
                         onClick={togglePlay}
-                        className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black"
+                        className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black active:scale-95 transition-transform"
                       >
                         {isPlaying ? (
                           <Pause className="w-8 h-8" />
@@ -922,7 +941,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         variant="ghost"
                         size="icon"
                         onClick={playNext}
-                        className="text-gray-400 hover:text-white h-10 w-10"
+                        className="text-gray-400 hover:text-white h-12 w-12 active:scale-95 transition-transform"
                       >
                         <SkipForward className="w-5 h-5" />
                       </Button>
@@ -934,7 +953,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                           repeatMode !== "off"
                             ? "text-green-500"
                             : "text-gray-400"
-                        } hover:text-white relative h-10 w-10`}
+                        } hover:text-white relative h-12 w-12 active:scale-95 transition-transform`}
                       >
                         <Repeat className="w-5 h-5" />
                         {repeatMode === "one" && (
@@ -954,7 +973,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                       variant="ghost"
                       size="icon"
                       onClick={toggleMute}
-                      className="text-gray-400 hover:text-white h-10 w-10"
+                      className="text-gray-400 hover:text-white h-10 w-10 active:scale-95 transition-transform"
                     >
                       {isMuted ? (
                         <VolumeX className="w-5 h-5" />
@@ -962,23 +981,15 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                         <Volume2 className="w-5 h-5" />
                       )}
                     </Button>
-                    <div className="relative flex-1 h-2 bg-gray-800 rounded-full group">
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
+                    <div className="relative flex-1 h-2 group">
+                      <TouchSlider
+                        min={0}
+                        max={1}
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
-                        className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
-                        aria-label="Volume control"
+                        ariaLabel="Volume control"
+                        className="h-2"
                       />
-                      <div
-                        className="h-full bg-white rounded-full transition-all relative"
-                        style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
-                      >
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" />
-                      </div>
                     </div>
                   </div>
 
@@ -987,7 +998,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                     <Button
                       variant="outline"
                       onClick={togglePlayerMode}
-                      className="text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white"
+                      className="text-gray-400 border-gray-600 hover:bg-gray-800 hover:text-white active:scale-95 transition-transform"
                     >
                       <PictureInPicture2 className="w-4 h-4 mr-2" />
                       {playerMode === "bottom"
@@ -1021,13 +1032,13 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                 <div
                   key={track.id}
                   onClick={() => playTrack(track)}
-                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all active:scale-98 ${
                     currentTrack?.id === track.id
                       ? "bg-gray-800 bg-opacity-50"
-                      : "hover:bg-gray-800"
+                      : "hover:bg-gray-800 active:bg-gray-700"
                   }`}
                 >
-                  <div className="relative flex-shrink-0">
+                  <div className="relative shrink-0">
                     <div className="w-12 h-12 rounded overflow-hidden">
                       <Image
                         src={track.artwork}
@@ -1082,11 +1093,11 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
                       e.stopPropagation();
                       toggleLike(track.id);
                     }}
-                    className={`h-8 w-8 ${
+                    className={`h-10 w-10 ${
                       likedTracks.has(track.id)
                         ? "text-green-500"
                         : "text-gray-400"
-                    } hover:text-green-500`}
+                    } hover:text-green-500 active:scale-95 transition-transform`}
                   >
                     <Heart
                       className={`w-4 h-4 ${
