@@ -21,7 +21,7 @@ const faqData = [
 
 export default function FAQSection() {
   return (
-    <Section title={"Frequently asked questions"}>
+    <Section padding="xl" title={"Frequently asked questions"}>
       <FAQ items={faqData} />
     </Section>
   );

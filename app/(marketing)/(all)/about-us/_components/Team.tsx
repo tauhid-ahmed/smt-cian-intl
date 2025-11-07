@@ -109,13 +109,13 @@ const MeetTheTeam: React.FC = () => {
   ];
 
   return (
-    <Section className="bg-accent">
+    <Section padding="lg" className="bg-accent">
       <Container className="space-y-10">
         <Heading as="h2" size="h3" align="center">
           Meet The Team
         </Heading>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 lg:gap-8 max-w-5xl w-full mx-auto">
+        <div className="grid max-lg:place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 lg:gap-8 max-w-5xl w-full mx-auto">
           {teamMembers.map((member) => (
             <TeamCard key={member.id} member={member} />
           ))}

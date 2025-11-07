@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
 import { CheckCircle } from "lucide-react";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
 import { Heading } from "@/components/Heading";
+import { Button } from "@/components/ui/button";
 
 // ==================== TYPE DEFINITIONS ====================
 interface Feature {
@@ -26,65 +26,59 @@ interface GlobalFeature {
   text: string;
 }
 
-interface MembershipPricingProps {
-  title?: string;
-  plans?: MembershipPlan[];
-  globalFeatures?: GlobalFeature[];
-  onSelectPlan?: (planId: string) => void;
-}
-
 // ==================== MEMBERSHIP CARD COMPONENT ====================
-const MembershipCard: React.FC<{
+function MembershipCard({
+  plan,
+  onSelect,
+}: {
   plan: MembershipPlan;
   onSelect: () => void;
-}> = ({ plan, onSelect }) => {
+}) {
   return (
     <div
       className={`rounded-2xl p-8 border-2 relative flex flex-col h-full ${
         plan.borderColor || "border-gray-700"
       } hover:border-gray-600 transition-all`}
     >
-      {/* Popular Badge */}
-      {plan.isPopular && (
-        <div className="absolute -top-3 right-8">
+      <div className="flex items-center justify-between">
+        <Heading as="h3" size="h5">
+          {plan.name}
+        </Heading>
+
+        {plan.isPopular && (
           <span className="bg-yellow-500 text-black px-4 py-1 rounded-full text-sm font-bold">
             Popular
           </span>
-        </div>
-      )}
-
-      {/* Plan Name */}
-      <h3 className="text-2xl font-semibold text-white mb-6">{plan.name}</h3>
+        )}
+      </div>
 
       {/* Price */}
-      <div className="mb-8">
+      <div className="my-8">
         <p className="text-5xl font-bold text-yellow-500">{plan.price}</p>
       </div>
 
       {/* Features - Flexible grow section */}
-      <div className="space-y-4 mb-8 flex-grow">
+      <div className="space-y-4 mb-8 grow">
         {plan.features.map((feature, index) => (
           <div key={index} className="flex items-start gap-3">
-            <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-            <span className="text-gray-300 text-base">{feature.text}</span>
+            <CheckCircle className="size-5.5 text-white shrink-0 mt-0.5" />
+            <span className="text-gray-300 text-lg">{feature.text}</span>
           </div>
         ))}
       </div>
 
       {/* Select Button - Always at bottom */}
-      <button
+      <Button
         onClick={onSelect}
-        className={`w-full py-4 rounded-xl font-semibold text-lg transition-all mt-auto ${
-          plan.buttonStyle === "solid"
-            ? "bg-white text-black hover:bg-gray-200"
-            : "bg-transparent border-2 border-white text-white hover:bg-white hover:text-black"
-        }`}
+        shape="lg"
+        size="lg"
+        variant={plan.buttonStyle === "solid" ? "secondary" : "outline"}
       >
         {plan.buttonText}
-      </button>
+      </Button>
     </div>
   );
-};
+}
 
 // ==================== DEFAULT DATA ====================
 const defaultPlans: MembershipPlan[] = [
@@ -159,22 +153,13 @@ const defaultGlobalFeatures: GlobalFeature[] = [
 ];
 
 // ==================== MAIN COMPONENT ====================
-const MembershipPricing: React.FC<MembershipPricingProps> = ({
+function MembershipPricing({
   title = "Choose Your Membership",
   plans = defaultPlans,
   globalFeatures = defaultGlobalFeatures,
-  onSelectPlan,
-}) => {
-  const handleSelectPlan = (planId: string): void => {
-    if (onSelectPlan) {
-      onSelectPlan(planId);
-    } else {
-      console.log("Selected plan:", planId);
-    }
-  };
-
+}) {
   return (
-    <Section padding="sm" className="bg-sidebar">
+    <Section padding="lg" className="bg-sidebar">
       <Container>
         <Heading as="h2" size="h3" align="center">
           {title}
@@ -186,21 +171,23 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
             <MembershipCard
               key={plan.id}
               plan={plan}
-              onSelect={() => handleSelectPlan(plan.id)}
+              onSelect={function (): void {
+                throw new Error("Function not implemented.");
+              }}
             />
           ))}
         </div>
 
         {/* Global Features */}
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-white mb-8">
+          <Heading as="h3" size="h5" weight="normal" align="center">
             All plans include:
-          </h2>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-4">
+          </Heading>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-4 mt-6">
             {globalFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
-                <span className="text-gray-300 text-base">{feature.text}</span>
+                <CheckCircle className="size-5.5 text-white shrink-0" />
+                <span className="text-gray-300 text-lg">{feature.text}</span>
               </div>
             ))}
           </div>
@@ -208,6 +195,6 @@ const MembershipPricing: React.FC<MembershipPricingProps> = ({
       </Container>
     </Section>
   );
-};
+}
 
 export default MembershipPricing;

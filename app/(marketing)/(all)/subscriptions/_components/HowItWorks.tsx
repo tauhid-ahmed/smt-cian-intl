@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Package, Truck, Heart, ArrowRight } from "lucide-react";
 import { Heading } from "@/components/Heading";
@@ -47,36 +45,30 @@ const HowItWorks: React.FC<HowItWorksProps> = ({
   steps = defaultSteps,
 }) => {
   return (
-    <Section padding="lg">
+    <Section padding="lg" className="lg:py-32!">
       <Container>
-        {/* Title */}
-        <div className="max-w-4xl mx-auto flex flex-col justify-center">
-          <Heading as="h2" size="h3" align="center" className="mb-16">
+        <div className="max-w-6xl mx-auto flex flex-col justify-center">
+          <Heading
+            as="h2"
+            size="h3"
+            align="center"
+            className="mb-16 text-gray-300"
+          >
             {title}
           </Heading>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative mt-8">
             {steps.map((step, index) => (
               <React.Fragment key={step.id}>
-                {/* Step Card */}
                 <div className="flex flex-col items-center text-center">
-                  {/* Step Number */}
-                  <div className="text-5xl md:text-6xl font-bold mb-6 text-white">
+                  <div className="text-3xl font-bold mb-6 text-white">
                     {step.id}
                   </div>
-
-                  {/* Icon */}
-                  <div className="mb-6 text-white">{step.icon}</div>
-
-                  {/* Title */}
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">
+                  <div className="my-4 text-white">{step.icon}</div>
+                  <Heading as="h3" size="h6" weight="normal">
                     {step.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-400 text-base md:text-lg">
-                    {step.description}
-                  </p>
+                  </Heading>
+                  <p className="text-sm mt-2">{step.description}</p>
                 </div>
 
                 {/* Arrow Between Steps (Desktop) */}
