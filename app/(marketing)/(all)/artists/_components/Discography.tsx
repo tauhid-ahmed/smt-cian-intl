@@ -272,12 +272,8 @@ export default function Discography({
                 <Button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  variant="ghost"
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white hover:text-black ${
-                    activeFilter === filter
-                      ? "bg-white text-black"
-                      : "text-white"
-                  }`}
+                  size="sm"
+                  variant={activeFilter === filter ? "secondary" : "ghost"}
                 >
                   {filter}
                 </Button>
@@ -293,7 +289,7 @@ export default function Discography({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setSortBy(e.target.value as SortType)
               }
-              className="px-4 py-2 bg-white/20 rounded-lg text-sm font-medium border border-white/20 focus:outline-none focus:border-white/20 cursor-pointer"
+              className="px-4 py-2 bg-secondary rounded-lg text-sm font-medium border border-white/20 focus:outline-none focus:border-white/20 cursor-pointer"
             >
               <option value="Most Recent">Most Recent</option>
               <option value="Oldest">Oldest</option>
