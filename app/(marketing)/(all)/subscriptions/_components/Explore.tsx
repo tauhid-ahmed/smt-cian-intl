@@ -7,7 +7,7 @@ export default function Explore() {
     <Section className="overflow-hidden">
       <Container className="relative">
         <div className="text-center font-black">
-          <span className="text-outline text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold capitalize!">
+          <span className="text-outline text-4xl md:text-6xl lg:text-8xl  font-bold capitalize!">
             Ready to Start your Journey?
           </span>
         </div>

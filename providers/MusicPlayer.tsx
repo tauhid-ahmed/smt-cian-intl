@@ -492,7 +492,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 bg-linear-to-r from-gray-900 to-black border-t border-gray-800 shadow-2xl z-50 h-20 md:h-24 py-2"
+            className="fixed bottom-4 left-0 right-0 bg-linear-to-r from-gray-900 to-black border-t border-gray-800 shadow-2xl z-50 h-20 md:h-24 py-4"
           >
             <div className="h-full flex flex-col md:flex-row items-center px-3 md:px-6 gap-2 md:gap-6">
               {/* Mobile: Track Info + Controls */}
