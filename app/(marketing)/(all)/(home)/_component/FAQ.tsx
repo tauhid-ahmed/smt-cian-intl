@@ -1,5 +1,4 @@
 import FAQ from "@/components/FAQ";
-import { Heading } from "@/components/Heading";
 import Section from "@/components/layout/Section";
 
 const faqData = [

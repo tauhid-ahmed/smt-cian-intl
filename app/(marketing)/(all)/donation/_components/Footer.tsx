@@ -76,6 +76,9 @@ export default function Footer() {
             </div>
           ))}
         </div>
+        <div className="text-center mt-10 text-sm font-medium">
+          © 2025 CIAN Collective. All rights reserved.
+        </div>
       </Container>
     </Section>
   );
