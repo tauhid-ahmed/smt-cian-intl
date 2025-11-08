@@ -6,7 +6,7 @@ export default function Mission() {
     <Section className="overflow-hidden">
       <Container className="relative">
         <div className="text-center font-black">
-          <span className="text-outline text-[200px] text-center whitespace-nowrap truncate leading-tight">
+          <span className="text-outline text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold capitalize!">
             Our Mission
           </span>
         </div>

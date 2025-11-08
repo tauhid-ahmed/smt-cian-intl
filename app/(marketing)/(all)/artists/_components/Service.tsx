@@ -7,7 +7,7 @@ export default function Service() {
     <Section className="relative overflow-x-hidden" padding="sm">
       <Container>
         <div className="text-center font-black">
-          <span className="text-outline text-[200px] text-center whitespace-nowrap truncate">
+          <span className="text-outline text-4xl md:text-6xl lg:text-8xl xl:text-[200px] font-bold capitalize!">
             Listen on
           </span>
         </div>
@@ -25,7 +25,7 @@ export default function Service() {
               "linear-gradient(to top, rgba(0,0,0,0) 20%, black 100%)",
           }}
         />
-        <div className="flex items-center justify-between gap-4 max-w-lg mx-auto -mt-10">
+        <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
           <Image
             src="/icons/spotify.svg"
             alt="spotify"

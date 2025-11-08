@@ -56,7 +56,7 @@ const Newsletter: React.FC<NewsletterProps> = ({
     <Section padding="sm" className="overflow-hidden relative">
       <Container>
         <div className="flex items-center justify-center relative">
-          <span className="text-outline text-[160px] font-bold text-center truncate leading-tight relative">
+          <span className="text-outline text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold capitalize!">
             {title}
           </span>
           <div
@@ -75,13 +75,13 @@ const Newsletter: React.FC<NewsletterProps> = ({
           />
         </div>
 
-        <p className="text-lg md:text-xl text-white mb-12 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-white mt-4 mb-12 lg:mb-20 max-w-2xl mx-auto font-normal">
           {subtitle}
         </p>
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto mb-12"
+          className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto m-10"
         >
           <div className="flex flex-col md:flex-row items-center w-full gap-6">
             <div className="flex-1 w-full relative">
@@ -117,11 +117,11 @@ const Newsletter: React.FC<NewsletterProps> = ({
         </form>
 
         {/* Features */}
-        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 mb-8">
+        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 mb-12">
           {features.map((feature: Feature) => (
             <div key={feature.id} className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-white" />
-              <span className="text-base md:text-lg">{feature.text}</span>
+              <CheckCircle className="w-5 h-5 text-gray-400" />
+              <span className="text-sm">{feature.text}</span>
             </div>
           ))}
         </div>
