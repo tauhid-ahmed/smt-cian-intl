@@ -20,16 +20,19 @@ function isCustomUser(user: User): user is Required<User> {
 
 const authConfig: NextAuthConfig = {
   providers: [
+    // 🔐 Google OAuth
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
 
+    // 🔐 GitHub OAuth
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
 
+    // 🔐 Email/Password Login
     Credentials({
       name: "credentials",
       credentials: {
@@ -40,7 +43,8 @@ const authConfig: NextAuthConfig = {
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          const response = await fetch(`${BACKEND_URL}/auth/login`, {
+          // Send credentials to YOUR backend
+          const response = await fetch(`${BACKEND_URL}/auth/admin/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -51,18 +55,26 @@ const authConfig: NextAuthConfig = {
 
           if (!response.ok) return null;
 
-          const data = await response.json();
+          const result = await response.json();
+
+          // Backend returns: { success, message, data: { accessToken, refreshToken } }
+          if (!result.success || !result.data) return null;
+
+          const { data } = result;
+
+          // Decode JWT to get user info (or fetch from backend)
+          const tokenPayload = JSON.parse(
+            Buffer.from(data.accessToken.split(".")[1], "base64").toString()
+          );
 
           return {
-            id: data.user.id,
-            email: data.user.email,
-            name: data.user.name,
-            role: data.user.role,
-            emailVerified: data.user.emailVerified
-              ? new Date(data.user.emailVerified)
-              : null,
-            accessToken: data.tokens.accessToken,
-            refreshToken: data.tokens.refreshToken,
+            id: tokenPayload.id,
+            email: tokenPayload.email,
+            name: tokenPayload.fullName,
+            role: tokenPayload.role,
+            emailVerified: tokenPayload.emailVerified ? new Date() : null,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -73,7 +85,13 @@ const authConfig: NextAuthConfig = {
   ],
 
   callbacks: {
+    /**
+     * 🎯 JWT CALLBACK - Stores tokens from backend
+     * When user logs in, we store backend tokens
+     * When token expires, we refresh using backend
+     */
     async jwt({ token, user }): Promise<JWT> {
+      // Initial sign in - store backend tokens
       if (user && isCustomUser(user)) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -86,9 +104,13 @@ const authConfig: NextAuthConfig = {
         };
       }
 
+      // Token is still valid (backend will reject if expired)
       return token;
     },
 
+    /**
+     * 🎯 SESSION CALLBACK - Makes tokens available to frontend
+     */
     async session({ session, token }) {
       if (token.user) {
         session.user = token.user;
@@ -99,9 +121,14 @@ const authConfig: NextAuthConfig = {
       return session;
     },
 
+    /**
+     * 🎯 SIGN IN CALLBACK - For social logins, exchange social token for backend tokens
+     */
     async signIn({ user, account }) {
+      // If social login (Google, GitHub, etc.)
       if (account && account.provider !== "credentials") {
         try {
+          // Send social token to YOUR backend to get your JWT tokens
           const response = await fetch(
             `${BACKEND_URL}/auth/${account.provider}/callback`,
             {
@@ -116,18 +143,26 @@ const authConfig: NextAuthConfig = {
 
           if (!response.ok) return false;
 
-          const data = await response.json();
+          const result = await response.json();
 
+          if (!result.success || !result.data) return false;
+
+          const { data } = result;
+
+          // Decode JWT to get user info
+          const tokenPayload = JSON.parse(
+            Buffer.from(data.accessToken.split(".")[1], "base64").toString()
+          );
+
+          // Update user with backend tokens
           Object.assign(user, {
-            id: data.user.id,
-            email: data.user.email,
-            name: data.user.name,
-            role: data.user.role,
-            emailVerified: data.user.emailVerified
-              ? new Date(data.user.emailVerified)
-              : null,
-            accessToken: data.tokens.accessToken,
-            refreshToken: data.tokens.refreshToken,
+            id: tokenPayload.id,
+            email: tokenPayload.email,
+            name: tokenPayload.fullName,
+            role: tokenPayload.role,
+            emailVerified: tokenPayload.emailVerified ? new Date() : null,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
           });
 
           return true;
@@ -137,13 +172,14 @@ const authConfig: NextAuthConfig = {
         }
       }
 
+      // For credentials login, already handled in authorize
       return true;
     },
   },
 
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/signin",
+    signIn: "/signin",
+    error: "/signin",
   },
 };
 
