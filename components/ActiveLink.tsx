@@ -20,13 +20,8 @@ export default function ActiveLink({
     <Link
       href={href}
       className={cn(
-        "relative flex items-center text-muted text-base",
-
-        "after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-[#FFDA2A] after:transition-all after:duration-300",
-        "hover:after:w-full",
-
-        isActive && "is-active-link text-white rounded after:w-full",
-
+        "flex items-center text-muted text-base",
+        isActive && "is-active-link text-white rounded",
         className
       )}
     >
