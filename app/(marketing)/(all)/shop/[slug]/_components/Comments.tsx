@@ -42,7 +42,7 @@ interface ReviewSectionProps {
 }
 
 // ==================== STAR RATING COMPONENT ====================
-const StarRating = ({
+export const StarRating = ({
   rating,
   size = "md",
 }: {
@@ -347,8 +347,8 @@ export default function CustomerReviewsSection({
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-white text-black px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
-            Load More Reviews
+          <button className="bg-amber-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+            Share Your Review
           </button>
         </div>
       </Container>
