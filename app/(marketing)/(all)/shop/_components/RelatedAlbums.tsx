@@ -11,7 +11,7 @@ type ProductCardProps = {
     rating: number;
     price: number;
 }
-const ProductCard = ({ category, name, image, rating, price }: Props) => {
+const ProductCard = ({ category, name, image, rating, price }: ProductCardProps) => {
     return <div className='border border-gray-700 rounded-xl overflow-hidden'>
         <Image src={image} alt="" width={420} height={420} className='w-full aspect-4/4 object-cover border-none'/>
         <div className='p-4 space-y-2'>
