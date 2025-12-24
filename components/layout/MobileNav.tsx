@@ -26,7 +26,7 @@ export default function MobileNav() {
             <Logo />
             <SheetClose asChild>
               <Button size="icon" variant="ghost">
-                <LucideX className="text-white size-5 rotate-180" />
+                <LucideX className="text-white size-8 rotate-180 border border-amber-200 p-1 rounded-full" />
               </Button>
             </SheetClose>
           </SheetTitle>
@@ -51,3 +51,5 @@ export default function MobileNav() {
     </Sheet>
   );
 }
+
+
