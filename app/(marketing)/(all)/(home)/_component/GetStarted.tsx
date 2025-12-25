@@ -8,9 +8,9 @@ export default function GetStarted() {
 
   return (
     <>
-      <Button size="lg" shape="md" width="xl" onClick={openSignUp}>
-        Start Free Now
-      </Button>
+          <Button size="lg" shape="md" width="xl" onClick={openSignUp}>
+              Start Free Now
+          </Button>
     </>
   );
 }

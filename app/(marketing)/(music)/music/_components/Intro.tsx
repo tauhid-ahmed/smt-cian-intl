@@ -14,15 +14,15 @@ export default function Intro() {
           Music
         </Heading>
         <div className="relative overflow-hidden rounded">
-          <div className="h-[40vh] relative rounded -mx-8 overflow-hidden">
+          <div className="h-[45vh] relative rounded -mx-8 overflow-hidden">
             <Image
               src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2072"
               alt="intro image"
               fill
-              className="size-full object-cover rounded"
+              className="size-full object-cover rounded "
             />
           </div>
-          <div className="absolute inset-0 px-16 py-6">
+          <div className="absolute inset-0 px-6 md:px-16 py-6 bg-black/20">
             <Heading as="h1" size="h5" className="max-w-96 leading-tight">
               Get royalty-free music for your videos
             </Heading>

@@ -1,4 +1,3 @@
-import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import Image from "next/image";
@@ -6,24 +5,71 @@ import Image from "next/image";
 export default function Studio() {
   return (
     <Section padding="lg" className="p-0!">
-      <div className="relative h-screen">
+      <div className="relative lg:min-h-screen md:min-h-screen h-[500px] flex items-center">
         <Container>
-          <div className="relative h-[80vh] overflow-hidden rounded-lg opacity-75">
+          <div
+            className="
+              relative
+              w-full
+              h-[45vh]
+              sm:h-[55vh]
+              md:h-[65vh]
+              lg:h-[75vh]
+              xl:h-[80vh]
+              overflow-hidden
+              rounded-lg
+              opacity-75 cursor-pointer
+            "
+          >
             <Image
-              src="https://images.unsplash.com/photo-1617886971858-4234921a7540?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1177"
+              src="/images/behind-the-image.png"
               alt="studio"
               fill
-              className="absolute inset-0 object-cover"
+              priority
+              className="object-cover"
             />
           </div>
         </Container>
-        <div className="absolute top-0 py-10 inset-x-0 z-10">
+        <div
+          className="
+            absolute
+            inset-x-0
+            top-0
+            z-10
+            pt-6
+            sm:pt-10
+            md:pt-14
+            lg:pt-20
+          "
+        >
           <Container>
             <div className="text-center">
-              <Heading as="h2" size="h3" align="center">
+              <h2
+                className="
+                  text-[#D9D9D9]
+                  font-bold
+                  mb-3
+                  text-2xl
+                  sm:text-3xl
+                  md:text-4xl
+                  lg:text-5xl
+                "
+              >
                 Behind the scenes
-              </Heading>
-              <p>Studio sessions, live performances, and moments with fans</p>
+              </h2>
+
+              <p
+                className="
+                  text-[#D9D9D9]
+                  font-medium
+                  text-sm
+                  sm:text-base
+                  md:text-lg
+                  lg:text-xl
+                "
+              >
+                Studio sessions, live performances, and moments with fans
+              </p>
             </div>
           </Container>
         </div>

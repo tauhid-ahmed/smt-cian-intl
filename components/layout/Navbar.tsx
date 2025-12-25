@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { marketingNavbarData } from "@/paths";
@@ -9,10 +8,10 @@ import ActiveLink from "../ActiveLink";
 import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 
-export default function () {
+export default function Navbar() {
   const { openSignUp, openSignIn } = useAuth();
   return (
-    <header className="bg-accent/50 backdrop-blur sticky top-0 z-50 shadow">
+    <header className="bg-accent/50 backdrop-blur sticky top-0 z-50 shadow h-20 w-full flex justify-center items-center">
       <Container>
         <nav className="py-3 flex">
           <div className="flex-1 flex items-center gap-4">
@@ -34,7 +33,7 @@ export default function () {
           </div>
           <div className="flex-1 flex items-center gap-4 justify-end">
             <div className="hidden md:block">
-              <Button size="sm" onClick={openSignUp}>
+              <Button size="md" onClick={openSignUp}>
                 Start Free Now
               </Button>
             </div>
@@ -45,7 +44,7 @@ export default function () {
               className="text-base"
               onClick={openSignIn}
             >
-              Sign in
+              Sign In
             </Button>
           </div>
         </nav>

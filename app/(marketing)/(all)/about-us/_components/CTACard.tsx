@@ -38,7 +38,7 @@ const CTACardComponent: React.FC<{ card: CTACard }> = ({ card }) => {
       </p>
 
       <p
-        className={`text-sm sm:text-base mb-6 sm:mb-8 flex-grow ${
+        className={`text-sm sm:text-base mb-6 sm:mb-8 grow ${
           isLight ? "text-gray-700" : "text-gray-300"
         }`}
       >
@@ -119,6 +119,7 @@ const CTASection: React.FC = () => {
           ))}
         </div>
       </Container>
+      <p className="text-center text-white mt-10">© 2025 CIAN Collective. All rights reserved.</p>
     </Section>
   );
 };

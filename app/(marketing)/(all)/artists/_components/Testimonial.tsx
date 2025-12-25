@@ -2,6 +2,7 @@ import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import TextCarousel from "@/components/TextCarousel";
+import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
@@ -58,6 +59,9 @@ export default function Testimonial() {
             <p>How This Artist Changed My Life</p>
           </div>
           <TextCarousel data={testimonials} />
+        </div>
+        <div className="flex justify-center items-center -mt-10 mb-20">
+          <Button> Share Your Story</Button>
         </div>
       </Container>
     </Section>
