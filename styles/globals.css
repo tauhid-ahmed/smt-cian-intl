@@ -159,3 +159,6 @@
 .animate-equalizer {
   animation: equalizer 0.8s ease-in-out infinite;
 }
+button, a{
+  cursor: pointer;
+}
