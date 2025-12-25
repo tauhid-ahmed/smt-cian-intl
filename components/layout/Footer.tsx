@@ -191,7 +191,7 @@ function FooterBottom() {
 // Main component
 export default function Footer() {
   return (
-    <footer className="bg-black text-white">
+    <footer className="bg-black text-white mt-48">
       <Container className="py-16">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           {/* Left side - Brand */}
