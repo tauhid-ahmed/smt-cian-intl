@@ -1,6 +1,7 @@
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import TextCarousel from "@/components/TextCarousel";
+import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
@@ -50,6 +51,12 @@ export default function Testimonial() {
     <Section>
       <Container>
         <TextCarousel data={testimonials} />
+
+       <div className="w-full flex items-center justify-center -mt-10 mb-20">
+        <Button size="lg" shape="md" width="xl"  >
+            Share Your Feedback
+        </Button>
+       </div>
       </Container>
     </Section>
   );
