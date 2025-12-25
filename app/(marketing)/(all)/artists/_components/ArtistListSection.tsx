@@ -1,6 +1,7 @@
 import Container from '@/components/layout/Container';
 import { Button } from '@/components/ui/button'; 
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 
@@ -22,10 +23,13 @@ const artists : Artist[] = [
 ];
 
 const ArtistCard = ({artist}: {artist: Artist}) => {
-    return <div className="bg-gray-900 hover:border hover:border-b-gray-700 rounded-md transition-all cursor-pointer">
-        <Image width={200} height={200} src={artist.image} alt="" className="w-full" />
-        <p className="p-4 rounded-md overflow-hidden"> {artist.name} </p>
-    </div>
+    //todo: replace with actural artist id later
+    return<Link href={'/artists/'+artist.name}>
+        <div className="bg-gray-900 hover:border hover:border-b-gray-700 rounded-md transition-all cursor-pointer">
+            <Image width={200} height={200} src={artist.image} alt="" className="w-full" />
+            <p className="p-4 rounded-md overflow-hidden"> {artist.name} </p>
+        </div>
+    </Link>
 }
 
 
