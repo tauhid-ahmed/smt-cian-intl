@@ -38,7 +38,7 @@ const CTACardComponent: React.FC<{ card: CTACard }> = ({ card }) => {
       </p>
 
       <p
-        className={`text-sm sm:text-base mb-6 sm:mb-8 flex-grow ${
+        className={`text-sm sm:text-base mb-6 sm:mb-8 grow ${
           isLight ? "text-gray-700" : "text-gray-300"
         }`}
       >

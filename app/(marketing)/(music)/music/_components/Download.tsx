@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useMusicPlayer } from "@/providers/MusicPlayer";
 import { motion } from "framer-motion";
 import { Heading } from "@/components/Heading";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 interface Track {
   id: string | number;
@@ -210,25 +211,6 @@ const MusicPlaylist = () => {
           Download
         </Heading>
         <div className="max-w-full mx-auto pb-20">
-          <div className="hidden md:flex gap-4 lg:gap-8 mb-6 text-xs sm:text-sm flex-wrap">
-            <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
-              <span>Genre</span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            </button>
-            <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
-              <span>Mood</span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            </button>
-            <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
-              <span>Video Theme</span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            </button>
-            <button className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
-              <span>Instrument</span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            </button>
-          </div>
-
           <div className="space-y-0">
             {tracks.map((track) => (
               <motion.div
@@ -336,13 +318,16 @@ const MusicPlaylist = () => {
                   <div className="flex items-center gap-0 shrink-0">
                     <button
                       className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors"
-                      aria-label="Download track"
+                      aria-label="Download track cursor-pointer"
                     >
-                      <Download className="w-4 h-4 text-white/50 hover:text-white" />
+                      <FaRegCheckCircle
+                        color="#FDC700"
+                        className="w-4 h-4 text-white/50 hover:text-white cursor-pointer"
+                      />
                     </button>
                     <button
                       onClick={() => toggleLike(track.id)}
-                      className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors"
+                      className="p-2 sm:p-2.5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                       aria-label={
                         isTrackLiked(track.id) ? "Unlike track" : "Like track"
                       }
