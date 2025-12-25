@@ -91,7 +91,7 @@ export function Button({
     <Comp
       data-slot="button"
       className={cn(
-        buttonVariants({ variant, size, shape, weight, width }),
+        buttonVariants({ variant, size, shape, weight, width }), ' transition-all cursor-pointer active:scale-95',
         className
       )}
       {...props}

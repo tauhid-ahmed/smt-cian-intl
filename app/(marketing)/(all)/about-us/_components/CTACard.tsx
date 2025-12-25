@@ -119,6 +119,7 @@ const CTASection: React.FC = () => {
           ))}
         </div>
       </Container>
+      <p className="text-center text-white mt-10">© 2025 CIAN Collective. All rights reserved.</p>
     </Section>
   );
 };

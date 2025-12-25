@@ -80,9 +80,9 @@ const ReviewPage = () => {
   }
 
   return (
-    <Container>
+    <Container className="max-w-7xl mx-auto">
       {/* Header Section */}
-      <div className="mb-24">
+      <div className="my-24 mt-48 ">
         <Heading as="h1" size="h1" font="serif" align="center" className="mt-6 mb-2">
           Share Your Story
         </Heading>
@@ -386,7 +386,7 @@ const ReviewPage = () => {
         <div className="space-y-4 flex flex-col items-center justify-center">
           <Button
             type="submit"
-            className="md:w-[10%] lg:w-[20%] sm:w-[35%] bg-foreground text-background hover:opacity-90 transition py-2 h-auto"
+            className="md:w-[10%] lg:w-[20%] sm:w-[35%] bg-foreground text-background hover:opacity-90 transition py-2 h-auto mb-6"
           >
             Submit Review
           </Button>
@@ -394,7 +394,7 @@ const ReviewPage = () => {
             Your review will be checked by our team before appearing in the site (usually within 24 hours)
           </p>
           {/* Contact Support */}
-          <Link href="/#" className="pt-6 text-center">
+          <Link href="/#" className="pt-0 mb-10 text-center">
             <h4 className="font-semibold mb-2 text-lg">Contact Support</h4>
           </Link>
         </div>
