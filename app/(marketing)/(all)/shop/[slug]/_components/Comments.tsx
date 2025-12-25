@@ -280,10 +280,11 @@ export default function CustomerReviewsSection({
   return (
     <Section>
       <Container className="max-w-7xl mx-auto">
-        <Heading as="h2" size="h4">
-          Customer Reviews & Testimonials
-        </Heading>
-
+        <div className="mb-10 text-center w-full">
+            <Heading as="h2" size="h4">
+                Customer Reviews & Testimonials
+            </Heading>
+        </div>
         <div className="grid md:grid-cols-2 gap-12 mb-12">
           <div className="flex flex-col items-center md:items-start">
             <div className="text-7xl font-bold mb-2">{averageRating}</div>
