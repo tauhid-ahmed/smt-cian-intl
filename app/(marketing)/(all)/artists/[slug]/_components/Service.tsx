@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Service() {
   return (
-    <Section className="relative overflow-x-hidden" padding="sm">
+    <Section className="relative overflow-x-hidden max-w-7xl m-auto" padding="sm">
       <Container>
         <div className="text-center font-black">
           <span className="text-outline text-4xl md:text-6xl lg:text-8xl xl:text-[200px] font-bold capitalize!">

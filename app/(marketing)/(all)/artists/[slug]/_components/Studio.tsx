@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Studio() {
   return (
-    <Section padding="lg" className="p-0!">
+    <Section padding="lg" className="p-0! ">
       <div className="relative lg:min-h-screen md:min-h-screen h-[500px] flex items-center">
         <Container>
           <div
