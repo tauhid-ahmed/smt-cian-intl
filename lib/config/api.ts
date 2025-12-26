@@ -8,7 +8,7 @@
 export const API_BASE_URL = 
   process.env.NODE_ENV === "development"
     ? "/api/proxy" // Use Next.js proxy in development
-    : "http://206.162.244.131:6006/api/v1"; // Direct URL in production (if CORS is configured)
+    : "http://206.162.244.175:6006/api/v1"; // Direct URL in production (if CORS is configured)
 
 export const API_ENDPOINTS = {
   AUTH: {
