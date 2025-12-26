@@ -9,10 +9,14 @@ import TextField from "./TextField";
 import { Eye, EyeOff } from "lucide-react";
 import { FacebookIcon, GoogleIcon } from "@/components/Icons";
 import { useAuth } from "../provider/AuthProvider";
+import { useLoginMutation } from "@/lib/api/authApi";
+import toast from "react-hot-toast";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
+import type { LoginErrorResponse } from "@/lib/api/authApi";
 
 const signInSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -21,6 +25,8 @@ type SignInFormData = z.infer<typeof signInSchema>;
 export default function SignInForm() {
   const { openForgotPassword } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useAppDispatch();
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -34,13 +40,75 @@ export default function SignInForm() {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = form;
 
   const onSubmit = async (data: SignInFormData) => {
     try {
-      console.log("Form Data:", data);
-    } catch (error) {
-      console.error(error);
+      console.log("Submitting login data:", {
+        email: data.email,
+        password: "***",
+      });
+
+      const result = await login({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      console.log("Login success response:", result);
+
+      // Success case
+      toast.success(result.message || "Logged in successfully!");
+
+      // Store user data in Redux
+      dispatch(
+        loginSuccess({
+          id: result.data.id,
+          name: result.data.fullName,
+          email: result.data.email,
+        })
+      );
+
+      // Store tokens in localStorage
+      if (result.data.accessToken) {
+        localStorage.setItem("accessToken", result.data.accessToken);
+        localStorage.setItem("refreshToken", result.data.refreshToken);
+      }
+
+      // Close modal and reset form
+      dispatch(closeAuthModal());
+      reset();
+    } catch (error: unknown) {
+      console.error("Login error:", error);
+      console.error("Error details:", {
+        error,
+        data: (error as { data?: unknown })?.data,
+        status: (error as { status?: unknown })?.status,
+      });
+
+      // Error case - RTK Query wraps the error in error.data
+      const errorObj = error as { data?: unknown; status?: string | number; error?: string };
+      const errorData = errorObj?.data || error;
+      const errorResponse = errorData as LoginErrorResponse;
+
+      if (errorResponse?.errorMessages && errorResponse.errorMessages.length > 0) {
+        // Show the first error message
+        toast.error(
+          errorResponse.errorMessages[0].message ||
+            errorResponse.message ||
+            "Login failed"
+        );
+      } else if (errorResponse?.message) {
+        toast.error(errorResponse.message);
+      } else if (errorObj?.status === "FETCH_ERROR") {
+        toast.error(
+          "Network error: Could not connect to server. Please check your connection."
+        );
+      } else if (errorObj?.status === "CUSTOM_ERROR") {
+        toast.error(errorObj?.error || "An error occurred during login");
+      } else {
+        toast.error("An error occurred during login");
+      }
     }
   };
 
@@ -113,10 +181,10 @@ export default function SignInForm() {
           <Button
             type="submit"
             className="flex-1 px-4 py-2! max-w-36! text-base"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             size="md"
           >
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting || isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </div>
       </form>

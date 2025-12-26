@@ -13,6 +13,7 @@ export const API_BASE_URL =
 export const API_ENDPOINTS = {
   AUTH: {
     CREATE_ACCOUNT: "/auth/create-account",
+    LOGIN: "/auth/login",
     // Add more auth endpoints here as needed
   },
 } as const;
