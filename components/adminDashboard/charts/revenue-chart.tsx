@@ -62,8 +62,8 @@ export function RevenueChart({
                 color: "#FFFFFF",
               }}
               labelStyle={{ color: "#B3B3B3", fontSize: 12 }}
-              formatter={(value: number) =>
-                `${lineDataKey}: ${value.toLocaleString()}`
+              formatter={(value: number | undefined) =>
+                value !== undefined ? `${lineDataKey}: ${value.toLocaleString()}` : ''
               }
             />
             <Line

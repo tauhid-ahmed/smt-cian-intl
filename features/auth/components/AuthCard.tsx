@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type AuthCardProps = {
-  variant: "signin" | "signup" | "forgot-password" | "email-verified";
+  variant: "signin" | "signup" | "forgot-password" | "email-verified" | "email-verify" | "reset-password-otp" | "reset-password";
   children: React.ReactNode;
   footer?: React.ReactNode;
   trigger: React.ReactNode;
@@ -41,7 +41,10 @@ export default function AuthCard({
             "bg-sidebar":
               variant === "signin" ||
               variant === "forgot-password" ||
-              variant === "email-verified",
+              variant === "email-verified" ||
+              variant === "email-verify" ||
+              variant === "reset-password-otp" ||
+              variant === "reset-password",
             "bg-white text-white": variant === "signup",
           }
         )}

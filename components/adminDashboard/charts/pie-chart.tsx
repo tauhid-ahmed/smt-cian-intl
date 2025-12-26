@@ -46,7 +46,7 @@ export function PieChartCard({ title, subtitle, data }: PieChartCardProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip formatter={(value: number) => `${value}%`} />
+              <Tooltip formatter={(value: number | undefined) => value !== undefined ? `${value}%` : ''} />
             </PieChart>
           </ResponsiveContainer>
         </div>
