@@ -116,7 +116,7 @@ export default function SignInForm() {
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex gap-4 items-center">
-          <Button
+          {/* <Button
             type="button"
             variant="secondary"
             shape="pill"
@@ -125,7 +125,7 @@ export default function SignInForm() {
           >
             <FacebookIcon />
             Facebook
-          </Button>
+          </Button> */}
           <Button
             type="button"
             variant="secondary"
