@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Inria_Serif } from "next/font/google";
 import "@/styles/globals.css";
 import { MusicPlayerProvider } from "@/providers/MusicPlayer";
+import ReduxProvider from "@/providers/ReduxProvider";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
         {/* {marketing} */}
-        <MusicPlayerProvider>{children}</MusicPlayerProvider>
+        <ReduxProvider>
+          <MusicPlayerProvider>{children}</MusicPlayerProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
