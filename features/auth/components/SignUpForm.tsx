@@ -8,10 +8,15 @@ import { Button } from "@/components/ui/button";
 import TextField from "./TextField";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleIcon } from "@/components/Icons";
+import { useCreateAccountMutation } from "@/lib/api/authApi";
+import toast from "react-hot-toast";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
+import type { CreateAccountErrorResponse } from "@/lib/api/authApi";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -19,6 +24,8 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [createAccount, { isLoading }] = useCreateAccountMutation();
+  const dispatch = useAppDispatch();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -33,14 +40,71 @@ export default function SignUpForm() {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = form;
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log("Form Data:", data);
-      // Add your sign-up logic here
-    } catch (error) {
-      console.error(error);
+      console.log("Submitting form data:", {
+        fullName: data.name,
+        email: data.email,
+        password: "***",
+      });
+
+      const result = await createAccount({
+        fullName: data.name,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      console.log("Success response:", result);
+
+      // Success case
+      toast.success(result.message || "Registered Successfully!");
+      
+      // Store user data in Redux
+      dispatch(
+        loginSuccess({
+          id: result.data.id,
+          name: data.name,
+          email: data.email,
+        })
+      );
+
+      // Store tokens in localStorage
+      if (result.data.accessToken) {
+        localStorage.setItem("accessToken", result.data.accessToken);
+        localStorage.setItem("refreshToken", result.data.refreshToken);
+      }
+
+      // Close modal and reset form
+      dispatch(closeAuthModal());
+      reset();
+    } catch (error: unknown) {
+      console.error("Registration error:", error);
+      console.error("Error details:", {
+        error,
+        data: (error as { data?: unknown })?.data,
+        status: (error as { status?: unknown })?.status,
+      });
+
+      // Error case - RTK Query wraps the error in error.data
+      const errorObj = error as { data?: unknown; status?: string | number; error?: string };
+      const errorData = errorObj?.data || error;
+      const errorResponse = errorData as CreateAccountErrorResponse;
+      
+      if (errorResponse?.errorMessages && errorResponse.errorMessages.length > 0) {
+        // Show the first error message
+        toast.error(errorResponse.errorMessages[0].message || errorResponse.message || "Registration failed");
+      } else if (errorResponse?.message) {
+        toast.error(errorResponse.message);
+      } else if (errorObj?.status === 'FETCH_ERROR') {
+        toast.error("Network error: Could not connect to server. Please check your connection.");
+      } else if (errorObj?.status === 'CUSTOM_ERROR') {
+        toast.error(errorObj?.error || "An error occurred during registration");
+      } else {
+        toast.error("An error occurred during registration");
+      }
     }
   };
 
@@ -95,8 +159,8 @@ export default function SignUpForm() {
         </p> */}
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full h-14" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Start Free Now"}
+        <Button type="submit" className="w-full h-14" disabled={isSubmitting || isLoading}>
+          {isSubmitting || isLoading ? "Creating account..." : "Start Free Now"}
         </Button>
 
         {/* Terms

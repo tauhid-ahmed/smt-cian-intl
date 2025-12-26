@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import musicReducer from "./slices/musicSlice";
 import cartReducer from "./slices/cartSlice";
 import uiReducer from "./slices/uiSlice";
+import { baseApi } from "@/lib/api/baseApi";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       music: musicReducer,
       cart: cartReducer,
       ui: uiReducer,
+      [baseApi.reducerPath]: baseApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -18,7 +20,7 @@ export const makeStore = () => {
           // Ignore these action types
           ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
         },
-      }),
+      }).concat(baseApi.middleware),
   });
 };
 
