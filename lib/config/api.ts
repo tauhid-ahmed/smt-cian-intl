@@ -25,6 +25,9 @@ export const API_ENDPOINTS = {
     LOGIN: "/auth/login",
     EMAIL_VERIFY: "/auth/email-verify",
     RESEND_OTP: "/auth/resend-otp",
+    FORGOT_PASSWORD: "/auth/forgot-password",
+    VERIFY_RESET_PASSWORD_OTP: "/auth/verify-reset-password-otp",
+    RESET_PASSWORD: "/auth/reset-password",
     // Add more auth endpoints here as needed
   },
 } as const;

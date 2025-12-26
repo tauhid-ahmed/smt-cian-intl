@@ -7,10 +7,12 @@ import SignUpForm from "./SignUpForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import EmailVerified from "./EmailVerified";
 import EmailVerifyForm from "./EmailVerifyForm";
+import ResetPasswordOtpForm from "./ResetPasswordOtpForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 import { Button } from "@/components/ui/button";
 
 export default function AuthModals() {
-  const { mode, isOpen, close, switchMode, emailVerifyData } = useAuth();
+  const { mode, isOpen, close, switchMode, emailVerifyData, resetPasswordData } = useAuth();
 
   return (
     <>
@@ -46,7 +48,7 @@ export default function AuthModals() {
         onOpenChange={(open) => !open && close()}
         footer={
           <p className="text-sm text-gray-300">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button
               onClick={() => switchMode("signup")}
               variant="link"
@@ -106,6 +108,37 @@ export default function AuthModals() {
           <EmailVerifyForm
             userId={emailVerifyData.userId}
             userEmail={emailVerifyData.userEmail}
+          />
+        )}
+      </AuthCard>
+
+      {/* Reset Password OTP Modal */}
+      <AuthCard
+        variant="reset-password-otp"
+        title="Verify OTP"
+        trigger={<span />}
+        open={isOpen && mode === "reset-password-otp"}
+        onOpenChange={(open) => !open && close()}
+      >
+        {emailVerifyData && (
+          <ResetPasswordOtpForm
+            userId={emailVerifyData.userId}
+            userEmail={emailVerifyData.userEmail}
+          />
+        )}
+      </AuthCard>
+
+      {/* Reset Password Modal */}
+      <AuthCard
+        variant="reset-password"
+        title="Reset your password"
+        trigger={<span />}
+        open={isOpen && mode === "reset-password"}
+        onOpenChange={(open) => !open && close()}
+      >
+        {resetPasswordData && (
+          <ResetPasswordForm
+            accessToken={resetPasswordData.accessToken}
           />
         )}
       </AuthCard>
