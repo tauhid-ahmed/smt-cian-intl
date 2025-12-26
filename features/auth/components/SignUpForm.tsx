@@ -10,9 +10,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { GoogleIcon } from "@/components/Icons";
 import { useCreateAccountMutation } from "@/lib/api/authApi";
 import toast from "react-hot-toast";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
 import type { CreateAccountErrorResponse } from "@/lib/api/authApi";
+import { useAuth } from "../provider/AuthProvider";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -25,7 +24,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [createAccount, { isLoading }] = useCreateAccountMutation();
-  const dispatch = useAppDispatch();
+  const { openEmailVerify } = useAuth();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -59,27 +58,17 @@ export default function SignUpForm() {
 
       console.log("Success response:", result);
 
-      // Success case
-      toast.success(result.message || "Registered Successfully!");
+      // Success case - OTP sent
+      toast.success(result.message || "OTP sent successfully to your email!");
       
-      // Store user data in Redux
-      dispatch(
-        loginSuccess({
-          id: result.data.id,
-          name: data.name,
-          email: data.email,
-        })
-      );
-
-      // Store tokens in localStorage
-      if (result.data.accessToken) {
-        localStorage.setItem("accessToken", result.data.accessToken);
-        localStorage.setItem("refreshToken", result.data.refreshToken);
-      }
-
-      // Close modal and reset form
-      dispatch(closeAuthModal());
+      // Reset form
       reset();
+      
+      // Directly open email verify modal with userId (without closing first for smooth transition)
+      // Use setTimeout to ensure modal transition is smooth
+      setTimeout(() => {
+        openEmailVerify(result.data.id, data.email);
+      }, 100);
     } catch (error: unknown) {
       console.error("Registration error:", error);
       console.error("Error details:", {

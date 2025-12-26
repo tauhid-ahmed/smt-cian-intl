@@ -6,6 +6,7 @@ type AuthMode =
   | "signup"
   | "forgot-password"
   | "email-verified"
+  | "email-verify"
   | null;
 
 type AuthContextType = {
@@ -15,8 +16,10 @@ type AuthContextType = {
   openSignUp: () => void;
   openForgotPassword: () => void;
   openEmailVerified: () => void;
+  openEmailVerify: (userId: string, userEmail?: string) => void;
   close: () => void;
   switchMode: (newMode: AuthMode) => void;
+  emailVerifyData: { userId: string; userEmail?: string } | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +27,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<AuthMode>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [emailVerifyData, setEmailVerifyData] = useState<{ userId: string; userEmail?: string } | null>(null);
 
   const openSignIn = () => {
     setMode("signin");
@@ -45,8 +49,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setIsOpen(true);
   };
 
+  const openEmailVerify = (userId: string, userEmail?: string) => {
+    setEmailVerifyData({ userId, userEmail });
+    setMode("email-verify");
+    setIsOpen(true);
+  };
+
   const close = () => {
     setIsOpen(false);
+    setEmailVerifyData(null);
     setTimeout(() => setMode(null), 200);
   };
 
@@ -67,8 +78,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         openSignUp,
         openForgotPassword,
         openEmailVerified,
+        openEmailVerify,
         close,
         switchMode,
+        emailVerifyData,
       }}
     >
       {children}

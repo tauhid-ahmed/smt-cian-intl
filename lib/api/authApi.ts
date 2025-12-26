@@ -16,8 +16,6 @@ export interface CreateAccountSuccessResponse {
   message: string;
   data: {
     id: string;
-    accessToken: string;
-    refreshToken: string;
     authType: "register";
   };
 }
@@ -78,6 +76,79 @@ export interface LoginErrorResponse {
 export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
 
 /**
+ * Email Verify Request/Response types
+ */
+export interface EmailVerifyRequest {
+  userId: string;
+  otpCode: string;
+}
+
+export interface EmailVerifySuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    id: string;
+    fullName: string;
+    email: string;
+    role: string;
+    image: string | null;
+    status: string;
+    isVerified: boolean;
+    accessToken: string;
+    refreshToken: string;
+    message: string;
+  };
+}
+
+export interface EmailVerifyErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type EmailVerifyResponse = EmailVerifySuccessResponse | EmailVerifyErrorResponse;
+
+/**
+ * Resend OTP Request/Response types
+ */
+export interface ResendOtpRequest {
+  userId: string;
+}
+
+export interface ResendOtpSuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    userId: string;
+    otpSent: boolean;
+    fullName: string;
+    message: string;
+  };
+}
+
+export interface ResendOtpErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type ResendOtpResponse = ResendOtpSuccessResponse | ResendOtpErrorResponse;
+
+/**
  * Auth API slice
  * Handles all authentication-related API calls
  */
@@ -100,9 +171,28 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    emailVerify: builder.mutation<EmailVerifySuccessResponse, EmailVerifyRequest>({
+      query: (body) => ({
+        url: API_ENDPOINTS.AUTH.EMAIL_VERIFY,
+        method: "POST",
+        body,
+      }),
+    }),
+    resendOtp: builder.mutation<ResendOtpSuccessResponse, ResendOtpRequest>({
+      query: (body) => ({
+        url: API_ENDPOINTS.AUTH.RESEND_OTP,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
 // Export hooks for usage in functional components
-export const { useCreateAccountMutation, useLoginMutation } = authApi;
+export const { 
+  useCreateAccountMutation, 
+  useLoginMutation,
+  useEmailVerifyMutation,
+  useResendOtpMutation,
+} = authApi;
 

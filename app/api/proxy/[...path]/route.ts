@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { BACKEND_API_BASE_URL } from "@/lib/config/api";
 
-const API_BASE_URL = "http://206.162.244.131:6006/api/v1";
+// Use the backend API URL from environment variable
+const API_BASE_URL = BACKEND_API_BASE_URL;
 
 export async function POST(
   request: NextRequest,

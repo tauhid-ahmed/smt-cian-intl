@@ -6,10 +6,11 @@ import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import EmailVerified from "./EmailVerified";
+import EmailVerifyForm from "./EmailVerifyForm";
 import { Button } from "@/components/ui/button";
 
 export default function AuthModals() {
-  const { mode, isOpen, close, switchMode } = useAuth();
+  const { mode, isOpen, close, switchMode, emailVerifyData } = useAuth();
 
   return (
     <>
@@ -91,6 +92,22 @@ export default function AuthModals() {
         onOpenChange={(open) => !open && close()}
       >
         <EmailVerified />
+      </AuthCard>
+
+      {/* Email Verify OTP Modal */}
+      <AuthCard
+        variant="email-verify"
+        title="Verify your email"
+        trigger={<span />}
+        open={isOpen && mode === "email-verify"}
+        onOpenChange={(open) => !open && close()}
+      >
+        {emailVerifyData && (
+          <EmailVerifyForm
+            userId={emailVerifyData.userId}
+            userEmail={emailVerifyData.userEmail}
+          />
+        )}
       </AuthCard>
     </>
   );

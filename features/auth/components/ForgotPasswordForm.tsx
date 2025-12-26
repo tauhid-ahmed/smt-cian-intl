@@ -8,7 +8,7 @@ import { useAuth } from "../provider/AuthProvider";
 import React from "react";
 
 const forgotPasswordSchema = z.object({
-  email: z.string("Invalid email address"),
+  email: z.string().email("Invalid email address"),
 });
 
 type SignInFormData = z.infer<typeof forgotPasswordSchema>;
