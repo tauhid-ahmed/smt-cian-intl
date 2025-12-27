@@ -115,7 +115,7 @@ export default function SignInForm() {
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <GoogleLoginButton variant="dark" />
+        <GoogleLoginButton variant="dark" text="Continue with Google" />
 
         {/* Divider */}
         <div className="text-center flex items-center">
