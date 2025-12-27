@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FileUpload } from "@/components/ui/file-upload";
 import Link from "next/link";
+import { Trash } from "lucide-react";
 
 // Zod schema for adding/editing artist
 const artistSchema = z.object({
@@ -170,7 +171,10 @@ const ArtistProfileTab = () => {
 
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Link href={"/admin-dashboard/content/add-new-artist"} className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
+                <Link
+                  href={"/admin-dashboard/content/add-new-artist"}
+                  className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap"
+                >
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -352,26 +356,33 @@ const ArtistProfileTab = () => {
                       {artist.status}
                     </span>
                   </td>
-                  <td className="pl-4 pt-4 pb-4 flex justify-end">
-                    <button
-                      className="text-white hover:text-gray-300"
-                      onClick={() => handleEdit(artist)}
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                  <div className="flex justify-center items-center gap-4">
+                    <td className="pl-4 pt-4 pb-4 flex justify-end">
+                      <button className="text-white hover:text-gray-300">
+                        <Trash />
+                      </button>
+                    </td>
+                    <td className="pl-4 pt-4 pb-4 flex justify-end">
+                      <Link
+                        href={`/admin-dashboard/content/edit-artist-profile/${artist.id}`}
+                        className="text-white hover:text-gray-300"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                  </td>
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </Link>
+                    </td>
+                  </div>
                 </tr>
               ))}
             </tbody>

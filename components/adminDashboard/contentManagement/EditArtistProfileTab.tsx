@@ -15,82 +15,78 @@ import { FileUpload } from "@/components/ui/file-upload";
 import Link from "next/link";
 import { Trash } from "lucide-react";
 
-// Zod schema
-const productSchema = z.object({
-  productName: z.string().min(1, "Product name is required"),
-  price: z
+// Zod schema for adding/editing artist
+const artistSchema = z.object({
+  name: z.string().min(1, "Artist name is required"),
+  genre: z.string().min(1, "Genre is required"),
+  tracks: z
     .string()
-    .min(1, "Price is required")
-    .regex(/^\d+(\.\d{1,2})?$/, "Price must be a valid number"),
-  stock: z
-    .string()
-    .min(1, "Stock is required")
-    .regex(/^\d+$/, "Stock must be a non-negative integer"),
-  description: z.string().min(1, "Description is required"),
+    .min(1, "Tracks is required")
+    .regex(/^\d+$/, "Tracks must be a number"),
+  followers: z.string().min(1, "Followers is required"),
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+type ArtistFormValues = z.infer<typeof artistSchema>;
 
-interface Product {
+interface Artist {
   id: number;
   name: string;
-  variants: number | string;
-  price: string;
-  stock: number | string;
-  status: "Active" | "Inactive";
+  genre: string;
+  tracks: number | string;
+  followers: string;
+  status: "Verified" | "Pending" | "Not Verified";
 }
 
-const ProductCatalogTab = () => {
-  const [products] = useState<Product[]>([
+const ArtistProfileTab = () => {
+  const [artists, setArtists] = useState<Artist[]>([
     {
       id: 1,
-      name: "Vinyl Record - Jazz Collection",
-      variants: 3,
-      price: "$29.99",
-      stock: 45,
-      status: "Active",
+      name: "Taylor Swift",
+      genre: "Pop",
+      tracks: 198,
+      followers: "88M",
+      status: "Verified",
     },
     {
       id: 2,
-      name: "Artist T-Shirt - Limited Ed",
-      variants: 5,
-      price: "$24.99",
-      stock: 120,
-      status: "Active",
+      name: "Ed Sheeran",
+      genre: "Pop",
+      tracks: 156,
+      followers: "75M",
+      status: "Verified",
     },
     {
       id: 3,
-      name: "Exclusive Art Print",
-      variants: 2,
-      price: "$39.99",
-      stock: 67,
-      status: "Active",
+      name: "Billie Eilish",
+      genre: "Alternative",
+      tracks: 95,
+      followers: "42M",
+      status: "Pending",
     },
     {
       id: 4,
-      name: "Concert Ticket Bundle",
-      variants: 1,
-      price: "$89.99",
-      stock: 234,
-      status: "Active",
+      name: "Adele",
+      genre: "Soul",
+      tracks: 110,
+      followers: "55M",
+      status: "Not Verified",
     },
     {
       id: 5,
-      name: "Premium Membership",
-      variants: 3,
-      price: "$99.99",
-      stock: "Digital",
-      status: "Active",
+      name: "Drake",
+      genre: "Hip-Hop",
+      tracks: 200,
+      followers: "100M",
+      status: "Verified",
     },
   ]);
 
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [open, setOpen] = useState(false);
 
   const handleFileUpload = (uploadedFiles: File[]) => {
     setFiles(uploadedFiles);
-    console.log(uploadedFiles);
   };
 
   const {
@@ -99,30 +95,41 @@ const ProductCatalogTab = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+  } = useForm<ArtistFormValues>({
+    resolver: zodResolver(artistSchema),
   });
 
-  const onSubmit = (data: ProductFormValues) => {
-    const productData = {
-      productName: data.productName,
-      price: Number(data.price),
-      stock: Number(data.stock),
-      description: data.description,
+  const randomId = 135;
+  const onSubmit = (data: ArtistFormValues) => {
+    const artistData = {
+      id: selectedArtist ? selectedArtist.id : randomId,
+      name: data.name,
+      genre: data.genre,
+      tracks: Number(data.tracks),
+      followers: data.followers,
+      status: selectedArtist ? selectedArtist.status : "Pending",
     };
-    console.log("Product Submitted:", productData, files);
+
+    if (selectedArtist) {
+      setArtists((prev) =>
+        prev.map((a) => (a.id === selectedArtist.id ? artistData : a))
+      );
+    } else {
+      setArtists((prev) => [...prev, artistData]);
+    }
+
     reset();
     setFiles([]);
-    setSelectedProduct(null);
+    setSelectedArtist(null);
     setOpen(false);
   };
 
-  const handleEdit = (product: Product) => {
-    setSelectedProduct(product);
-    setValue("productName", product.name);
-    setValue("price", product.price.toString());
-    setValue("stock", product.stock.toString());
-    setValue("description", ""); // populate if description exists
+  const handleEdit = (artist: Artist) => {
+    setSelectedArtist(artist);
+    setValue("name", artist.name);
+    setValue("genre", artist.genre);
+    setValue("tracks", artist.tracks.toString());
+    setValue("followers", artist.followers);
     setOpen(true);
   };
 
@@ -133,10 +140,10 @@ const ProductCatalogTab = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="text-left text-white">
             <h1 className="font-semibold text-base sm:text-lg">
-              Product Catalog
+              Artist Profile
             </h1>
             <h2 className="text-sm text-[#F2F2F2]">
-              Add and edit products, variants, and pricing
+              Manage artist content and music uploads
             </h2>
           </div>
 
@@ -157,7 +164,7 @@ const ProductCatalogTab = () => {
               </svg>
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search artist..."
                 className="bg-[#414141] rounded-[10px] pl-10 pr-4 py-2.5 text-white text-sm font-medium placeholder-[#818181] focus:outline-none focus:border-gray-500 w-full sm:w-72"
               />
             </div>
@@ -165,7 +172,7 @@ const ProductCatalogTab = () => {
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Link
-                  href={"/admin-dashboard/content/add-new-product"}
+                  href={"/admin-dashboard/content/add-new-artist"}
                   className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap"
                 >
                   <svg
@@ -181,104 +188,105 @@ const ProductCatalogTab = () => {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Add Product
+                  Add Artist
                 </Link>
               </DialogTrigger>
 
               <DialogContent className="bg-[#171717] border-none w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[714px]">
                 <DialogHeader>
                   <DialogTitle className="md:text-xl text-lg font-semibold text-left">
-                    {selectedProduct ? "Edit Product" : "Add New Product"}
+                    {selectedArtist ? "Edit Artist" : "Add New Artist"}
                   </DialogTitle>
 
                   <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="mt-6 space-y-4"
                   >
-                    {/* Product Name */}
+                    {/* Name */}
                     <div className="flex flex-col space-y-2">
                       <label
-                        htmlFor="productName"
+                        htmlFor="name"
                         className="text-white text-sm md:text-lg text-left"
                       >
-                        Product Name
+                        Artist Name
                       </label>
                       <input
-                        {...register("productName")}
+                        {...register("name")}
                         type="text"
-                        id="productName"
-                        placeholder="Enter your product name"
+                        id="name"
+                        placeholder="Enter artist name"
                         className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
                       />
-                      {errors.productName && (
+                      {errors.name && (
                         <span className="text-red-500 text-sm">
-                          {errors.productName.message}
+                          {errors.name.message}
                         </span>
                       )}
                     </div>
 
-                    {/* Price & Stock */}
+                    {/* Genre & Tracks */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-4">
                       <div className="flex flex-col space-y-2 flex-1">
                         <label
-                          htmlFor="price"
+                          htmlFor="genre"
                           className="text-white text-sm md:text-lg text-left"
                         >
-                          Price
+                          Genre
                         </label>
                         <input
-                          {...register("price")}
+                          {...register("genre")}
                           type="text"
-                          id="price"
-                          placeholder="1899"
+                          id="genre"
+                          placeholder="Pop, Rock, etc."
                           className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
                         />
-                        {errors.price && (
+                        {errors.genre && (
                           <span className="text-red-500 text-sm">
-                            {errors.price.message}
+                            {errors.genre.message}
                           </span>
                         )}
                       </div>
 
                       <div className="flex flex-col space-y-2 flex-1">
                         <label
-                          htmlFor="stock"
+                          htmlFor="tracks"
                           className="text-white text-sm md:text-lg text-left"
                         >
-                          Stock
+                          Tracks
                         </label>
                         <input
-                          {...register("stock")}
+                          {...register("tracks")}
                           type="text"
-                          id="stock"
-                          placeholder="344"
+                          id="tracks"
+                          placeholder="100"
                           className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
                         />
-                        {errors.stock && (
+                        {errors.tracks && (
                           <span className="text-red-500 text-sm">
-                            {errors.stock.message}
+                            {errors.tracks.message}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Description */}
+                    {/* Followers */}
                     <div className="flex flex-col space-y-2">
                       <label
-                        htmlFor="description"
+                        htmlFor="followers"
                         className="text-white text-sm md:text-lg text-left"
                       >
-                        Description
+                        Followers
                       </label>
-                      <textarea
-                        {...register("description")}
-                        id="description"
-                        placeholder="Product Description"
-                        className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg min-h-[70px] md:min-h-[116px] bg-transparent"
+                      <input
+                        {...register("followers")}
+                        type="text"
+                        id="followers"
+                        placeholder="50M"
+                        className="md:py-4 py-2 px-2.5 border border-[#3B3B3B] rounded-[15px] placeholder-[#828282] text-white text-sm md:text-lg bg-transparent"
                       />
-                      {errors.description && (
+                      {errors.followers && (
                         <span className="text-red-500 text-sm">
-                          {errors.description.message}
+                          {errors.followers.message}
                         </span>
                       )}
                     </div>
@@ -294,7 +302,7 @@ const ProductCatalogTab = () => {
                         type="submit"
                         className="bg-white hover:bg-[#f2f2f2] cursor-pointer py-2 md:py-[12.5px] px-5 text-black text-base md:text-lg rounded-[10px] transition-all max-w-[344px] w-full"
                       >
-                        Save Product
+                        Save Artist
                       </button>
                     </div>
                   </form>
@@ -309,35 +317,43 @@ const ProductCatalogTab = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left text-white text-base font-semibold border-b border-[#EFEFEF]">
-                <th className="py-4 pr-4">Product Name</th>
-                <th className="py-4 pr-4">Variants</th>
-                <th className="py-4 pr-4">Price</th>
-                <th className="py-4 pr-4">Stock</th>
+                <th className="py-4 pr-4">Artist Name</th>
+                <th className="py-4 pr-4">Genre</th>
+                <th className="py-4 pr-4">Tracks</th>
+                <th className="py-4 pr-4">Followers</th>
                 <th className="py-4 pr-4">Status</th>
                 <th className="py-4 pl-4 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {artists.map((artist) => (
                 <tr
-                  key={product.id}
+                  key={artist.id}
                   className="border-b border-[#EFEFEF] hover:bg-[#414141]/40"
                 >
                   <td className="py-4 pr-4 text-white text-sm">
-                    {product.name}
+                    {artist.name}
                   </td>
                   <td className="py-4 pr-4 text-white text-sm">
-                    {product.variants}
+                    {artist.genre}
                   </td>
                   <td className="py-4 pr-4 text-white text-sm">
-                    {product.price}
+                    {artist.tracks}
                   </td>
                   <td className="py-4 pr-4 text-white text-sm">
-                    {product.stock}
+                    {artist.followers}
                   </td>
                   <td className="py-4 pr-4">
-                    <span className="bg-[#89FF7233] text-[#22FF00] border border-[#22FF00] px-3 py-1 rounded-full text-xs font-medium">
-                      {product.status}
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        artist.status === "Verified"
+                          ? "bg-[#497FF51A] text-[#497FF5] border border-[#497FF5]"
+                          : artist.status === "Pending"
+                          ? "bg-[#FFA1001A] text-[#FFA100] border border-[#FFA100]"
+                          : "bg-[#FF0000]/10 text-red-600 border border-red-600"
+                      }`}
+                    >
+                      {artist.status}
                     </span>
                   </td>
                   <div className="flex justify-center items-center gap-4">
@@ -347,10 +363,9 @@ const ProductCatalogTab = () => {
                       </button>
                     </td>
                     <td className="pl-4 pt-4 pb-4 flex justify-end">
-                      <Link
-                        href={`/admin-dashboard/content/edit-new-product/${product.id}`}
+                      <button
                         className="text-white hover:text-gray-300"
-                        onClick={() => handleEdit(product)}
+                        onClick={() => handleEdit(artist)}
                       >
                         <svg
                           className="w-5 h-5"
@@ -365,7 +380,7 @@ const ProductCatalogTab = () => {
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                           />
                         </svg>
-                      </Link>
+                      </button>
                     </td>
                   </div>
                 </tr>
@@ -374,20 +389,20 @@ const ProductCatalogTab = () => {
           </table>
         </div>
 
-        {/* Mobile Card */}
+        {/* Mobile Cards */}
         <div className="md:hidden space-y-3">
-          {products.map((product) => (
+          {artists.map((artist) => (
             <div
-              key={product.id}
+              key={artist.id}
               className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4"
             >
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-white font-medium text-sm">
-                  {product.name}
+                  {artist.name}
                 </h3>
                 <button
                   className="text-white hover:text-gray-300"
-                  onClick={() => handleEdit(product)}
+                  onClick={() => handleEdit(artist)}
                 >
                   <svg
                     className="w-5 h-5"
@@ -406,21 +421,29 @@ const ProductCatalogTab = () => {
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-gray-400">Variants:</span>
-                  <span className="text-white ml-2">{product.variants}</span>
+                  <span className="text-gray-400">Genre:</span>
+                  <span className="text-white ml-2">{artist.genre}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400">Price:</span>
-                  <span className="text-white ml-2">{product.price}</span>
+                  <span className="text-gray-400">Tracks:</span>
+                  <span className="text-white ml-2">{artist.tracks}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400">Stock:</span>
-                  <span className="text-white ml-2">{product.stock}</span>
+                  <span className="text-gray-400">Followers:</span>
+                  <span className="text-white ml-2">{artist.followers}</span>
                 </div>
                 <div>
                   <span className="text-gray-400">Status:</span>
-                  <span className="bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full text-xs font-medium ml-2">
-                    {product.status}
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs font-medium ml-2 ${
+                      artist.status === "Verified"
+                        ? "bg-green-500/20 text-green-500"
+                        : artist.status === "Pending"
+                        ? "bg-yellow-200 text-yellow-600"
+                        : "bg-red-200 text-red-600"
+                    }`}
+                  >
+                    {artist.status}
                   </span>
                 </div>
               </div>
@@ -432,4 +455,4 @@ const ProductCatalogTab = () => {
   );
 };
 
-export default ProductCatalogTab;
+export default ArtistProfileTab;
