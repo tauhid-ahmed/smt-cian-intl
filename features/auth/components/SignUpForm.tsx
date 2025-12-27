@@ -8,10 +8,14 @@ import { Button } from "@/components/ui/button";
 import TextField from "./TextField";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleIcon } from "@/components/Icons";
+import { useCreateAccountMutation } from "@/lib/api/authApi";
+import toast from "react-hot-toast";
+import type { CreateAccountErrorResponse } from "@/lib/api/authApi";
+import { useAuth } from "../provider/AuthProvider";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string("Invalid email address"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -19,6 +23,8 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [createAccount, { isLoading }] = useCreateAccountMutation();
+  const { openEmailVerify } = useAuth();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -33,14 +39,61 @@ export default function SignUpForm() {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = form;
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log("Form Data:", data);
-      // Add your sign-up logic here
-    } catch (error) {
-      console.error(error);
+      console.log("Submitting form data:", {
+        fullName: data.name,
+        email: data.email,
+        password: "***",
+      });
+
+      const result = await createAccount({
+        fullName: data.name,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      console.log("Success response:", result);
+
+      // Success case - OTP sent
+      toast.success(result.message || "OTP sent successfully to your email!");
+      
+      // Reset form
+      reset();
+      
+      // Directly open email verify modal with userId (without closing first for smooth transition)
+      // Use setTimeout to ensure modal transition is smooth
+      setTimeout(() => {
+        openEmailVerify(result.data.id, data.email);
+      }, 100);
+    } catch (error: unknown) {
+      console.error("Registration error:", error);
+      console.error("Error details:", {
+        error,
+        data: (error as { data?: unknown })?.data,
+        status: (error as { status?: unknown })?.status,
+      });
+
+      // Error case - RTK Query wraps the error in error.data
+      const errorObj = error as { data?: unknown; status?: string | number; error?: string };
+      const errorData = errorObj?.data || error;
+      const errorResponse = errorData as CreateAccountErrorResponse;
+      
+      if (errorResponse?.errorMessages && errorResponse.errorMessages.length > 0) {
+        // Show the first error message
+        toast.error(errorResponse.errorMessages[0].message || errorResponse.message || "Registration failed");
+      } else if (errorResponse?.message) {
+        toast.error(errorResponse.message);
+      } else if (errorObj?.status === 'FETCH_ERROR') {
+        toast.error("Network error: Could not connect to server. Please check your connection.");
+      } else if (errorObj?.status === 'CUSTOM_ERROR') {
+        toast.error(errorObj?.error || "An error occurred during registration");
+      } else {
+        toast.error("An error occurred during registration");
+      }
     }
   };
 
@@ -95,8 +148,8 @@ export default function SignUpForm() {
         </p> */}
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full h-14" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Start Free Now"}
+        <Button type="submit" className="w-full h-14" disabled={isSubmitting || isLoading}>
+          {isSubmitting || isLoading ? "Creating account..." : "Start Free Now"}
         </Button>
 
         {/* Terms

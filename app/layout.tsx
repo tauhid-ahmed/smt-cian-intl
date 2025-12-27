@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Inria_Serif } from "next/font/google";
 import "@/styles/globals.css";
 import { MusicPlayerProvider } from "@/providers/MusicPlayer";
+import ReduxProvider from "@/providers/ReduxProvider";
+import { Toaster } from "react-hot-toast";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -30,7 +32,43 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
         {/* {marketing} */}
-        <MusicPlayerProvider>{children}</MusicPlayerProvider>
+        <ReduxProvider>
+          <MusicPlayerProvider>
+            {children}
+            <Toaster
+              position="top-center"
+              toastOptions={{
+                style: {
+                  background: "#18181b",
+                  color: "#f3f4f6",
+                  border: "1px solid #27272a",
+                  boxShadow: "0 4px 24px 0 #00000080",
+                  fontSize: "1rem"
+                },
+                success: {
+                  iconTheme: {
+                    primary: "#4ade80",
+                    secondary: "#18181b",
+                  },
+                  style: {
+                    background: "#18181b",
+                    color: "#f3f4f6",
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: "#f87171",
+                    secondary: "#18181b",
+                  },
+                  style: {
+                    background: "#18181b",
+                    color: "#f3f4f6",
+                  },
+                },
+              }}
+            />
+          </MusicPlayerProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
