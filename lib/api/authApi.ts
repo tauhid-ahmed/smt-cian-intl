@@ -244,6 +244,30 @@ export interface ResetPasswordErrorResponse {
 
 export type ResetPasswordResponse = ResetPasswordSuccessResponse | ResetPasswordErrorResponse;
 
+ 
+export type GetMeSuccessResponse = {
+    success: boolean;
+    message: string;
+    statusCode: number;
+    data: {
+        id: string;
+        fullName: string;
+        email: string;
+        profileView: number;
+        image: string | null;
+        isEmailVerified: boolean;
+        isVerified: boolean;
+        role: string;
+        createdAt: string;
+        updatedAt: string;
+        status: string;
+        passwordChangedAt: string | null;
+        fcmToken: string | null;
+        accountWith: string;
+        isDeleted: boolean;
+    };
+};
+
 /**
  * Refresh Token Request/Response types
  */
@@ -401,6 +425,12 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    getMe: builder.query<GetMeSuccessResponse, void>({
+      query: () => ({
+        url: API_ENDPOINTS.AUTH.GET_ME,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -415,5 +445,6 @@ export const {
   useResetPasswordMutation,
   useRefreshTokenMutation,
   useGoogleLoginMutation,
+  useGetMeQuery
 } = authApi;
 
