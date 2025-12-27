@@ -34,15 +34,18 @@ pnpm install
    cp .env.example .env.local
    ```
 
-   Update the API base URL in `.env.local`:
+   Update the values in `.env.local`:
    ```env
    NEXT_PUBLIC_API_BASE_URL=http://206.162.244.175:6006/api/v1
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=959795390198-ijbhg4ob84kgulhod8iauk56iu9s779h.apps.googleusercontent.com
    ```
 
    **Important:** 
    - The `.env.local` file is already in `.gitignore` and won't be committed to git
+   - Each team member must create their own `.env.local` file from `.env.example`
    - Change the API URL in `.env.local` to match your backend server
-   - For different environments (development, staging, production), update this value accordingly
+   - The Google Client ID is already set in `.env.example` - make sure it's copied to `.env.local`
+   - For different environments (development, staging, production), update these values accordingly
 
 4. Run the development server:
 
@@ -63,6 +66,7 @@ bun dev
 ### Required Variables
 
 - `NEXT_PUBLIC_API_BASE_URL` - Backend API base URL (e.g., `http://206.162.244.175:6006/api/v1`)
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` - Google OAuth 2.0 Client ID for Google login functionality
 
 ### Configuration
 
@@ -74,6 +78,19 @@ All API endpoints are configured in `lib/config/api.ts`. The API base URL is rea
 3. The change will be applied automatically
 
 **Note:** In development mode, the app uses a Next.js API proxy (`/api/proxy`) to avoid CORS issues. The proxy forwards requests to the backend URL specified in `NEXT_PUBLIC_API_BASE_URL`.
+
+### Troubleshooting
+
+**Google Login not working:**
+- Make sure you have created `.env.local` file from `.env.example`
+- Verify that `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is set in your `.env.local` file
+- Restart the development server after creating/updating `.env.local`
+- Check browser console for any errors related to Google OAuth
+
+**API requests failing:**
+- Verify `NEXT_PUBLIC_API_BASE_URL` is correctly set in `.env.local`
+- Make sure the backend server is running and accessible
+- Check that the proxy route (`/api/proxy`) is working correctly
 
 ## Project Structure
 
@@ -112,7 +129,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 **For production deployment:**
 1. Set the `NEXT_PUBLIC_API_BASE_URL` environment variable in your Vercel project settings
-2. Ensure CORS is properly configured on your backend server
-3. Deploy using Vercel CLI or connect your GitHub repository
+2. Set the `NEXT_PUBLIC_GOOGLE_CLIENT_ID` environment variable in your Vercel project settings
+3. Ensure CORS is properly configured on your backend server
+4. Deploy using Vercel CLI or connect your GitHub repository
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
