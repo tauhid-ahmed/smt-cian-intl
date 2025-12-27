@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FileUpload } from "@/components/ui/file-upload";
+import Link from "next/link";
 
 // Zod schema for adding/editing artist
 const artistSchema = z.object({
@@ -151,7 +152,8 @@ const ArtistProfileTab = () => {
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                 fill="none"
                 stroke="currentColor"
-                viewBox="0 0 24 24">
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -168,12 +170,13 @@ const ArtistProfileTab = () => {
 
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <button className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
+                <Link href={"/admin-dashboard/content/add-new-artist"} className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
                   <svg
                     className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24">
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -182,7 +185,7 @@ const ArtistProfileTab = () => {
                     />
                   </svg>
                   Add Artist
-                </button>
+                </Link>
               </DialogTrigger>
 
               <DialogContent className="bg-[#171717] border-none w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[714px]">
@@ -193,12 +196,14 @@ const ArtistProfileTab = () => {
 
                   <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="mt-6 space-y-4">
+                    className="mt-6 space-y-4"
+                  >
                     {/* Name */}
                     <div className="flex flex-col space-y-2">
                       <label
                         htmlFor="name"
-                        className="text-white text-sm md:text-lg text-left">
+                        className="text-white text-sm md:text-lg text-left"
+                      >
                         Artist Name
                       </label>
                       <input
@@ -220,7 +225,8 @@ const ArtistProfileTab = () => {
                       <div className="flex flex-col space-y-2 flex-1">
                         <label
                           htmlFor="genre"
-                          className="text-white text-sm md:text-lg text-left">
+                          className="text-white text-sm md:text-lg text-left"
+                        >
                           Genre
                         </label>
                         <input
@@ -240,7 +246,8 @@ const ArtistProfileTab = () => {
                       <div className="flex flex-col space-y-2 flex-1">
                         <label
                           htmlFor="tracks"
-                          className="text-white text-sm md:text-lg text-left">
+                          className="text-white text-sm md:text-lg text-left"
+                        >
                           Tracks
                         </label>
                         <input
@@ -262,7 +269,8 @@ const ArtistProfileTab = () => {
                     <div className="flex flex-col space-y-2">
                       <label
                         htmlFor="followers"
-                        className="text-white text-sm md:text-lg text-left">
+                        className="text-white text-sm md:text-lg text-left"
+                      >
                         Followers
                       </label>
                       <input
@@ -288,7 +296,8 @@ const ArtistProfileTab = () => {
                     <div className="flex justify-center">
                       <button
                         type="submit"
-                        className="bg-white hover:bg-[#f2f2f2] cursor-pointer py-2 md:py-[12.5px] px-5 text-black text-base md:text-lg rounded-[10px] transition-all max-w-[344px] w-full">
+                        className="bg-white hover:bg-[#f2f2f2] cursor-pointer py-2 md:py-[12.5px] px-5 text-black text-base md:text-lg rounded-[10px] transition-all max-w-[344px] w-full"
+                      >
                         Save Artist
                       </button>
                     </div>
@@ -316,7 +325,8 @@ const ArtistProfileTab = () => {
               {artists.map((artist) => (
                 <tr
                   key={artist.id}
-                  className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
+                  className="border-b border-[#EFEFEF] hover:bg-[#414141]/40"
+                >
                   <td className="py-4 pr-4 text-white text-sm">
                     {artist.name}
                   </td>
@@ -337,19 +347,22 @@ const ArtistProfileTab = () => {
                           : artist.status === "Pending"
                           ? "bg-[#FFA1001A] text-[#FFA100] border border-[#FFA100]"
                           : "bg-[#FF0000]/10 text-red-600 border border-red-600"
-                      }`}>
+                      }`}
+                    >
                       {artist.status}
                     </span>
                   </td>
                   <td className="pl-4 pt-4 pb-4 flex justify-end">
                     <button
                       className="text-white hover:text-gray-300"
-                      onClick={() => handleEdit(artist)}>
+                      onClick={() => handleEdit(artist)}
+                    >
                       <svg
                         className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
-                        viewBox="0 0 24 24">
+                        viewBox="0 0 24 24"
+                      >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -370,19 +383,22 @@ const ArtistProfileTab = () => {
           {artists.map((artist) => (
             <div
               key={artist.id}
-              className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4">
+              className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4"
+            >
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-white font-medium text-sm">
                   {artist.name}
                 </h3>
                 <button
                   className="text-white hover:text-gray-300"
-                  onClick={() => handleEdit(artist)}>
+                  onClick={() => handleEdit(artist)}
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24">
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -414,7 +430,8 @@ const ArtistProfileTab = () => {
                         : artist.status === "Pending"
                         ? "bg-yellow-200 text-yellow-600"
                         : "bg-red-200 text-red-600"
-                    }`}>
+                    }`}
+                  >
                     {artist.status}
                   </span>
                 </div>
