@@ -9,12 +9,17 @@ import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 import { useGetMeQuery } from "@/lib/api/authApi";
 import Image from "next/image";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
 
     const { openSignUp, openSignIn } = useAuth();
 
-    const { data: meData, isLoading, isError } = useGetMeQuery();
+    const { data: meData, isLoading} = useGetMeQuery();
+
+    const signOut = () => {
+       localStorage.clear()
+    }
     console.log(meData);
     return (
         <header className="bg-accent/50 backdrop-blur sticky top-0 z-50 shadow h-20 w-full flex justify-center items-center">
@@ -75,6 +80,7 @@ export default function Navbar() {
                                         {meData?.data?.email}
                                     </span>
                                 </div>
+                                <Button variant="default" size="icon" onClick={()=> { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> </Button>
                             </div>
                         )}
 
