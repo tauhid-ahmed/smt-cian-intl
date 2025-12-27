@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { API_BASE_URL } from "@/lib/config/api";
+import type { RefreshTokenSuccessResponse } from "./authApi";
 
 /**
  * Custom base query to handle error responses properly
@@ -10,6 +11,15 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers) => {
     // Add any default headers here (e.g., authorization tokens)
     headers.set("Content-Type", "application/json");
+    
+    // Add access token from localStorage if available
+    if (typeof window !== "undefined") {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        headers.set("Authorization", `Bearer ${accessToken}`);
+      }
+    }
+    
     return headers;
   },
 });
@@ -27,7 +37,64 @@ const baseQueryWithErrorHandling: BaseQueryFn<
     console.log('API Response:', result);
   }
   
-  // Return result as-is - RTK Query will handle errors properly
+  // Handle 401 Unauthorized - try to refresh token
+  if (result.error && result.error.status === 401) {
+    // Don't try to refresh if this is already a refresh token request
+    const url = typeof args === 'string' ? args : args.url;
+    if (url && url.includes('/auth/refresh-token')) {
+      // If refresh token request also fails, clear tokens and return error
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+      return result;
+    }
+    
+    // Try to refresh the token
+    const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null;
+    
+    if (refreshToken) {
+      try {
+        // Call refresh token endpoint
+        const refreshResult = await baseQuery(
+          {
+            url: "/auth/refresh-token",
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          },
+          api,
+          extraOptions
+        );
+        
+        if (refreshResult.data) {
+          const refreshData = refreshResult.data as RefreshTokenSuccessResponse;
+          
+          // Update access token in localStorage
+          if (typeof window !== "undefined" && refreshData.data?.accessToken) {
+            localStorage.setItem("accessToken", refreshData.data.accessToken);
+          }
+          
+          // Retry the original request with new token
+          const retryResult = await baseQuery(args, api, extraOptions);
+          return retryResult;
+        }
+      } catch {
+        // Refresh failed, clear tokens
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+        }
+      }
+    } else {
+      // No refresh token, clear access token
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+      }
+    }
+  }
+  
   return result;
 };
 
