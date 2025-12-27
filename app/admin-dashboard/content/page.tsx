@@ -1,74 +1,11 @@
-// "use client";
 
-// import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
-// import ContentApprovalTab from "@/components/adminDashboard/contentManagement/ContentApprovalTab";
-// import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
-// import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
-// import {
-//   CustomTabs,
-//   CustomTabsContent,
-//   CustomTabsList,
-//   CustomTabsTrigger,
-// } from "@/components/adminDashboard/custom-tabs";
-// import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
-
-// const ContentManagementPage = () => {
-//   return (
-//     <>
-//       <DashboardPageHeader
-//         title="Analytics & Insights"
-//         sub_title="Monitor your business performance and customer behavior"
-//       />
-
-//       <div>
-//         <CustomTabs defaultValue="tab1">
-//           <CustomTabsList variant="bordered">
-//             <CustomTabsTrigger value="tab1" variant="bordered">
-//               Product Catalog
-//             </CustomTabsTrigger>
-//             <CustomTabsTrigger value="tab2" variant="bordered">
-//               Artist Profiles
-//             </CustomTabsTrigger>
-//             <CustomTabsTrigger value="tab3" variant="bordered">
-//               Review Moderation
-//             </CustomTabsTrigger>
-//             <CustomTabsTrigger value="tab4" variant="bordered">
-//               Content Approval
-//             </CustomTabsTrigger>
-//           </CustomTabsList>
-
-//           <CustomTabsContent value="tab1">
-//             <ProductCatalogTab />
-//           </CustomTabsContent>
-
-//           <CustomTabsContent value="tab2">
-//             <ArtistProfileTab />
-//           </CustomTabsContent>
-
-//           <CustomTabsContent value="tab3">
-//             <ReviewModerationTab />
-//           </CustomTabsContent>
-
-//           <CustomTabsContent value="tab4">
-//             <ContentApprovalTab />
-//           </CustomTabsContent>
-//         </CustomTabs>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default ContentManagementPage;
-
-
-//! Try - 1
 
 "use client";
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
-import ContentApprovalTab from "@/components/adminDashboard/contentManagement/ContentApprovalTab";
+import ArtistPage from "@/components/adminDashboard/contentManagement/ArtistPage";
 import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
 import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
 import {
@@ -85,9 +22,9 @@ const ContentManagementPage = () => {
 
   const tabs = [
     { value: "tab1", label: "Product Catalog" },
-    { value: "tab2", label: "Artist Profiles" },
-    { value: "tab3", label: "Review Moderation" },
-    { value: "tab4", label: "Content Approval" },
+    { value: "tab2", label: "Artist Page" },
+    { value: "tab3", label: "Artist Profiles" },
+    { value: "tab4", label: "Review Moderation" },
   ];
 
   return (
@@ -98,7 +35,11 @@ const ContentManagementPage = () => {
       />
 
       <div className="mt-4">
-        <CustomTabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab}>
+        <CustomTabs
+          defaultValue={activeTab}
+          value={activeTab}
+          onValueChange={setActiveTab}
+        >
           {/* ===== Mobile Dropdown (visible on sm) ===== */}
           <div className="relative md:hidden mb-4">
             <button
@@ -107,7 +48,9 @@ const ContentManagementPage = () => {
             >
               {tabs.find((t) => t.value === activeTab)?.label}
               <ChevronDown
-                className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
+                className={`w-4 h-4 transition-transform ${
+                  open ? "rotate-180" : ""
+                }`}
               />
             </button>
             {open && (
@@ -119,8 +62,9 @@ const ContentManagementPage = () => {
                       setActiveTab(tab.value);
                       setOpen(false);
                     }}
-                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${activeTab === tab.value ? "bg-[#1A1A1A] font-medium" : ""
-                      }`}
+                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
+                      activeTab === tab.value ? "bg-[#1A1A1A] font-medium" : ""
+                    }`}
                   >
                     {tab.label}
                   </li>
@@ -150,15 +94,15 @@ const ContentManagementPage = () => {
           </CustomTabsContent>
 
           <CustomTabsContent value="tab2">
-            <ArtistProfileTab />
+            <ArtistPage />
           </CustomTabsContent>
 
           <CustomTabsContent value="tab3">
-            <ReviewModerationTab />
+            <ArtistProfileTab />
           </CustomTabsContent>
 
           <CustomTabsContent value="tab4">
-            <ContentApprovalTab />
+            <ReviewModerationTab />
           </CustomTabsContent>
         </CustomTabs>
       </div>
