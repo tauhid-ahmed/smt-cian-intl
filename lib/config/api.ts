@@ -32,5 +32,7 @@ export const API_ENDPOINTS = {
     GOOGLE_LOGIN: "/auth/google-login",
     // Add more auth endpoints here as needed
   },
+  
+
 } as const;
 

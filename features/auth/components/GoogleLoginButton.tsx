@@ -137,7 +137,13 @@ export default function GoogleLoginButton({
 
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       if (!clientId) {
-        console.warn("Google Client ID is not set");
+        console.error(
+          "❌ Google Client ID is not set!\n" +
+          "Please create a .env.local file in the root directory with:\n" +
+          "NEXT_PUBLIC_GOOGLE_CLIENT_ID=959795390198-ijbhg4ob84kgulhod8iauk56iu9s779h.apps.googleusercontent.com\n" +
+          "Then restart your development server."
+        );
+        toast.error("Google login is not configured. Please check console for details.");
         return;
       }
 
