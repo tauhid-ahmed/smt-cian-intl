@@ -170,7 +170,7 @@ const ArtistProfileTab = () => {
             </div>
 
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
+             
                 <Link
                   href={"/admin-dashboard/content/add-new-artist"}
                   className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap"
@@ -190,7 +190,7 @@ const ArtistProfileTab = () => {
                   </svg>
                   Add Artist
                 </Link>
-              </DialogTrigger>
+            
 
               <DialogContent className="bg-[#171717] border-none w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[714px]">
                 <DialogHeader>

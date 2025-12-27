@@ -163,7 +163,7 @@ const ProductCatalogTab = () => {
             </div>
 
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
+          
                 <Link
                   href={"/admin-dashboard/content/add-new-product"}
                   className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap"
@@ -183,7 +183,7 @@ const ProductCatalogTab = () => {
                   </svg>
                   Add Product
                 </Link>
-              </DialogTrigger>
+            
 
               <DialogContent className="bg-[#171717] border-none w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[714px]">
                 <DialogHeader>
@@ -350,7 +350,7 @@ const ProductCatalogTab = () => {
                       <Link
                         href={`/admin-dashboard/content/edit-new-product/${product.id}`}
                         className="text-white hover:text-gray-300"
-                        onClick={() => handleEdit(product)}
+                        title="Edit Product"
                       >
                         <svg
                           className="w-5 h-5"
