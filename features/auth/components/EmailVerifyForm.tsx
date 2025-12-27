@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
 import type { EmailVerifyErrorResponse } from "@/lib/api/authApi";
-import { useState } from "react";
 
 const emailVerifySchema = z.object({
   otpCode: z.string().min(4, "OTP must be at least 4 characters").max(6, "OTP must be at most 6 characters"),

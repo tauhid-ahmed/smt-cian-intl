@@ -7,11 +7,11 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import TextField from "./TextField";
 import { Eye, EyeOff } from "lucide-react";
-import { GoogleIcon } from "@/components/Icons";
 import { useCreateAccountMutation } from "@/lib/api/authApi";
 import toast from "react-hot-toast";
 import type { CreateAccountErrorResponse } from "@/lib/api/authApi";
 import { useAuth } from "../provider/AuthProvider";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -113,10 +113,7 @@ export default function SignUpForm() {
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <Button type="button" variant="accent" className="w-full" size="lg">
-          <GoogleIcon />
-          Continue with Google
-        </Button>
+        <GoogleLoginButton variant="light" />
 
         {/* Divider */}
         <div className="relative">

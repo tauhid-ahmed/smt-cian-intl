@@ -245,6 +245,73 @@ export interface ResetPasswordErrorResponse {
 export type ResetPasswordResponse = ResetPasswordSuccessResponse | ResetPasswordErrorResponse;
 
 /**
+ * Refresh Token Request/Response types
+ */
+export type RefreshTokenRequest = Record<string, never>; // No body needed, refresh token is sent in Authorization header
+
+export interface RefreshTokenSuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    accessToken: string;
+  };
+}
+
+export interface RefreshTokenErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type RefreshTokenResponse = RefreshTokenSuccessResponse | RefreshTokenErrorResponse;
+
+/**
+ * Google Login Request/Response types
+ */
+export interface GoogleLoginRequest {
+  token: string; // Google credential token
+}
+
+export interface GoogleLoginSuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    id: string;
+    fullName: string;
+    email: string;
+    role: string;
+    image: string | null;
+    status: string;
+    isVerified: boolean;
+    accessToken: string;
+    refreshToken: string;
+    authType: "login" | "register";
+  };
+}
+
+export interface GoogleLoginErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type GoogleLoginResponse = GoogleLoginSuccessResponse | GoogleLoginErrorResponse;
+
+/**
  * Auth API slice
  * Handles all authentication-related API calls
  */
@@ -309,6 +376,31 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
+    refreshToken: builder.mutation<RefreshTokenSuccessResponse, RefreshTokenRequest>({
+      query: () => {
+        // Get refresh token from localStorage
+        const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null;
+        
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
+        
+        return {
+          url: API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        };
+      },
+    }),
+    googleLogin: builder.mutation<GoogleLoginSuccessResponse, GoogleLoginRequest>({
+      query: (body) => ({
+        url: API_ENDPOINTS.AUTH.GOOGLE_LOGIN,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -321,5 +413,7 @@ export const {
   useForgotPasswordMutation,
   useVerifyResetPasswordOtpMutation,
   useResetPasswordMutation,
+  useRefreshTokenMutation,
+  useGoogleLoginMutation,
 } = authApi;
 
