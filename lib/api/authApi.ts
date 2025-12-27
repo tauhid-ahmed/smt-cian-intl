@@ -245,6 +245,34 @@ export interface ResetPasswordErrorResponse {
 export type ResetPasswordResponse = ResetPasswordSuccessResponse | ResetPasswordErrorResponse;
 
 /**
+ * Refresh Token Request/Response types
+ */
+export type RefreshTokenRequest = Record<string, never>; // No body needed, refresh token is sent in Authorization header
+
+export interface RefreshTokenSuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    accessToken: string;
+  };
+}
+
+export interface RefreshTokenErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type RefreshTokenResponse = RefreshTokenSuccessResponse | RefreshTokenErrorResponse;
+
+/**
  * Auth API slice
  * Handles all authentication-related API calls
  */
@@ -309,6 +337,24 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
+    refreshToken: builder.mutation<RefreshTokenSuccessResponse, RefreshTokenRequest>({
+      query: () => {
+        // Get refresh token from localStorage
+        const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null;
+        
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
+        
+        return {
+          url: API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -321,5 +367,6 @@ export const {
   useForgotPasswordMutation,
   useVerifyResetPasswordOtpMutation,
   useResetPasswordMutation,
+  useRefreshTokenMutation,
 } = authApi;
 
