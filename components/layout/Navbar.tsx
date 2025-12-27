@@ -9,6 +9,7 @@ import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 
 export default function Navbar() {
+  
   const { openSignUp, openSignIn } = useAuth();
   return (
     <header className="bg-accent/50 backdrop-blur sticky top-0 z-50 shadow h-20 w-full flex justify-center items-center">
