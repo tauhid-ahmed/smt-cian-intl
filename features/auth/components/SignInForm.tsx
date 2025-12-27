@@ -7,13 +7,13 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import TextField from "./TextField";
 import { Eye, EyeOff } from "lucide-react";
-import { FacebookIcon, GoogleIcon } from "@/components/Icons";
 import { useAuth } from "../provider/AuthProvider";
 import { useLoginMutation } from "@/lib/api/authApi";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
 import type { LoginErrorResponse } from "@/lib/api/authApi";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -115,28 +115,7 @@ export default function SignInForm() {
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex gap-4 items-center">
-          {/* <Button
-            type="button"
-            variant="secondary"
-            shape="pill"
-            className="flex-1 bg-[#1A77F2] hover:bg-[#1A77F2]/80  text-white"
-            size="lg"
-          >
-            <FacebookIcon />
-            Facebook
-          </Button> */}
-          <Button
-            type="button"
-            variant="secondary"
-            shape="pill"
-            className="flex-1"
-            size="lg"
-          >
-            <GoogleIcon />
-            Google
-          </Button>
-        </div>
+        <GoogleLoginButton variant="dark" />
 
         {/* Divider */}
         <div className="text-center flex items-center">

@@ -3,6 +3,7 @@ import { Inter, Inria_Serif } from "next/font/google";
 import "@/styles/globals.css";
 import { MusicPlayerProvider } from "@/providers/MusicPlayer";
 import ReduxProvider from "@/providers/ReduxProvider";
+import GoogleOAuthProviderWrapper from "@/providers/GoogleOAuthProvider";
 import { Toaster } from "react-hot-toast";
 
 const sans = Inter({
@@ -32,10 +33,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
         {/* {marketing} */}
-        <ReduxProvider>
-          <MusicPlayerProvider>
-            {children}
-            <Toaster
+        <GoogleOAuthProviderWrapper>
+          <ReduxProvider>
+            <MusicPlayerProvider>
+              {children}
+              <Toaster
               position="top-center"
               toastOptions={{
                 style: {
@@ -67,8 +69,9 @@ export default function RootLayout({
                 },
               }}
             />
-          </MusicPlayerProvider>
-        </ReduxProvider>
+            </MusicPlayerProvider>
+          </ReduxProvider>
+        </GoogleOAuthProviderWrapper>
       </body>
     </html>
   );

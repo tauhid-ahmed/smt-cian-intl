@@ -24,6 +24,7 @@
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.13",
+    "@react-oauth/google": "^0.13.4",
     "@reduxjs/toolkit": "^2.11.2",
     "@studio-freight/lenis": "^1.0.42",
     "@t3-oss/env-nextjs": "^0.13.8",

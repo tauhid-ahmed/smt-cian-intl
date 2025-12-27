@@ -273,6 +273,45 @@ export interface RefreshTokenErrorResponse {
 export type RefreshTokenResponse = RefreshTokenSuccessResponse | RefreshTokenErrorResponse;
 
 /**
+ * Google Login Request/Response types
+ */
+export interface GoogleLoginRequest {
+  token: string; // Google credential token
+}
+
+export interface GoogleLoginSuccessResponse {
+  success: true;
+  statusCode: 200;
+  message: string;
+  data: {
+    id: string;
+    fullName: string;
+    email: string;
+    role: string;
+    image: string | null;
+    status: string;
+    isVerified: boolean;
+    accessToken: string;
+    refreshToken: string;
+    authType: "login" | "register";
+  };
+}
+
+export interface GoogleLoginErrorResponse {
+  success: false;
+  message: string;
+  errorId: string;
+  timestamp: string;
+  errorMessages: Array<{
+    path: string;
+    message: string;
+  }>;
+  stack?: string;
+}
+
+export type GoogleLoginResponse = GoogleLoginSuccessResponse | GoogleLoginErrorResponse;
+
+/**
  * Auth API slice
  * Handles all authentication-related API calls
  */
@@ -355,6 +394,13 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
+    googleLogin: builder.mutation<GoogleLoginSuccessResponse, GoogleLoginRequest>({
+      query: (body) => ({
+        url: API_ENDPOINTS.AUTH.GOOGLE_LOGIN,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -368,5 +414,6 @@ export const {
   useVerifyResetPasswordOtpMutation,
   useResetPasswordMutation,
   useRefreshTokenMutation,
+  useGoogleLoginMutation,
 } = authApi;
 
