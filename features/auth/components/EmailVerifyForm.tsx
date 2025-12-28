@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { loginSuccess, closeAuthModal } from "@/lib/store/slices/authSlice";
 import type { EmailVerifyErrorResponse } from "@/lib/api/authApi";
+import { useAuth } from "../provider/AuthProvider";
 
 const emailVerifySchema = z.object({
   otpCode: z.string().min(4, "OTP must be at least 4 characters").max(6, "OTP must be at most 6 characters"),
@@ -26,6 +27,7 @@ export default function EmailVerifyForm({ userId, userEmail }: EmailVerifyFormPr
   const [emailVerify, { isLoading: isVerifying }] = useEmailVerifyMutation();
   const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
   const dispatch = useAppDispatch();
+  const { close } = useAuth();
 
   const form = useForm<EmailVerifyFormData>({
     resolver: zodResolver(emailVerifySchema),
@@ -75,7 +77,11 @@ export default function EmailVerifyForm({ userId, userEmail }: EmailVerifyFormPr
 
       // Close modal and reset form
       dispatch(closeAuthModal());
+      close();
       reset();
+
+      // Reload page to update Navbar with user info
+      window.location.reload();
     } catch (error: unknown) {
       console.error("OTP verification error:", error);
 

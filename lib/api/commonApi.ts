@@ -1,40 +1,35 @@
 // in this file we will add all common api calls for admin and users.
+import { API_ENDPOINTS } from "../config/api";
+import { ArtistData } from "./adminApi";
+import { baseApi } from "./baseApi";
+ 
+// get all artists response 
 
-export interface ArtistsResponse {
+interface AllArtistsResponse {
     success: boolean;
     statusCode: number;
     message: string;
-    meta: {
-        total: number;
-        page: number;
-        totalPage: number;
-        limit: number;
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-    };
-    data: {
-        id: string;
-        name: string;
-        bio: string;
-        image: string | null;
-        banner: string | null;
-        location: string;
-        website: string;
-        spotify: string;
-        appleMusic: string;
-        youtube: string;
-        behindGallery: string[];
-        instagram: string;
-        twitter: string;
-        facebook: string | null;
-        tiktok: string;
-        genres: string[];
-        popularity: number;
-        followers: number;
-        awards: number;
-        activeYearsStart: string;
-        activeYearsEnd: string | null;
-        createdAt: string;
-        updatedAt: string;
-    }[];
+    data: ArtistData[];
 }
+
+
+export const commonApi = baseApi.injectEndpoints({
+    endpoints: (builder) => ({
+        getArtists: builder.query<AllArtistsResponse, void>({
+            query: () => ({
+                url: API_ENDPOINTS.COMMON.GET_ARTIST,
+                method: "GET", 
+            })
+        }),
+        getSingleArtist : builder.query<ArtistData, string>({
+            query: (id: string) => (
+                {
+                url: `${API_ENDPOINTS.COMMON.GET_SINGLE_ARTIST}/${id}`,
+                method: "GET", 
+            })
+        })
+    })
+})
+
+export const { useGetArtistsQuery, useGetSingleArtistQuery } = commonApi;
+
