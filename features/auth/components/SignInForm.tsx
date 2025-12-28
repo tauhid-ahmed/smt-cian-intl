@@ -23,7 +23,7 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
-  const { openForgotPassword } = useAuth();
+  const { openForgotPassword, close } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
@@ -77,7 +77,11 @@ export default function SignInForm() {
 
       // Close modal and reset form
       dispatch(closeAuthModal());
+      close();
       reset();
+
+      // Reload page to update Navbar with user info
+      window.location.reload();
     } catch (error: unknown) {
       console.error("Login error:", error);
       console.error("Error details:", {
