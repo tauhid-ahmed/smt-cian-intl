@@ -9,16 +9,28 @@ import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 import { useGetMeQuery } from "@/lib/api/authApi";
 import Image from "next/image";
-import { LogOut } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export default function Navbar() {
 
     const { openSignUp, openSignIn } = useAuth();
 
-    const { data: meData, isLoading} = useGetMeQuery();
+    const { data: meData, isLoading } = useGetMeQuery();
+
+    const userRole = meData?.data.role;
 
     const signOut = () => {
-       localStorage.clear()
+        localStorage.clear();
+        window.location.reload();
     }
     console.log(meData);
     return (
@@ -80,7 +92,30 @@ export default function Navbar() {
                                         {meData?.data?.email}
                                     </span>
                                 </div>
-                                <Button variant="default" size="icon" onClick={()=> { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> </Button>
+                                    {userRole === 'SUPERADMIN' ? <DropdownMenu modal={false}>
+                                        <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="mr-3 mt-3">
+                                            <Link href="/admin-dashboard">
+                                                <DropdownMenuItem>
+                                                    <Button variant="ghost"> <LayoutDashboard /> Dashboard </Button>
+                                                </DropdownMenuItem>
+                                            </Link>
+                                            <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu> :
+                                            <DropdownMenu modal={false}>
+                                                <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="mr-3 mt-3">
+                                                    <Link href="/user-dashboard">
+                                                        <DropdownMenuItem>
+                                                            {/* change the button label later  */}
+                                                            <Button variant="ghost"> <LayoutDashboard /> User Dashboard  </Button>
+                                                        </DropdownMenuItem>
+                                                    </Link>
+                                                    <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu> 
+                                }
                             </div>
                         )}
                     </div>
@@ -89,3 +124,6 @@ export default function Navbar() {
         </header>
     );
 }
+
+
+{/*  */ }
