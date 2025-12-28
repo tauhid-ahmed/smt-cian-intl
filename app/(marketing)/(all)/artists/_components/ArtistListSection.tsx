@@ -1,8 +1,11 @@
+'use client'
 import Container from '@/components/layout/Container';
 import { Button } from '@/components/ui/button'; 
+import { ArtistData } from '@/lib/api/adminApi';
+import { useGetArtistsQuery } from '@/lib/api/commonApi'; 
+import { Loader } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
 
 interface Artist {
@@ -38,17 +41,27 @@ const ArtistCard = ({artist}: {artist: Artist}) => {
 
 
 const ArtistListSection = () => {
+    const { data: artistsData, isLoading } = useGetArtistsQuery();
+
+    if (isLoading) {
+        return <div className='w-full h-48 flex items-center justify-center'>
+            <div className="flex items-center gap-4">
+                <Loader className='animate-spin text-gray-400' size={24} /> Loading...
+            </div>
+        </div>;
+    }
+
     return (
         <Container>
             <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 max-w-7xl mx-auto">
                 {
-                    artists.map((item: Artist, index: number) => {
-                        return <ArtistCard artist={item} key={index} />
+                    artistsData?.data?.map((item: ArtistData, index: number) => {
+                        return <ArtistCard artist={{name: item.name, image: item.image || "/images/artist-image-collection/artist.png"}} key={index} />
                     })
                 }
             </div>
             <div className="flex items-center justify-center w-full my-6 mt-20">
-                <Button>
+                <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
                     See more
                 </Button>
             </div>
