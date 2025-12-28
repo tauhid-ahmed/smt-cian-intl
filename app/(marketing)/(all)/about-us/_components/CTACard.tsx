@@ -2,18 +2,21 @@
 
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
+import Link from "next/link";
 import React from "react";
 
+/* ================= TYPES ================= */
 interface CTACard {
   id: number;
   title: string;
   subtitle: string;
   description: string;
   buttonText: string;
-  buttonAction: () => void;
+  href: string;
   variant: "light" | "dark";
 }
 
+/* ================= CARD COMPONENT ================= */
 const CTACardComponent: React.FC<{ card: CTACard }> = ({ card }) => {
   const isLight = card.variant === "light";
 
@@ -45,20 +48,22 @@ const CTACardComponent: React.FC<{ card: CTACard }> = ({ card }) => {
         {card.description}
       </p>
 
-      <button
-        onClick={card.buttonAction}
-        className={`w-full py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 ${
-          isLight
-            ? "bg-black text-white hover:bg-gray-800"
-            : "bg-white text-black hover:bg-gray-100"
-        }`}
-      >
-        {card.buttonText}
-      </button>
+      <Link href={card.href}>
+        <span
+          className={`block text-center w-full py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base cursor-pointer transition-all duration-200 ${
+            isLight
+              ? "bg-black text-white hover:bg-gray-800"
+              : "bg-white text-black hover:bg-gray-100"
+          }`}
+        >
+          {card.buttonText}
+        </span>
+      </Link>
     </div>
   );
 };
 
+/* ================= MAIN SECTION ================= */
 const CTASection: React.FC = () => {
   const ctaCards: CTACard[] = [
     {
@@ -68,10 +73,7 @@ const CTASection: React.FC = () => {
       description:
         "Join our roster of talented artists who are making an impact through faith-based music. We're always looking for authentic voices with a heart for ministry.",
       buttonText: "Submit Demo",
-      buttonAction: () => {
-        console.log("Submit Demo clicked");
-        // Add your submit demo logic here
-      },
+      href: "/about-us/artist-information",
       variant: "light",
     },
     {
@@ -81,10 +83,7 @@ const CTASection: React.FC = () => {
       description:
         "Stay updated on new releases, exclusive content, and inspiring stories from our artists. Be the first to know about upcoming events and special announcements.",
       buttonText: "Join Newsletter",
-      buttonAction: () => {
-        console.log("Join Newsletter clicked");
-        // Add your newsletter signup logic here
-      },
+      href: "/about-us/newsletter",
       variant: "dark",
     },
   ];
@@ -93,17 +92,11 @@ const CTASection: React.FC = () => {
     <Section padding="sm" className="overflow-x-hidden">
       <Container className="relative">
         <div className="text-center font-black">
-          <span className="text-outline text-[100px] text-center whitespace-nowrap truncate leading-none">
+          <span className="text-outline text-[100px] whitespace-nowrap truncate leading-none">
             Be Part of The Movement
           </span>
         </div>
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0) 20%, black 100%)",
-          }}
-        />
+
         <div
           className="absolute inset-0"
           style={{
@@ -112,6 +105,7 @@ const CTASection: React.FC = () => {
           }}
         />
       </Container>
+
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-6xl mx-auto mt-10 lg:mt-20">
           {ctaCards.map((card) => (
@@ -119,7 +113,10 @@ const CTASection: React.FC = () => {
           ))}
         </div>
       </Container>
-      <p className="text-center text-white mt-10">© 2025 CIAN Collective. All rights reserved.</p>
+
+      <p className="text-center text-white mt-10">
+        © 2025 CIAN Collective. All rights reserved.
+      </p>
     </Section>
   );
 };
