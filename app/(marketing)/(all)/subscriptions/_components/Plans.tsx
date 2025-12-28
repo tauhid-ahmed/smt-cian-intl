@@ -159,14 +159,14 @@ function MembershipPricing({
   globalFeatures = defaultGlobalFeatures,
 }) {
   return (
-    <Section padding="lg" className="bg-sidebar">
+    <Section padding="lg" className="bg-sidebar" >
       <Container>
         <Heading as="h2" size="h3" align="center">
           {title}
         </Heading>
 
         {/* Membership Cards Grid - Equal height with flexbox */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-16 items-stretch">
+              <div id="membership" className="scroll-mt-48 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-16 items-stretch">
           {plans.map((plan) => (
             <MembershipCard
               key={plan.id}
