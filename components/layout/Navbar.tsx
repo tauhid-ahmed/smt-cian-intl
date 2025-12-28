@@ -83,8 +83,6 @@ export default function Navbar() {
                                 <Button variant="default" size="icon" onClick={()=> { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> </Button>
                             </div>
                         )}
-
-
                     </div>
                 </nav>
             </Container>
