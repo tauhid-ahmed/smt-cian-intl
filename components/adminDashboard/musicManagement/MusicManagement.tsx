@@ -168,7 +168,7 @@ const MusicManagement = () => {
 
             <Dialog open={open} onOpenChange={setOpen}>
               <Link
-                href={"/admin-dashboard/content/add-new-artist"}
+                href={"/admin-dashboard/music-management/add-new-music"}
                 className="bg-white text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap"
               >
                 <svg
@@ -359,7 +359,7 @@ const MusicManagement = () => {
                     </td>
                     <td className="pl-4 pt-4 pb-4 flex justify-end">
                       <Link
-                        href={`/admin-dashboard/content/edit-artist-profile/${artist.id}`}
+                        href={`/admin-dashboard/music-management/edit-music/${artist.id}`}
                         className="text-white hover:text-gray-300"
                       >
                         <svg

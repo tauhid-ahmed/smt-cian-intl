@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState } from "react";
@@ -23,7 +21,6 @@ const ContentManagementPage = () => {
   const tabs = [
     { value: "tab1", label: "Product Catalog" },
     { value: "tab2", label: "Artist Page" },
-    { value: "tab3", label: "Music Upload" },
     { value: "tab4", label: "Review Moderation" },
   ];
 
@@ -95,10 +92,6 @@ const ContentManagementPage = () => {
 
           <CustomTabsContent value="tab2">
             <ArtistPage />
-          </CustomTabsContent>
-
-          <CustomTabsContent value="tab3">
-            <ArtistProfileTab />
           </CustomTabsContent>
 
           <CustomTabsContent value="tab4">

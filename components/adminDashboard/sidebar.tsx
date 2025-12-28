@@ -34,10 +34,10 @@ const menuItems = [
     id: "content",
   },
   {
-    icon: ShoppingCart,
-    label: "E-commerce Management",
-    href: "/admin-dashboard/ecommerce",
-    id: "ecommerce",
+    icon: Music,
+    label: "Music Management",
+    href: "/admin-dashboard/music-management",
+    id: "music",
   },
   {
     icon: Gift,
@@ -46,10 +46,10 @@ const menuItems = [
     id: "donation",
   },
   {
-    icon: Music,
-    label: "Music Management",
-    href: "/admin-dashboard/music-management",
-    id: "music",
+    icon: ShoppingCart,
+    label: "E-commerce Management",
+    href: "/admin-dashboard/ecommerce",
+    id: "ecommerce",
   },
 ];
 
@@ -71,14 +71,16 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         className={cn(
           "fixed md:relative w-64 h-screen bg-[#1A1A1A] flex flex-col transition-transform duration-300 z-50 md:z-0",
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        )}>
+        )}
+      >
         <div className="flex items-center justify-between sm:justify-center pt-4 sm:pt-8 px-4">
           <Logo />
           <Button
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="md:hidden px-2 text-sidebar-foreground hover:bg-sidebar-accent">
+            className="md:hidden px-2 text-sidebar-foreground hover:bg-sidebar-accent"
+          >
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -107,7 +109,8 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   isActive
                     ? "bg-[#262626] text-white"
                     : "text-white/85 hover:bg-[#262626]"
-                )}>
+                )}
+              >
                 <Icon className="w-6 h-6" />
                 <span className="text-sm font-normal tracking-[0px]">
                   {item.label}

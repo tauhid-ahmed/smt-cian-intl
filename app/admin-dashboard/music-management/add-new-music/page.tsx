@@ -1,4 +1,4 @@
-import AddNewArtist from '@/components/adminDashboard/contentManagement/AddNewArtist';
+import AddNewArtist from '@/components/adminDashboard/musicManagement/AddNewMusic';
 
 
 const page = () => {

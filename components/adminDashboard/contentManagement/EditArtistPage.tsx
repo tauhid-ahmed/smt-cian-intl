@@ -2,13 +2,7 @@
 /* eslint-disable prefer-const */
 "use client";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
-import {
-  Upload,
-  X,
-
-  CircleCheckBig,
-  TicketX,
-} from "lucide-react";
+import { Upload, X, CircleCheckBig, TicketX } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface GalleryPhoto {
@@ -197,7 +191,7 @@ export default function EditArtistPage() {
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-2xl font-bold text-white">
-              Add New Artist page
+              Edit New Artist page
             </h1>
           </div>
         </div>
