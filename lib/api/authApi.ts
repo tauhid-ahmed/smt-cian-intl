@@ -357,6 +357,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User", "Auth"],
     }),
     emailVerify: builder.mutation<EmailVerifySuccessResponse, EmailVerifyRequest>({
       query: (body) => ({
@@ -364,6 +365,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User", "Auth"],
     }),
     resendOtp: builder.mutation<ResendOtpSuccessResponse, ResendOtpRequest>({
       query: (body) => ({
@@ -424,12 +426,14 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["User", "Auth"],
     }),
     getMe: builder.query<GetMeSuccessResponse, void>({
       query: () => ({
         url: API_ENDPOINTS.AUTH.GET_ME,
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
   }),
 });

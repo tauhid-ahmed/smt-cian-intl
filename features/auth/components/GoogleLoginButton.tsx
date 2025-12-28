@@ -87,6 +87,9 @@ export default function GoogleLoginButton({
       // Close modal
       dispatch(closeAuthModal());
       close();
+
+      // Reload page to update Navbar with user info
+      window.location.reload();
     } catch (error: unknown) {
       console.error("Google login error:", error);
 
