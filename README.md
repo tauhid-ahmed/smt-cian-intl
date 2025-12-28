@@ -40,6 +40,12 @@ pnpm install
    NEXT_PUBLIC_GOOGLE_CLIENT_ID=959795390198-ijbhg4ob84kgulhod8iauk56iu9s779h.apps.googleusercontent.com
    ```
 
+   **⚠️ CRITICAL - Must Do After Creating `.env.local`:**
+   - **STOP** your development server (if running)
+   - **RESTART** the development server completely
+   - Environment variables are only loaded when Next.js starts
+   - If you don't restart, the app will not see your `.env.local` file
+
    **Important:** 
    - The `.env.local` file is already in `.gitignore` and won't be committed to git
    - Each team member must create their own `.env.local` file from `.env.example`
@@ -82,10 +88,44 @@ All API endpoints are configured in `lib/config/api.ts`. The API base URL is rea
 ### Troubleshooting
 
 **Google Login not working:**
-- Make sure you have created `.env.local` file from `.env.example`
-- Verify that `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is set in your `.env.local` file
-- Restart the development server after creating/updating `.env.local`
-- Check browser console for any errors related to Google OAuth
+
+1. **Check if `.env.local` file exists:**
+   ```bash
+   # In the project root directory, verify the file exists
+   ls .env.local  # Linux/Mac
+   dir .env.local  # Windows
+   ```
+
+2. **If file doesn't exist, create it:**
+   ```bash
+   # Copy from example
+   cp .env.example .env.local
+   # OR manually create .env.local with:
+   NEXT_PUBLIC_API_BASE_URL=http://206.162.244.175:6006/api/v1
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=959795390198-ijbhg4ob84kgulhod8iauk56iu9s779h.apps.googleusercontent.com
+   ```
+
+3. **Verify the file contents:**
+   - Open `.env.local` and ensure both variables are present
+   - Make sure there are no extra spaces or quotes around the values
+   - The file should be in the root directory (same level as `package.json`)
+
+4. **Restart the development server:**
+   ```bash
+   # Stop the server (Ctrl+C) and restart
+   npm run dev
+   # OR
+   yarn dev
+   ```
+
+5. **Check browser console:**
+   - Open browser DevTools (F12)
+   - Look for warnings like "Google Client ID is not set"
+   - Check for any Google OAuth related errors
+
+6. **Clear browser cache:**
+   - Hard refresh: `Ctrl+Shift+R` (Windows/Linux) or `Cmd+Shift+R` (Mac)
+   - Or clear browser cache completely
 
 **API requests failing:**
 - Verify `NEXT_PUBLIC_API_BASE_URL` is correctly set in `.env.local`

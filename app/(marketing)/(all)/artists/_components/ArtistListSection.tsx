@@ -22,9 +22,13 @@ const artists : Artist[] = [
     { name: "Jayden Lee", image: "/images/artist-image-collection/artist-8.png" }
 ];
 
+const convertNameToSlug = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, "-");
+}
+
 const ArtistCard = ({artist}: {artist: Artist}) => {
     //todo: replace with actural artist id later
-    return<Link href={'/artists/'+artist.name}>
+    return<Link href={'/artists/'+convertNameToSlug(artist.name)}>
         <div className="bg-gray-900 hover:border hover:border-b-gray-700 rounded-md transition-all cursor-pointer">
             <Image width={200} height={200} src={artist.image} alt="" className="w-full" />
             <p className="p-4 rounded-md overflow-hidden"> {artist.name} </p>

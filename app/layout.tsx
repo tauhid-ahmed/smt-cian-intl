@@ -5,6 +5,7 @@ import { MusicPlayerProvider } from "@/providers/MusicPlayer";
 import ReduxProvider from "@/providers/ReduxProvider";
 import GoogleOAuthProviderWrapper from "@/providers/GoogleOAuthProvider";
 import { Toaster } from "react-hot-toast";
+import AuthProvider from "@/features/auth/provider/AuthProvider";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${serif.variable} antialiased`}>
+        <AuthProvider>
         {/* {marketing} */}
         <GoogleOAuthProviderWrapper>
           <ReduxProvider>
@@ -72,6 +74,7 @@ export default function RootLayout({
             </MusicPlayerProvider>
           </ReduxProvider>
         </GoogleOAuthProviderWrapper>
+        </AuthProvider>
       </body>
     </html>
   );

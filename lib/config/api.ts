@@ -33,5 +33,8 @@ export const API_ENDPOINTS = {
         GET_ME: "/users/me",
         // Add more auth endpoints here as needed
     },
+    ADMIN: {
+        ADD_ARTIST: "/artists",
+    },
 } as const;
 

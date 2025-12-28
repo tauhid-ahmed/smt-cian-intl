@@ -257,7 +257,7 @@ export type GetMeSuccessResponse = {
         image: string | null;
         isEmailVerified: boolean;
         isVerified: boolean;
-        role: string;
+        role: "USER" | "SUPERADMIN" ;
         createdAt: string;
         updatedAt: string;
         status: string;
