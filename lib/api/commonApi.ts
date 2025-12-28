@@ -20,9 +20,16 @@ export const commonApi = baseApi.injectEndpoints({
                 url: API_ENDPOINTS.COMMON.GET_ARTIST,
                 method: "GET", 
             })
+        }),
+        getSingleArtist : builder.query<ArtistData, string>({
+            query: (id: string) => (
+                {
+                url: `${API_ENDPOINTS.COMMON.GET_SINGLE_ARTIST}/${id}`,
+                method: "GET", 
+            })
         })
     })
 })
 
-export const { useGetArtistsQuery } = commonApi;
+export const { useGetArtistsQuery, useGetSingleArtistQuery } = commonApi;
 
