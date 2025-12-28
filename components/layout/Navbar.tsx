@@ -94,13 +94,18 @@ export default function Navbar() {
                                 </div>
                                     {userRole === 'SUPERADMIN' ? <DropdownMenu modal={false}>
                                         <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="mr-3 mt-3">
+                                        <DropdownMenuContent className="mr-3 mt-3 w-fit">
                                             <Link href="/admin-dashboard">
                                                 <DropdownMenuItem>
-                                                    <Button variant="ghost"> <LayoutDashboard /> Dashboard </Button>
+                                                    <Button variant="ghost"> <LayoutDashboard /> Admin Dashboard </Button>
                                                 </DropdownMenuItem>
                                             </Link>
-                                            <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
+                                            <Link href="/user-dashboard">
+                                                <DropdownMenuItem>
+                                                    <Button variant="ghost"> <LayoutDashboard /> User Dashboard </Button>
+                                                </DropdownMenuItem>
+                                            </Link>
+                                            <DropdownMenuItem  > <Button variant="default" className="w-full flex items-center justify-start" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu> :
                                             <DropdownMenu modal={false}>
