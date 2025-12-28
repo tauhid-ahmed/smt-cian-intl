@@ -229,7 +229,7 @@ export default function AddNewProduct() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-white">Add New Product</h1>
+            <h1 className="text-2xl font-bold text-white">Edit New Product</h1>
           </div>
           <div className="flex gap-3">
             <select className="px-4 py-2 bg-neutral-800 text-white border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">

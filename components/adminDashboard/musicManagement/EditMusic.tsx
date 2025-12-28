@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Upload, GripVertical, Trash2, Plus,  } from "lucide-react";
+import { Upload, GripVertical, Trash2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
 
@@ -39,7 +39,7 @@ interface TrackInfo {
   musicFile: FileInfo | null;
 }
 
-export default function ArtistProfile() {
+export default function EditMusic() {
   const router = useRouter();
   const [verifiedBadge, setVerifiedBadge] = useState<boolean>(false);
   const [tracks, setTracks] = useState<Track[]>([
@@ -376,140 +376,8 @@ export default function ArtistProfile() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">
-            Artist Profile
+            Edit Artist Profile
           </h1>
-        </div>
-
-        {/* Artist Branding Section */}
-        <div className="border border-neutral-700 rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 ">
-          <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
-            Artist Branding
-          </h2>
-
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 w-full justify-center items-center">
-            {/* Profile Image */}
-            <div className="w-full lg:w-auto flex flex-col items-center">
-              <label className="block text-sm font-medium text-white mb-3">
-                Profile Image
-              </label>
-              <input
-                ref={profileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleProfileImageChange}
-                className="hidden"
-              />
-              <div
-                onClick={handleProfileImageClick}
-                onDrop={handleProfileImageDrop}
-                onDragOver={(e) => e.preventDefault()}
-                className="w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 border-2 border-neutral-700 rounded-full flex flex-col items-center justify-center bg-neutral-800 cursor-pointer hover:bg-neutral-700 overflow-hidden"
-              >
-                {profileImage ? (
-                  <img
-                    src={profileImage}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <>
-                    <Upload size={32} className="text-neutral-400 mb-2" />
-                    <span className="text-sm text-neutral-400 text-center px-4">
-                      Drop image or click to upload
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Cover Banner and Fields */}
-            <div className="space-y-4 sm:space-y-6 w-full lg:flex-1">
-              <div>
-                <label className="block text-sm font-medium text-white mb-3">
-                  Cover Banner
-                </label>
-                <input
-                  ref={bannerInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBannerChange}
-                  className="hidden"
-                />
-                <div
-                  onClick={handleBannerClick}
-                  onDrop={handleBannerDrop}
-                  onDragOver={(e) => e.preventDefault()}
-                  className="border-2 border-dashed border-neutral-700 rounded-2xl h-40 sm:h-48 flex flex-col items-center justify-center bg-neutral-800 cursor-pointer hover:bg-neutral-700 overflow-hidden"
-                >
-                  {coverBanner ? (
-                    <img
-                      src={coverBanner}
-                      alt="Cover Banner"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <>
-                      <Upload size={32} className="text-neutral-400 mb-2" />
-                      <span className="text-sm text-neutral-400 text-center px-4">
-                        Drop banner image or click to upload
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Product Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter product title"
-                    value={productTitle}
-                    onChange={(e) => setProductTitle(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-neutral-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Genre
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Pop"
-                    value={genre}
-                    onChange={(e) => setGenre(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-neutral-500"
-                  />
-                </div>
-              </div>
-
-              {/* Verified Artist Badge */}
-              <div className="border border-neutral-700 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-neutral-800">
-                <div className="flex-1">
-                  <div className="font-semibold text-white mb-1">
-                    Verified Artist Badge
-                  </div>
-                  <div className="text-sm text-neutral-400">
-                    Display verified checkmark on profile
-                  </div>
-                </div>
-                <button
-                  onClick={() => setVerifiedBadge(!verifiedBadge)}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors shrink-0 ${
-                    verifiedBadge ? "bg-gray-500" : "bg-neutral-600"
-                  } focus:outline-none`}
-                >
-                  <span
-                    className={`inline-block h-6 w-6 transform rounded-full transition-transform bg-white ${
-                      verifiedBadge ? "translate-x-7" : "translate-x-1"
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Music Management Section */}
@@ -788,7 +656,7 @@ export default function ArtistProfile() {
         {/* Create Profile Button */}
         <div className="flex justify-end gap-4">
           <button
-            onClick={() => router.push("/admin-dashboard/content?tab=tab2")}
+            onClick={() => router.push("/admin-dashboard/music-management")}
             className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg shadow-sm transition-colors"
           >
             Cancle
