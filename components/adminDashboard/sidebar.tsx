@@ -9,6 +9,7 @@ import {
   Gift,
   LogOut,
   X,
+  Music,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,12 @@ const menuItems = [
     label: "Donation Management",
     href: "/admin-dashboard/donation",
     id: "donation",
+  },
+  {
+    icon: Music,
+    label: "Music Management",
+    href: "/admin-dashboard/music-management",
+    id: "music",
   },
 ];
 

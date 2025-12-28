@@ -23,7 +23,7 @@ const ContentManagementPage = () => {
   const tabs = [
     { value: "tab1", label: "Product Catalog" },
     { value: "tab2", label: "Artist Page" },
-    { value: "tab3", label: "Artist Profiles" },
+    { value: "tab3", label: "Music Upload" },
     { value: "tab4", label: "Review Moderation" },
   ];
 

@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FileUpload } from "@/components/ui/file-upload";
 import Link from "next/link";
-import { Trash } from "lucide-react";
+import { Music, Trash } from "lucide-react";
 
 // Zod schema for adding/editing artist
 const artistSchema = z.object({
@@ -36,7 +36,7 @@ interface Artist {
   status: "Verified" | "Pending" | "Not Verified";
 }
 
-const ArtistProfileTab = () => {
+const MusicManagement = () => {
   const [artists, setArtists] = useState<Artist[]>([
     {
       id: 1,
@@ -450,4 +450,4 @@ const ArtistProfileTab = () => {
   );
 };
 
-export default ArtistProfileTab;
+export default MusicManagement;
