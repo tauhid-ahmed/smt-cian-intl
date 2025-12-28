@@ -92,29 +92,34 @@ export default function Navbar() {
                                         {meData?.data?.email}
                                     </span>
                                 </div>
-                                    {userRole === 'SUPERADMIN' ? <DropdownMenu modal={false}>
+                                {userRole === 'SUPERADMIN' ? <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="mr-3 mt-3 w-fit">
+                                        <Link href="/admin-dashboard">
+                                            <DropdownMenuItem>
+                                                <Button variant="ghost"> <LayoutDashboard /> Admin Dashboard </Button>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                        <Link href="/user-dashboard">
+                                            <DropdownMenuItem>
+                                                <Button variant="ghost"> <LayoutDashboard /> User Dashboard </Button>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                        <DropdownMenuItem  > <Button variant="default" className="w-full flex items-center justify-start" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu> :
+                                    <DropdownMenu modal={false}>
                                         <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
                                         <DropdownMenuContent className="mr-3 mt-3">
-                                            <Link href="/admin-dashboard">
+                                            <Link href="/user-dashboard">
                                                 <DropdownMenuItem>
-                                                    <Button variant="ghost"> <LayoutDashboard /> Dashboard </Button>
+                                                    {/* change the button label later  */}
+                                                    <Button variant="ghost"> <LayoutDashboard /> User Dashboard  </Button>
                                                 </DropdownMenuItem>
                                             </Link>
                                             <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
                                         </DropdownMenuContent>
-                                    </DropdownMenu> :
-                                            <DropdownMenu modal={false}>
-                                                <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
-                                                <DropdownMenuContent className="mr-3 mt-3">
-                                                    <Link href="/user-dashboard">
-                                                        <DropdownMenuItem>
-                                                            {/* change the button label later  */}
-                                                            <Button variant="ghost"> <LayoutDashboard /> User Dashboard  </Button>
-                                                        </DropdownMenuItem>
-                                                    </Link>
-                                                    <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu> 
+                                    </DropdownMenu>
                                 }
                             </div>
                         )}
