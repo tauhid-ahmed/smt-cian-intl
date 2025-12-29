@@ -239,7 +239,7 @@ export default function QuickAnswerSection() {
                 }
               `}
             >
-              <div className="flex-shrink-0">{category.icon}</div>
+              <div className="shrink-0">{category.icon}</div>
               <span className="font-semibold text-lg text-left">
                 {category.title}
               </span>
@@ -263,7 +263,7 @@ export default function QuickAnswerSection() {
                     {faq.question}
                   </span>
                   <ChevronDown
-                    className={`w-6 h-6 text-gray-400 flex-shrink-0 transition-transform duration-300 ${
+                    className={`w-6 h-6 text-gray-400 shrink-0 transition-transform duration-300 ${
                       openFAQIndex === index ? "rotate-180" : ""
                     }`}
                   />
@@ -286,7 +286,7 @@ export default function QuickAnswerSection() {
           {/* Still Need Help Section */}
           <div className="mt-12 text-center">
             <p className="text-gray-400 mb-4">
-              Still need help? We're here for you!
+              Still need help? We&apos;re here for you!
             </p>
             <button className="bg-white text-black px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
               Contact Support

@@ -20,7 +20,7 @@ export default function Intro() {
             </Heading>
             <div className="max-w-2xl w-full mx-auto mt-2">
               <p className="text-lg font-semibold">
-                We'd love to hear from you
+                We&apos;d love to hear from you
               </p>
             </div>
           </div>

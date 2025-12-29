@@ -4,7 +4,7 @@
 "use client";
 import * as React from "react";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
-import { Upload, Plus, Trash2, Send, X, BadgeCheck } from "lucide-react";
+import { Upload, Plus, Trash2,  X,  } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Check, ChevronsUpDown } from "lucide-react";
