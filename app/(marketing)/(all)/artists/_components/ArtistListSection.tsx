@@ -14,9 +14,7 @@ interface Artist {
     id: string; 
 }
  
-const convertNameToSlug = (name: string) => {
-    return name.toLowerCase().replace(/\s+/g, "-");
-}
+
 
 const ArtistCard = ({artist}: {artist: Artist}) => {
     //todo: replace with actural artist id later

@@ -2,6 +2,7 @@ import { Heading } from "@/components/Heading";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Contact() {
   return (
@@ -17,9 +18,11 @@ export default function Contact() {
               create anything at scale — fast, secure, and built to transform
               your process. From idea to execution, nothing is off limits.
             </p>
-            <Button className="bg-black hover:bg-black/80 text-white">
-              Contact Sales
-            </Button>
+            <Link href="/contact">
+              <Button className="bg-black hover:bg-black/80 text-white">
+                Contact Sales
+              </Button>
+            </Link>
           </div>
         </Container>
       </Section>

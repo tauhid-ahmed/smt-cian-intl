@@ -1,10 +1,50 @@
-/* eslint-disable prefer-const */
 /* eslint-disable react-hooks/purity */
+/* eslint-disable prefer-const */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import * as React from "react";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
-import { Upload, Plus, Trash2, Send, X } from "lucide-react";
+import { Upload, Plus, Trash2, Send, X, BadgeCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
 
 interface Track {
   id: number;
@@ -25,6 +65,8 @@ interface ColorVariant {
 }
 
 export default function AddNewProduct() {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
   const router = useRouter();
   // Basic Info
   const [productTitle, setProductTitle] = useState<string>("");
@@ -229,14 +271,68 @@ export default function AddNewProduct() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-white">Edit New Product</h1>
+            <h1 className="text-2xl font-bold text-white">Add New Product</h1>
           </div>
           <div className="flex gap-3">
-            <select className="px-4 py-2 bg-neutral-800 text-white border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>Select Artist</option>
-            </select>
-            <select className="px-4 py-2 bg-neutral-800 text-white border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[200px] justify-between"
+                  >
+                    {value
+                      ? frameworks.find(
+                          (framework) => framework.value === value
+                        )?.label
+                      : "Select framework..."}
+                    <ChevronsUpDown className="opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput
+                      placeholder="Search framework..."
+                      className="h-9"
+                    />
+                    <CommandList>
+                      <CommandEmpty>No framework found.</CommandEmpty>
+                      <CommandGroup>
+                        {frameworks.map((framework) => (
+                          <CommandItem
+                            key={framework.value}
+                            value={framework.value}
+                            onSelect={(currentValue) => {
+                              setValue(
+                                currentValue === value ? "" : currentValue
+                              );
+                              setOpen(false);
+                            }}
+                          >
+                            {framework.label}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                value === framework.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <select className="px-4 py-[9.1px] bg-neutral-800 text-white border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Book</option>
               <option>Hudi</option>
+              <option>CD</option>
+              <option>T-Shirt</option>
             </select>
           </div>
         </div>
@@ -377,7 +473,7 @@ export default function AddNewProduct() {
                 {tracks.map((track) => (
                   <div
                     key={track.id}
-                    className="grid grid-cols-12 gap-2 items-center"
+                    className="grid grid-cols-12 gap-2 items-end"
                   >
                     <div className="col-span-5">
                       <label className="block text-xs text-neutral-400 mb-1">
@@ -431,7 +527,10 @@ export default function AddNewProduct() {
                         )}
                       </label>
                     </div>
-                    <div className="col-span-1 flex justify-center">
+                    <div
+                      className="col-span-1 flex 
+                     items-baseline"
+                    >
                       <button
                         onClick={() => removeTrack(track.id)}
                         className="w-9 h-9 border border-neutral-700 rounded-lg flex items-center justify-center text-neutral-400 hover:text-red-400 hover:border-red-700"
@@ -614,13 +713,14 @@ export default function AddNewProduct() {
             onClick={() => router.back()}
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm"
           >
+            {" "}
+            <Trash2 className="w-4 h-4" />
             Cancle
           </button>
           <button
             onClick={handlePublish}
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm"
           >
-            <Send className="w-4 h-4" />
             Publish Product
           </button>
         </div>
