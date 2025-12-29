@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/purity */
+/* eslint-disable prefer-const */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";

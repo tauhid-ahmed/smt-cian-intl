@@ -1,8 +1,7 @@
 "use client";
 
-import { Menu, Bell, LogOut } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useGetMeQuery } from "@/lib/api/authApi";
 import Image from "next/image";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
