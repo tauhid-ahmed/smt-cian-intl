@@ -52,7 +52,7 @@ export default function Explore({
               asChild
               width="responsive"
             >
-              <Link href={href}>{hrefTitle || "Explore Now"}</Link>
+              <Link href={"/music"}>{hrefTitle || "Explore Now"}</Link>
             </Button>
           </div>
         </Container>

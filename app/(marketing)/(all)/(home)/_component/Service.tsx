@@ -4,10 +4,12 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Service() {
   const heading = "The perfect plan to fit your needs";
   const imageSrc = "/images/service.webp";
+
   const cards = [
     {
       title: "For creators",
@@ -15,20 +17,29 @@ export default function Service() {
 creative assets, or everything Artlist has to
 offer, all covered by the right license for you.`,
       buttonText: "See Plans",
+      href: "/subscriptions",
     },
     {
       title: "For teams",
       description: `Give your brand, team, or agency unlimited assets
 and advanced AI tools to create securely and at
 scale — backed by the perfect business license.`,
-      buttonText: "See Plans",
+      buttonText: "Learn More",
+      href: "/about-us",
     },
   ];
 
   return (
     <Section className="relative" padding="none">
       <div className="relative left-1/2 right-1/2 w-screen -mx-[50vw] min-h-[90vh]">
-        <Image src={imageSrc} fill alt={heading} className="object-cover" />
+        <Image
+          src={imageSrc}
+          fill
+          alt={heading}
+          className="object-cover"
+          priority
+        />
+
         <div className="absolute inset-0 py-16 lg:py-20">
           <Container>
             <div className="flex flex-col items-start gap-12 md:gap-16 lg:gap-18 relative z-10">
@@ -49,18 +60,22 @@ scale — backed by the perfect business license.`,
                     >
                       {card.title}
                     </Heading>
+
                     <p className="text-white mt-2.5">{card.description}</p>
-                    <Button
-                      variant="secondary"
-                      size="xl"
-                      className={cn(
-                        "mt-4",
-                        idx === 1 &&
-                          "bg-black hover:bg-black hover:opacity-80 border border-white text-white"
-                      )}
-                    >
-                      {card.buttonText}
-                    </Button>
+
+                    <Link href={card.href}>
+                      <Button
+                        variant="secondary"
+                        size="xl"
+                        className={cn(
+                          "mt-4",
+                          idx === 1 &&
+                            "bg-black hover:bg-black hover:opacity-80 border border-white text-white"
+                        )}
+                      >
+                        {card.buttonText}
+                      </Button>
+                    </Link>
                   </div>
                 ))}
               </div>
