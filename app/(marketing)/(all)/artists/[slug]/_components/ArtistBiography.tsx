@@ -72,9 +72,11 @@ const ArtistBiographySkeleton = () => {
 
 const ArtistBiography = () => {
     const [showFullStory, setShowFullStory] = useState(false);
-    const {slug}  = useParams();
-    console.log(slug);
-    const { data: artistData, isLoading, isError } = useGetSingleArtistQuery(slug as string);
+    const {slug}  = useParams(); 
+ 
+    const { data , isLoading, isError } = useGetSingleArtistQuery(slug as string);
+
+    const artistData = data?.data;
 
     // Show loading state
     if (isLoading) {
@@ -89,8 +91,8 @@ const ArtistBiography = () => {
                     <Heading as="h2" size="h3">
                         Unable to Load Artist Biography
                     </Heading>
-                    <p className="text-gray-400">
-                        We couldn't load the artist information. Please try again later.
+                    <p className="text-gray-400 text-center">
+                        We couldn&rsquo;t load the artist information. Please try again later.
                     </p>
                 </Container>
             </Section>
@@ -118,7 +120,7 @@ const ArtistBiography = () => {
                         {artistData.image ? (
                             <Image
                                 fill
-                                src={artistData.image}
+                                src={artistData?.image}
                                 alt={artistData.name}
                                 className="w-full h-full object-cover"
                             />
@@ -140,7 +142,7 @@ const ArtistBiography = () => {
                     <div className="flex flex-col text-white/80 font-bold">
                         <div className="space-y-4">
                             <Heading as="h3" size="h5">
-                                Artist Highlights
+                                {artistData.name}
                             </Heading>
 
                             <div className="space-y-8 border-b pb-10 border-muted">

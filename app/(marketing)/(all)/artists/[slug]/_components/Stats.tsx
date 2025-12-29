@@ -61,8 +61,10 @@ function Counter({ value, suffix = "", start = true }: CounterProps) {
 }
 
 export default function Stats() {
-    const {id} = useParams()
-    const {data: artistData , isLoading , isError} = useGetSingleArtistQuery(id as  string)
+    const {slug} = useParams()
+    const {data , isLoading} = useGetSingleArtistQuery(slug as  string)
+    const artistData = data?.data   
+    console.log({artistData});
   const statsData: StatData[] = [
       { value: artistData?.followers ?? 0, suffix: (artistData?.followers ?? 0) > 0  ? "+" : "", label: "followers" },
       { value: artistData?.awards ?? 0, suffix: (artistData?.awards ?? 0) > 0  ? "+" : "", label: "awards" },

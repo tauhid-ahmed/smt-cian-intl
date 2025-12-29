@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
             "picsum.photos",
             "m.media-amazon.com",
             "206.162.244.175",
+            "jamil-dev.s3.us-east-1.amazonaws.com",
         ],
     },
 };

@@ -38,7 +38,8 @@ export const API_ENDPOINTS = {
     },
     COMMON: {
         GET_ARTIST: "/artists",
-        GET_SINGLE_ARTIST: "/artists"
+        GET_SINGLE_ARTIST: "/artists",
+        GET_PRODUCTS: "/products"
     }
 } as const;
 

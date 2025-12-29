@@ -30,7 +30,10 @@ const ArtistCard = ({artist}: {artist: Artist}) => {
 
 
 const ArtistListSection = () => {
-    const { data: artistsData, isLoading } = useGetArtistsQuery();
+    const { data, isLoading } = useGetArtistsQuery();
+    const artistsData = data?.data
+    console.log("Artists data:", artistsData);
+
 
     if (isLoading) {
         return <div className='w-full h-48 flex items-center justify-center'>
@@ -44,7 +47,7 @@ const ArtistListSection = () => {
         <Container>
             <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 max-w-7xl mx-auto">
                 {
-                    artistsData?.data?.map((item: ArtistData, index: number) => {
+                    artistsData?.map((item: ArtistData, index: number) => {
                         return <ArtistCard artist={{name: item.name, image: item.image || "/images/artist-image-collection/artist.png" , id: item.id }} key={index} />
                     })
                 }
