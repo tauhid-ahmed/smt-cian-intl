@@ -5,7 +5,6 @@ import {
   Upload,
   GripVertical,
   Trash2,
-  Plus,
   Music,
   Image as ImageIcon,
   Clock,
@@ -15,6 +14,46 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
 
 // Type Definitions
 interface Track {
@@ -53,8 +92,9 @@ interface TrackInfo {
 }
 
 export default function AddNewMusic() {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
   const router = useRouter();
-  const [verifiedBadge, setVerifiedBadge] = useState<boolean>(false);
   const [tracks, setTracks] = useState<Track[]>([
     {
       id: 1,
@@ -78,21 +118,6 @@ export default function AddNewMusic() {
   const dragOverItem = useRef<number | null>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
-
-  const addTrack = (): void => {
-    setTracks([
-      ...tracks,
-      {
-        id: Date.now(),
-        musicPhoto: null,
-        musicPhotoFile: null,
-        musicFile: null,
-        trackName: "",
-        genre: "",
-        duration: "",
-      },
-    ]);
-  };
 
   const removeTrack = (id: number): void => {
     if (tracks.length > 1) {
@@ -306,7 +331,6 @@ export default function AddNewMusic() {
     formData.append("selectedArtist", selectedArtist);
     formData.append("productTitle", productTitle);
     formData.append("genre", genre);
-    formData.append("verifiedBadge", String(verifiedBadge));
 
     if (profileImageFile) {
       formData.append("profileImage", profileImageFile);
@@ -357,50 +381,59 @@ export default function AddNewMusic() {
 
         {/* Artist Information Card */}
         <div className="bg-gradient-to-br from-neutral-900 to-neutral-800 border border-neutral-700/50 rounded-2xl p-6 sm:p-8 mb-6 shadow-2xl">
-          <div className="flex items-center gap-3 mb-6">
-            <User className="text-yellow-500" size={24} />
-            <h2 className="text-xl font-bold text-white">Artist Information</h2>
+          <div>
+              <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-[200px] justify-between"
+        >
+          {value
+            ? frameworks.find((framework) => framework.value === value)?.label
+            : "Select framework..."}
+          <ChevronsUpDown className="opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput placeholder="Search framework..." className="h-9" />
+          <CommandList>
+            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandGroup>
+              {frameworks.map((framework) => (
+                <CommandItem
+                  key={framework.value}
+                  value={framework.value}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? "" : currentValue)
+                    setOpen(false)
+                  }}
+                >
+                  {framework.label}
+                  <Check
+                    className={cn(
+                      "ml-auto",
+                      value === framework.value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Artist Name
-              </label>
-              <input
-                type="text"
-                placeholder="Enter artist name"
-                value={selectedArtist}
-                onChange={(e) => setSelectedArtist(e.target.value)}
-                className="w-full block px-4 py-3 border border-neutral-600 bg-neutral-800/50 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent placeholder-neutral-500 transition-all"
-              />
-            </div>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
         </div>
 
         {/* Track Management Section */}
         <div className="bg-gradient-to-br from-neutral-900 to-neutral-800 border border-neutral-700/50 rounded-2xl p-6 sm:p-8 mb-6 shadow-2xl">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <Music className="text-yellow-500" size={24} />
-              <h2 className="text-xl font-bold text-white">Track List</h2>
-              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full">
-                {tracks.length} {tracks.length === 1 ? "Track" : "Tracks"}
-              </span>
-            </div>
-            <button
-              onClick={addTrack}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold rounded-xl shadow-lg shadow-yellow-500/20 transition-all transform hover:scale-105"
-            >
-              <Plus size={18} />
-              Add Track
-            </button>
-          </div>
-
           <div className="space-y-4">
             {/* Desktop Header */}
             <div className="hidden lg:grid grid-cols-12 gap-4 text-sm font-semibold text-neutral-400 px-4 pb-2 border-b border-neutral-700">
-              <div className="col-span-1 flex justify-center">Order</div>
               <div className="col-span-1 flex items-center gap-2">
                 <ImageIcon size={14} />
                 Cover
@@ -440,12 +473,6 @@ export default function AddNewMusic() {
                   onDragEnd={handleDragEnd}
                   onDragOver={(e) => e.preventDefault()}
                 >
-                  <div className="col-span-1 flex justify-center">
-                    <div className="w-8 h-8 rounded-lg bg-neutral-700 flex items-center justify-center cursor-move group-hover:bg-neutral-600 transition-colors">
-                      <GripVertical size={16} className="text-neutral-400" />
-                    </div>
-                  </div>
-
                   <div className="col-span-1">
                     <input
                       type="file"
@@ -550,16 +577,6 @@ export default function AddNewMusic() {
                         />
                       )}
                     </div>
-                  </div>
-
-                  <div className="col-span-1 flex justify-center">
-                    <button
-                      onClick={() => removeTrack(track.id)}
-                      disabled={tracks.length === 1}
-                      className="w-10 h-10 border border-neutral-600 rounded-lg flex items-center justify-center text-neutral-400 hover:text-red-400 hover:border-red-500 hover:bg-red-950/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-neutral-400 disabled:hover:border-neutral-600 disabled:hover:bg-transparent"
-                    >
-                      <Trash2 size={16} />
-                    </button>
                   </div>
                 </div>
 

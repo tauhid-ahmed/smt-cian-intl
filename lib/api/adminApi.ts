@@ -2,6 +2,13 @@
 import { API_ENDPOINTS } from "../config/api";
 import { baseApi } from "./baseApi";
 
+export interface ApiResponse<T> {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+}
+
 export interface ArtistData {
   id: string;
   name: string;
@@ -59,6 +66,43 @@ export interface ArtistResponse {
   };
 }
 
+/* =======================
+   Product Types
+======================= */
+export interface ProductTrack {
+  id: string;
+  name: string;
+  duration: string;
+  url: string;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  category: string;
+  price: number;
+  discountPrice: number;
+  stock: number;
+  description: string;
+  shippingInfo: string;
+  returnPolicy: string;
+  mainImage: string | null;
+  gallery: string[];
+  sizes: string[];
+  colors: string[];
+  artistId: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tracks: ProductTrack[];
+  artist: ArtistData;
+}
+
+export type ProductResponse = ApiResponse<Product>;
+
 // post a new artitst
 export const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -69,8 +113,21 @@ export const adminApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    addProduct: builder.mutation<ProductResponse, any>({
+      query: (body: any) => ({
+        url: API_ENDPOINTS.ADMIN.ADD_PRODUCT,
+        method: "POST",
+        body,
+      }),
+    }),
   
   }),
 });
+
+export const {
+  useAddArtistMutation,
+  useAddProductMutation,
+} = adminApi;
 
 
