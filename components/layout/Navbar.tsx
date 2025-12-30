@@ -9,7 +9,7 @@ import MobileNav from "./MobileNav";
 import { useAuth } from "@/features/auth/provider/AuthProvider";
 import { useGetMeQuery } from "@/lib/api/authApi";
 import Image from "next/image";
-import { ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, ShoppingBag } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -108,18 +108,27 @@ export default function Navbar() {
                                         <DropdownMenuItem  > <Button variant="default" className="w-full flex items-center justify-start" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu> :
-                                    <DropdownMenu modal={false}>
-                                        <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="mr-3 mt-3">
-                                            <Link href="/user-dashboard">
-                                                <DropdownMenuItem>
-                                                    {/* change the button label later  */}
-                                                    <Button variant="ghost"> <LayoutDashboard /> User Dashboard  </Button>
-                                                </DropdownMenuItem>
+                                    <div className="flex items-center gap-4">
+                                        <DropdownMenu modal={false}>
+                                            <DropdownMenuTrigger> <ChevronDown /> </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="mr-3 mt-3">
+                                                <Link href="/user-dashboard">
+                                                    <DropdownMenuItem>
+                                                        {/* change the button label later  */}
+                                                        <Button variant="ghost"> <LayoutDashboard /> User Dashboard  </Button>
+                                                    </DropdownMenuItem>
+                                                </Link>
+                                                <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                        <div className="text-sm text-gray-500">
+                                            <Link href="/cart">
+                                                <Button size="icon" variant="ghost">
+                                                    <ShoppingBag className="size" />
+                                                </Button>
                                             </Link>
-                                            <DropdownMenuItem  > <Button variant="default" className="w-full" onClick={() => { signOut(); window.location.reload(); }} > <LogOut className="h-4 w-4" /> Log out</Button> </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                        </div>
+                                    </div>
                                 }
                             </div>
                         )}

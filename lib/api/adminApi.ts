@@ -61,16 +61,17 @@ export interface ArtistResponse {
 
 // post a new artitst
 export const adminApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
-    addArtist: builder.mutation<ArtistResponse, any>({
-      query: (body: any) => ({
-        url: API_ENDPOINTS.ADMIN.ADD_ARTIST,
-        method: "POST",
-        body,
-      }),
+    endpoints: (builder) => ({
+        addArtist: builder.mutation<ArtistResponse, FormData>({
+            query: (artistFormData) => ({
+                url: API_ENDPOINTS.ADMIN.ADD_ARTIST,
+                method: "POST",
+                body: artistFormData,
+            }),
+        }),
     }),
-  
-  }),
 });
+
+export const { useAddArtistMutation } = adminApi
 
 
