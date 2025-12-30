@@ -3,14 +3,16 @@
 /* eslint-disable prefer-const */
 "use client";
 import { useState, useRef, ChangeEvent, DragEvent, useEffect } from "react";
-import { Upload, X, CircleCheckBig, TicketX } from "lucide-react";
+import { Upload, X, CircleCheckBig, TicketX, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGetSingleArtistQuery } from "@/lib/api/commonApi";
+import { ArtistData, useUpdateSingleArtistMutation } from "@/lib/api/adminApi";
+import toast from "react-hot-toast";
 
-interface GalleryPhoto {
+interface GalleryPhoto<T> {
     id: number;
     url: string;
-    file: File;
+    file?: File | T;
 }
 
 interface EditArtistPageProps {
@@ -36,13 +38,14 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
     const [twitterLink, setTwitterLink] = useState<string>("");
     const [tiktokLink, setTiktokLink] = useState<string>("");
     const [biography, setBiography] = useState<string>("");
-    const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
+    const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto<File>[]>([]);
 
     const heroBannerRef = useRef<HTMLInputElement>(null);
     const artistPhotoRef = useRef<HTMLInputElement>(null);
     const galleryRef = useRef<HTMLInputElement>(null);
 
     const { data: artistData } = useGetSingleArtistQuery(artistId);
+    const [updateArtist, { isLoading: isUpdating }] = useUpdateSingleArtistMutation();
 
     // Initialize form fields with artist data when it loads
     useEffect(() => {
@@ -61,7 +64,12 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
             setBiography(artistData.data.bio || "");
             setHeroBanner(artistData.data.banner);
             setArtistPhoto(artistData.data.image);
-            
+            let existingPhotos: GalleryPhoto<File>[] = artistData.data.behindGallery.map((item) => ({
+                id: Date.now() + Math.random(),
+                url: item,
+            }));
+            setGalleryPhotos(existingPhotos)
+
         }
     }, [artistData]);
 
@@ -103,7 +111,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
 
     const handleGalleryChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const files = Array.from(e.target.files || []);
-        const newPhotos: GalleryPhoto[] = files.map((file) => ({
+        const newPhotos: GalleryPhoto<File>[] = files.map((file) => ({
             id: Date.now() + Math.random(),
             url: URL.createObjectURL(file),
             file: file,
@@ -114,7 +122,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
     const handleGalleryDrop = (e: DragEvent<HTMLDivElement>): void => {
         e.preventDefault();
         const files = Array.from(e.dataTransfer.files || []);
-        const newPhotos: GalleryPhoto[] = files
+        const newPhotos: GalleryPhoto<File>[] = files
             .filter((file) => file.type.startsWith("image/"))
             .map((file) => ({
                 id: Date.now() + Math.random(),
@@ -128,7 +136,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
         setGalleryPhotos(galleryPhotos.filter((photo) => photo.id !== id));
     };
 
-    const handlePublish = (): void => {
+    const handlePublish = async (): void => {
         // Create FormData object
         const formData = new FormData();
         const updatedArtistData = {
@@ -148,7 +156,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
         const updatedArtistFormdata = JSON.stringify(updatedArtistData);
 
         formData.append("data", updatedArtistFormdata);
-        
+
 
         // Add hero banner file
         if (heroBannerFile) {
@@ -162,15 +170,26 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
 
         // Add gallery photos
         galleryPhotos.forEach((photo, index) => {
-            formData.append(`galleryPhotos[${index}]`, photo.file);
+            if (photo.file instanceof File) {
+                formData.append(`galleryPhotos[${index}]`, photo.file);
+            }
         });
 
- 
+
         for (let pair of formData.entries()) {
             console.log(pair[0] + ":", pair[1]);
         }
-        
- 
+
+        try {
+            await updateArtist({ id: artistId, formData });
+            router.back();
+            toast.success("Artist updated successfully!");
+        } catch (error) {
+            console.error("Error updating artist:", error);     
+            toast.error("Failed to update artist");
+        }
+
+
     };
 
     return (
@@ -287,7 +306,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
                     </div>
                 </div>
 
-               
+
 
                 {/* Biography Section */}
                 <div className='bg-neutral-900 rounded-lg border border-neutral-700 p-6 mb-6'>
@@ -513,8 +532,12 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
                         onClick={handlePublish}
                         className='bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm'
                     >
-                        <CircleCheckBig className='w-4 h-4' />
-                        Publish
+                        {isUpdating ? <div className='flex items-center gap-3'>
+                            <Loader size={24} className="animate-spin" /> Saving...
+                        </div> : <div className='flex items-center gap-2'>
+                            <CircleCheckBig className='w-4 h-4' />
+                            Publish
+                        </div>}
                     </button>
                 </div>
             </div>

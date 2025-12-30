@@ -197,9 +197,9 @@ export default function AddNewArtist() {
         toast.success('Artist added successfully!');
         router.back();
     }
-     
 
-   
+
+
     return (
         <div className="min-h-screen bg-black p-6">
             <div className="max-w-6xl mx-auto">
@@ -616,20 +616,18 @@ export default function AddNewArtist() {
                             <TicketX className="w-4 h-4" />
                             Cancel
                         </button>
+                       
+
                         <button
-                            type="submit"
-                            disabled={isLoading || isSubmitting || Object.keys(errors).length > 0}
-                            className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                           type="submit"
+                            className='bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm'
                         >
-                            <CircleCheckBig className="w-4 h-4" />
-                            {isLoading || isSubmitting ? (
-                                <div className="flex items-center justify-center pr-6">
-                                    <Loader className='animate-spin' />
-                                    Publishing
-                                </div>
-                            ) : (
-                                <span>Publish</span>
-                            )}
+                            {isLoading ? <div className='flex items-center gap-3'>
+                                <Loader size={24} className="animate-spin" /> Saving...
+                            </div> : <div className='flex items-center gap-2'>
+                                <CircleCheckBig className='w-4 h-4' />
+                                Publish
+                            </div>}
                         </button>
                     </div>
                 </form>

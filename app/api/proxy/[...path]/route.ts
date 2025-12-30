@@ -4,8 +4,6 @@ import { BACKEND_API_BASE_URL } from "@/lib/config/api";
 // Use the backend API URL from environment variable
 const API_BASE_URL = BACKEND_API_BASE_URL;
 
-
-//! Try - 2
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ path: string[] }> }
@@ -13,7 +11,7 @@ export async function POST(
     try {
         const { path: pathArray } = await params;
         const path = "/" + pathArray.join("/");
- 
+
         const formData = await request.formData();
 
         const url = "http://206.162.244.175:6006/api/v1" + path;
@@ -24,11 +22,11 @@ export async function POST(
         if (authHeader) {
             headers["Authorization"] = authHeader;
         }
- 
+
         const response = await fetch(url, {
             method: "POST",
             headers,
-            body: formData,  
+            body: formData,
         });
 
         const data = await response.json();
@@ -58,7 +56,6 @@ export async function GET(
         const path = pathArray.join("/");
         const url = `${API_BASE_URL}/${path}`;
 
-       
         const authHeader = request.headers.get("authorization");
         const headers: HeadersInit = {
             "Content-Type": "application/json",
@@ -96,16 +93,15 @@ export async function PUT(
 ) {
     try {
         const { path: pathArray } = await params;
-        const path = pathArray.join("/");
-        const body = await request.json();
+        const path = "/" + pathArray.join("/");
 
-        const url = `${API_BASE_URL}/${path}`;
+        const formData = await request.formData();
 
-        // Get Authorization header from request if present
+        const url = "http://206.162.244.175:6006/api/v1" + path;
+
         const authHeader = request.headers.get("authorization");
-        const headers: HeadersInit = {
-            "Content-Type": "application/json",
-        };
+        const headers: HeadersInit = {};
+
         if (authHeader) {
             headers["Authorization"] = authHeader;
         }
@@ -113,7 +109,7 @@ export async function PUT(
         const response = await fetch(url, {
             method: "PUT",
             headers,
-            body: JSON.stringify(body),
+            body: formData,
         });
 
         const data = await response.json();
@@ -174,5 +170,3 @@ export async function DELETE(
         );
     }
 }
-
-

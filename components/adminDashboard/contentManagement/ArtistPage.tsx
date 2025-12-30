@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil, Trash2, ChevronDown } from "lucide-react";
+import { Pencil, Trash2, ChevronDown, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useGetArtistsQuery } from "@/lib/api/commonApi";
-import { ArtistData } from "@/lib/api/adminApi";
+import { ArtistData, useDeleteUserByIdMutation } from "@/lib/api/adminApi";
 
 /* ------------------ Types ------------------ */
 interface Artist {
@@ -41,16 +41,31 @@ const artistSchema = z.object({
 
 type ArtistFormValues = z.infer<typeof artistSchema>;
 
+
+import { Button } from "@/components/ui/button"
+import {
+
+    DialogClose,
+
+    DialogDescription,
+    DialogFooter,
+
+
+
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 /* ------------------ Artist Card ------------------ */
 const ArtistCard = ({
     artist,
     onEdit,
     onDelete,
+    isDeleing,
 }: {
     artist: ArtistData;
     onEdit: (artist: ArtistData) => void;
     onDelete: (id: string) => void;
-}) => {
+    isDeleing: boolean;}) => {
     return (
         <div className="relative bg-gray-900 rounded-md overflow-hidden group">
             <Image
@@ -63,12 +78,34 @@ const ArtistCard = ({
 
             {/* Edit & Delete */}
             <div className="absolute top-2 right-2 flex gap-2 z-10">
-                <button
-                    onClick={() => onDelete(artist.id)}
-                    className="p-1.5 bg-black/70 rounded-full hover:bg-red-600 transition"
-                >
-                    <Trash2 size={14} className="text-white" />
-                </button>
+                
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <button
+                          
+                            className="p-1.5 bg-black/70 rounded-full hover:bg-red-600 transition"
+                        >
+                            <Trash2 size={14} className="text-white" />
+                        </button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                                This action cannot be undone. Are you sure you want to permanently
+                                delete this file from our servers?
+                            </DialogDescription>
+                            
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button type="submit" onClick={() => { onDelete(artist.id); }}>
+                               {isDeleing ? <span className="flex items-center gap-2"><Loader className="animate-spin" /> Deleting...</span> : "Yes"}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+
 
                 <Link
                     href={`/admin-dashboard/content/edit-artist-page/${artist.id}`}
@@ -78,35 +115,41 @@ const ArtistCard = ({
                 </Link>
             </div>
 
-           <Link href={`/artists/${artist.id}`} className="p-3 text-sm text-white font-medium">{artist.name}</Link>
+            <Link href={`/artists/${artist.id}`} className="p-3 text-sm text-white font-medium">{artist.name}</Link>
         </div>
     );
 };
 
 /* ------------------ Main Component ------------------ */
-const ArtistPage = () => { 
+const ArtistPage = () => {
     const [artists, setArtists] = useState<ArtistData[]>();
 
- 
-    const [selectedArtist, setSelectedArtist] = useState<ArtistData | null>(null);
+
     const [open, setOpen] = useState(false);
 
-    const { data, isLoading , isSuccess } = useGetArtistsQuery(); 
+    const { data, isLoading, isSuccess, refetch } = useGetArtistsQuery();
+    const [deleteUser, { isLoading: isDeleting }] = useDeleteUserByIdMutation();
 
     useEffect(() => {
         if (isSuccess && data) {
             setArtists(data.data);
+            refetch();
         }
-    }, [isSuccess, data]);
+    }, [isSuccess, data, refetch]);
 
-   
+
 
     const handleEdit = (id: string) => {
         console.log("Edit artist with ID:", id);
     };
 
-    const handleDelete = (id: string) => {
-        console.log("Delete artist with ID:", id);
+    const handleDelete = async (id: string) => {
+        try {
+            await deleteUser(id);
+            refetch();
+        } catch (error) {
+            console.error("Failed to delete artist:", error);
+        }
     };
 
     return (
@@ -167,16 +210,19 @@ const ArtistPage = () => {
             </div>
 
             {/* Artist Grid */}
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {artists?.map((artist) => (
-                    <ArtistCard
-                        key={artist.id}
-                        artist={artist}
-                        onEdit={() => handleEdit(artist.id)}
-                        onDelete={() => handleDelete(artist.id)}
-                    />
-                ))}
-            </div>
+            {
+                isLoading ? <div className="flex items-center justify-center h-48 text-white">Loading...</div> : <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {artists?.map((artist) => (
+                        <ArtistCard
+                            key={artist.id}
+                            artist={artist}
+                            onEdit={() => handleEdit(artist.id)}
+                            onDelete={() => handleDelete(artist.id)}
+                            isDeleing={isDeleting}
+                        />
+                    ))}
+                </div>
+            }
         </div>
     );
 };
