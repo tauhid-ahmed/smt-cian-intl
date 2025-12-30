@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
@@ -8,13 +7,12 @@ import {
   CustomTabsList,
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
-import DonorCrmTab from "@/components/adminDashboard/donationManagement/DonorCrmTab";
 import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
-import ReviewModerationTab from "@/components/adminDashboard/donationManagement/ReviewModerationTab";
 import TaxReceiptsTab from "@/components/adminDashboard/donationManagement/TaxReceiptsTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const DonationManagementPage = () => {
+  
   const [activeTab, setActiveTab] = useState("tab1");
   const [open, setOpen] = useState(false);
 

@@ -1,10 +1,7 @@
-/* eslint-disable react-hooks/purity */
-/* eslint-disable prefer-const */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import * as React from "react";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
-import { Upload, Plus, Trash2,  X,  } from "lucide-react";
+import { Upload, Plus, Trash2, X, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -23,6 +20,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAddProductMutation } from "@/lib/api/adminApi";
+
 const frameworks = [
   {
     value: "next.js",
@@ -48,7 +47,7 @@ const frameworks = [
 
 interface Track {
   id: number;
-  trackName: string;
+  name: string;
   duration: string;
   musicFile: File | null;
 }
@@ -64,15 +63,27 @@ interface ColorVariant {
   color: string;
 }
 
+interface ValidationErrors {
+  productTitle?: string;
+  category?: string;
+  artist?: string;
+  price?: string;
+  stockQuantity?: string;
+  mainCoverImage?: string;
+  selectedSizes?: string;
+  colors?: string;
+  tracks?: string;
+}
+
 export default function AddNewProduct() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const router = useRouter();
+
   // Basic Info
   const [productTitle, setProductTitle] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [selectedArtist, setSelectedArtist] = useState<string>("");
-  const [hudi, setHudi] = useState<string>("");
 
   // Media Upload
   const [mainCoverImage, setMainCoverImage] = useState<string | null>(null);
@@ -80,14 +91,14 @@ export default function AddNewProduct() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
   // Pricing & Inventory
-  const [price, setPrice] = useState<string>("");
-  const [discountPrice, setDiscountPrice] = useState<string>("");
-  const [stockQuantity, setStockQuantity] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [discountPrice, setDiscountPrice] = useState<number>(0);
+  const [stockQuantity, setStockQuantity] = useState<number>(0);
 
   // Music (Track list)
-  const [tracks, setTracks] = useState<Track[]>([
-    { id: Date.now(), trackName: "", duration: "", musicFile: null },
-  ]);
+  const [songs, setSongs] = useState<File[]>([]);
+
+  const [tracks, setTracks] = useState<Track[]>([]);
 
   // Product Variants
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -99,9 +110,17 @@ export default function AddNewProduct() {
   const [shippingInfo, setShippingInfo] = useState<string>("");
   const [returnPolicy, setReturnPolicy] = useState<string>("");
 
+  // Validation
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
+  const [showValidation, setShowValidation] = useState<boolean>(false);
+
   // Refs
   const mainCoverRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+
+  // Validation function
 
   // Main Cover Image Handlers
   const handleMainCoverChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -109,6 +128,9 @@ export default function AddNewProduct() {
     if (file && file.type.startsWith("image/")) {
       setMainCoverFile(file);
       setMainCoverImage(URL.createObjectURL(file));
+      if (showValidation) {
+        setValidationErrors((prev) => ({ ...prev, mainCoverImage: undefined }));
+      }
     }
   };
 
@@ -118,6 +140,9 @@ export default function AddNewProduct() {
     if (file && file.type.startsWith("image/")) {
       setMainCoverFile(file);
       setMainCoverImage(URL.createObjectURL(file));
+      if (showValidation) {
+        setValidationErrors((prev) => ({ ...prev, mainCoverImage: undefined }));
+      }
     }
   };
 
@@ -173,6 +198,9 @@ export default function AddNewProduct() {
         track.id === id ? { ...track, [field]: value } : track
       )
     );
+    if (showValidation) {
+      setValidationErrors((prev) => ({ ...prev, tracks: undefined }));
+    }
   };
 
   const handleMusicFileChange = (
@@ -215,54 +243,68 @@ export default function AddNewProduct() {
     }
   };
 
-  // Publish Handler
-  const handlePublish = (): void => {
-    const formData = new FormData();
+  const [addProduct, { data, error, isLoading }] = useAddProductMutation();
 
-    // Basic Info
-    formData.append("productTitle", productTitle);
-    formData.append("category", category);
-    formData.append("selectedArtist", selectedArtist);
-    formData.append("hudi", hudi);
+  const handlePublish = async () => {
+    setShowValidation(true);
 
-    // Pricing
-    formData.append("price", price);
-    formData.append("discountPrice", discountPrice);
-    formData.append("stockQuantity", stockQuantity);
+    // Validate required fields before sending
+    const errors: ValidationErrors = {};
+    if (!productTitle.trim()) errors.productTitle = "Product title is required";
+    if (!category.trim()) errors.category = "Category is required";
+    if (!price || isNaN(Number(price)))
+      errors.price = "Price is required and must be a number";
+    if (!stockQuantity || isNaN(Number(stockQuantity)))
+      errors.stockQuantity = "Stock quantity is required and must be a number";
+    if (!mainCoverFile) errors.mainCoverImage = "Main cover image is required";
+    if (tracks.length === 0) errors.tracks = "At least one track is required";
 
-    // Main Cover
-    if (mainCoverFile) {
-      formData.append("mainCoverImage", mainCoverFile);
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
     }
 
-    // Gallery
-    galleryImages.forEach((img, index) => {
-      formData.append(`galleryImages[${index}]`, img.file);
-    });
+    try {
+      const formData = new FormData();
 
-    // Tracks
-    tracks.forEach((track, index) => {
-      formData.append(`tracks[${index}][trackName]`, track.trackName);
-      formData.append(`tracks[${index}][duration]`, track.duration);
-      if (track.musicFile) {
-        formData.append(`tracks[${index}][musicFile]`, track.musicFile);
-      }
-    });
+      const data = {
+        title: productTitle.trim(),
+        category: category.trim(),
+        artistId: selectedArtist,
+        price: Number(price),
+        discountPrice: Number(discountPrice),
+        stock: Number(stockQuantity),
+        description: productDescription.trim(),
+        shippingInfo: shippingInfo.trim(),
+        returnPolicy: returnPolicy.trim(),
+        sizes: selectedSizes,
+        colors: colors.map((c) => c.color),
+        mainImage: mainCoverFile,
+      };
 
-    // Variants
-    formData.append("sizes", JSON.stringify(selectedSizes));
-    formData.append("colors", JSON.stringify(colors.map((c) => c.color)));
+      const dataString = JSON.stringify(data);
 
-    // Descriptions
-    formData.append("productDescription", productDescription);
-    formData.append("shippingInfo", shippingInfo);
-    formData.append("returnPolicy", returnPolicy);
+      formData.append("data", dataString);
 
-    console.log("=== FORM DATA CONTENTS ===");
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ":", pair[1]);
+      songs.forEach((items: File) => {
+        formData.append(`trackFiles`, items);
+      });
+
+      const result = await addProduct(formData).unwrap();
+      console.log(data, songs);
+      alert(`✅ Product "${result.data.title}" created successfully!`);
+
+      router.push("/admin/products");
+    } catch (err: any) {
+      console.error("❌ Error:", err);
+
+      let errorMessage = "Something went wrong";
+      if (err?.data?.message) errorMessage = err.data.message;
+      else if (err?.data?.error?.message) errorMessage = err.data.error.message;
+      else if (err?.message) errorMessage = err.message;
+
+      alert(`❌ Error: ${errorMessage}`);
     }
-    console.log("===========================");
   };
 
   return (
@@ -345,27 +387,63 @@ export default function AddNewProduct() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
-                    Product Title
+                    Product Title *
                   </label>
                   <input
                     type="text"
                     placeholder="Enter product title"
                     value={productTitle}
-                    onChange={(e) => setProductTitle(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
+                    onChange={(e) => {
+                      setProductTitle(e.target.value);
+                      if (showValidation) {
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          productTitle: undefined,
+                        }));
+                      }
+                    }}
+                    className={`w-full px-4 py-2.5 border ${
+                      validationErrors.productTitle
+                        ? "border-red-500"
+                        : "border-neutral-700"
+                    } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                   />
+                  {validationErrors.productTitle && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {validationErrors.productTitle}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
-                    Category
+                    Category *
                   </label>
                   <input
                     type="text"
                     placeholder="Enter category"
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
+                    onChange={(e) => {
+                      setCategory(e.target.value);
+                      if (showValidation) {
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          category: undefined,
+                        }));
+                      }
+                    }}
+                    className={`w-full px-4 py-2.5 border ${
+                      validationErrors.category
+                        ? "border-red-500"
+                        : "border-neutral-700"
+                    } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                   />
+                  {validationErrors.category && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {validationErrors.category}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -379,7 +457,7 @@ export default function AddNewProduct() {
               {/* Main Cover Image */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Main Cover image
+                  Main Cover image *
                 </label>
                 <input
                   ref={mainCoverRef}
@@ -392,7 +470,11 @@ export default function AddNewProduct() {
                   onClick={() => mainCoverRef.current?.click()}
                   onDrop={handleMainCoverDrop}
                   onDragOver={(e) => e.preventDefault()}
-                  className="w-full h-48 border-2 border-dashed border-neutral-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-neutral-600 hover:bg-neutral-800 bg-neutral-900 overflow-hidden transition-colors"
+                  className={`w-full h-48 border-2 border-dashed ${
+                    validationErrors.mainCoverImage
+                      ? "border-red-500"
+                      : "border-neutral-700"
+                  } rounded-lg flex items-center justify-center cursor-pointer hover:border-neutral-600 hover:bg-neutral-800 bg-neutral-900 overflow-hidden transition-colors`}
                 >
                   {mainCoverImage ? (
                     <img
@@ -409,6 +491,12 @@ export default function AddNewProduct() {
                     </div>
                   )}
                 </div>
+                {validationErrors.mainCoverImage && (
+                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {validationErrors.mainCoverImage}
+                  </p>
+                )}
               </div>
 
               {/* Product Gallery */}
@@ -458,7 +546,7 @@ export default function AddNewProduct() {
             <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-white">
-                  Music (Track list)
+                  Music (Track list) *
                 </h2>
                 <button
                   onClick={addTrack}
@@ -482,7 +570,7 @@ export default function AddNewProduct() {
                       <input
                         type="text"
                         placeholder="Enter track name"
-                        value={track.trackName}
+                        value={track.name}
                         onChange={(e) =>
                           updateTrack(track.id, "trackName", e.target.value)
                         }
@@ -495,7 +583,7 @@ export default function AddNewProduct() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Enter duration time"
+                        placeholder="3:45"
                         value={track.duration}
                         onChange={(e) =>
                           updateTrack(track.id, "duration", e.target.value)
@@ -510,7 +598,9 @@ export default function AddNewProduct() {
                       <input
                         type="file"
                         accept="audio/*"
-                        onChange={(e) => handleMusicFileChange(track.id, e)}
+                        onChange={(e) =>
+                          setSongs((prev) => [...prev, e.target.files![0]])
+                        }
                         id={`music-${track.id}`}
                         className="hidden"
                       />
@@ -527,10 +617,7 @@ export default function AddNewProduct() {
                         )}
                       </label>
                     </div>
-                    <div
-                      className="col-span-1 flex 
-                     items-baseline"
-                    >
+                    <div className="col-span-1 flex items-baseline">
                       <button
                         onClick={() => removeTrack(track.id)}
                         className="w-9 h-9 border border-neutral-700 rounded-lg flex items-center justify-center text-neutral-400 hover:text-red-400 hover:border-red-700"
@@ -541,6 +628,12 @@ export default function AddNewProduct() {
                   </div>
                 ))}
               </div>
+              {validationErrors.tracks && (
+                <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {validationErrors.tracks}
+                </p>
+              )}
             </div>
 
             {/* Product Variants */}
@@ -620,23 +713,45 @@ export default function AddNewProduct() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
-                    Price
+                    Price *
                   </label>
                   <input
-                    type="text"
-                    placeholder="Enter product title"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
                     value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
+                    onChange={(e) => {
+                      setPrice(e.target.value);
+                      if (showValidation) {
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          price: undefined,
+                        }));
+                      }
+                    }}
+                    className={`w-full px-4 py-2.5 border ${
+                      validationErrors.price
+                        ? "border-red-500"
+                        : "border-neutral-700"
+                    } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                   />
+                  {validationErrors.price && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {validationErrors.price}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
                     Discount Price
                   </label>
                   <input
-                    type="text"
-                    placeholder="Enter category"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
                     value={discountPrice}
                     onChange={(e) => setDiscountPrice(e.target.value)}
                     className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
@@ -644,15 +759,34 @@ export default function AddNewProduct() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
-                    Stock Quantity
+                    Stock Quantity *
                   </label>
                   <input
-                    type="text"
-                    placeholder="Enter artist name"
+                    type="number"
+                    min="0"
+                    placeholder="0"
                     value={stockQuantity}
-                    onChange={(e) => setStockQuantity(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
+                    onChange={(e) => {
+                      setStockQuantity(e.target.value);
+                      if (showValidation) {
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          stockQuantity: undefined,
+                        }));
+                      }
+                    }}
+                    className={`w-full px-4 py-2.5 border ${
+                      validationErrors.stockQuantity
+                        ? "border-red-500"
+                        : "border-neutral-700"
+                    } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                   />
+                  {validationErrors.stockQuantity && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {validationErrors.stockQuantity}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -713,9 +847,8 @@ export default function AddNewProduct() {
             onClick={() => router.back()}
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors shadow-sm"
           >
-            {" "}
             <Trash2 className="w-4 h-4" />
-            Cancle
+            Cancel
           </button>
           <button
             onClick={handlePublish}
