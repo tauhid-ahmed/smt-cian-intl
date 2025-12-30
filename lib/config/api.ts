@@ -36,12 +36,12 @@ export const API_ENDPOINTS = {
     ADMIN: {
         ADD_ARTIST: "/artists",
         ADD_PRODUCT: "/products",
-        
+        UPDATE_ARTIST: "/artists",
     },
     COMMON: {
         GET_ARTIST: "/artists",
         GET_SINGLE_ARTIST: "/artists",
-        GET_PRODUCTS: "/products"
-    }
+        GET_PRODUCTS: "/products",
+    },
 } as const;
 

@@ -120,6 +120,14 @@ export const adminApi = baseApi.injectEndpoints({
                 body,
             }),
         }),
+
+        updateSingleArtist : builder.mutation<ArtistResponse, ArtistData>({
+            query: (artistData: ArtistData) => ({
+                url: `${API_ENDPOINTS.ADMIN.UPDATE_ARTIST}/${artistData.id}`,
+                method: "PUT",
+                body: artistData,
+            }),
+        }),
     }),
 });
 
