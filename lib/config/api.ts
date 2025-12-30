@@ -36,6 +36,7 @@ export const API_ENDPOINTS = {
     ADMIN: {
         ADD_ARTIST: "/artists",
         ADD_PRODUCT: "/products",
+        GET_PRODUCTS: "/products",
         
     },
     COMMON: {

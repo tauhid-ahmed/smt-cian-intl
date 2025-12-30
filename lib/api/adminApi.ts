@@ -121,6 +121,13 @@ export const adminApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    getProducts: builder.query<ProductResponse, any>({
+      query: () => ({
+        url: API_ENDPOINTS.ADMIN.GET_PRODUCTS,
+        method: "GET",
+      }),
+    }),
   
   }),
 });
@@ -128,6 +135,7 @@ export const adminApi = baseApi.injectEndpoints({
 export const {
   useAddArtistMutation,
   useAddProductMutation,
+  useGetProductsQuery
 } = adminApi;
 
 
