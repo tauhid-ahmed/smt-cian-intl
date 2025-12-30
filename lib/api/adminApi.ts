@@ -102,6 +102,72 @@ export interface Product {
 }
 
 export type ProductResponse = ApiResponse<Product>;
+export interface ProductDetailsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    title: string;
+    category: string;
+    price: number;
+    discountPrice: number;
+    stock: number;
+    description: string;
+    shippingInfo: string;
+    returnPolicy: string;
+    mainImage: string;
+    gallery: string[];
+    sizes: string[];
+    colors: string[];
+    artistId: string;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+
+    tracks: {
+      id: string;
+      name: string;
+      duration: string;
+      url: string;
+      productId: string;
+      createdAt: string;
+      updatedAt: string;
+    }[];
+
+    artist: {
+      id: string;
+      name: string;
+      bio: string;
+      banner: string;
+      image: string;
+      location: string;
+      website: string;
+      verified: boolean;
+      spotify: string;
+      appleMusic: string;
+      youtube: string;
+      behindGallery: string[];
+      facebook: string | null;
+      instagram: string;
+      twitter: string;
+      tiktok: string;
+      genres: string[];
+      popularity: number;
+      followers: number;
+      activeYearsStart: string;
+      activeYearsEnd: string | null;
+      awards: number;
+      createAtBy: string;
+      musicIds: string[];
+      albumIds: string[];
+      createdAt: string;
+      updatedAt: string;
+      isDeleted: boolean;
+    };
+  };
+}
+
 
 // post a new artitst
 export const adminApi = baseApi.injectEndpoints({
@@ -135,13 +201,38 @@ export const adminApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getSingleProduct: builder.query<ProductDetailsResponse, string>({
+            query: (id: string) => ({
+                url: `${API_ENDPOINTS.ADMIN.GET_PRODUCTS}/${id}`,
+                method: "GET",
+            }),
+        }),
+
+        updateSingleProduct: builder.mutation<ProductResponse, { id: string; body: FormData }>({ 
+            query: ( { id, body }) => ({
+                url: `${API_ENDPOINTS.ADMIN.UPDATE_PRODUCT}/${id}`,
+                method: "PUT",
+                body,
+            }),
+        }),
+
+        deleteSingleProduct: builder.mutation<ProductResponse, string>({
+            query: (id: string) => ({
+                url: `${API_ENDPOINTS.ADMIN.DELETE_PRODUCT}/${id}`,
+                method: "DELETE",
+            }),
+        }),
+
     }),
 });
 
 export const {
   useAddArtistMutation,
   useAddProductMutation,
-  useGetProductsQuery
+  useGetProductsQuery,
+  useGetSingleProductQuery,
+  useUpdateSingleProductMutation,
+  useDeleteSingleProductMutation
 } = adminApi;
 
 

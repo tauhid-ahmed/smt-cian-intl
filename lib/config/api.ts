@@ -38,6 +38,9 @@ export const API_ENDPOINTS = {
         ADD_PRODUCT: "/products",
         UPDATE_ARTIST: "/artists",
         GET_PRODUCTS: "/products",
+        UPDATE_PRODUCT: "/products",
+        DELETE_PRODUCT: "/products",
+        
         
     },
     COMMON: {
