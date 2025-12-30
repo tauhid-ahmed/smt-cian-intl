@@ -37,6 +37,8 @@ export const API_ENDPOINTS = {
         ADD_ARTIST: "/artists",
         ADD_PRODUCT: "/products",
         UPDATE_ARTIST: "/artists",
+        GET_PRODUCTS: "/products",
+        
     },
     COMMON: {
         GET_ARTIST: "/artists",

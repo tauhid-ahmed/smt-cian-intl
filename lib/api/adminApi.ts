@@ -121,11 +121,18 @@ export const adminApi = baseApi.injectEndpoints({
             }),
         }),
 
-        updateSingleArtist : builder.mutation<ArtistResponse, ArtistData>({
+        updateSingleArtist: builder.mutation<ArtistResponse, ArtistData>({
             query: (artistData: ArtistData) => ({
                 url: `${API_ENDPOINTS.ADMIN.UPDATE_ARTIST}/${artistData.id}`,
                 method: "PUT",
                 body: artistData,
+            }),
+        }),
+
+        getProducts: builder.query<ProductResponse, any>({
+            query: () => ({
+                url: API_ENDPOINTS.ADMIN.GET_PRODUCTS,
+                method: "GET",
             }),
         }),
     }),
@@ -134,6 +141,7 @@ export const adminApi = baseApi.injectEndpoints({
 export const {
   useAddArtistMutation,
   useAddProductMutation,
+  useGetProductsQuery
 } = adminApi;
 
 
