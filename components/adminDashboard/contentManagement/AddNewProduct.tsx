@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
@@ -67,6 +66,7 @@ interface ColorVariant {
 interface ValidationErrors {
   productTitle?: string;
   category?: string;
+  artist?: string;
   price?: string;
   stockQuantity?: string;
   mainCoverImage?: string;
@@ -95,14 +95,10 @@ export default function AddNewProduct() {
   const [discountPrice, setDiscountPrice] = useState<number>(0);
   const [stockQuantity, setStockQuantity] = useState<number>(0);
 
-
-
   // Music (Track list)
   const [songs, setSongs] = useState<File[]>([]);
 
   const [tracks, setTracks] = useState<Track[]>([]);
-
-  
 
   // Product Variants
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -125,7 +121,6 @@ export default function AddNewProduct() {
   const galleryRef = useRef<HTMLInputElement>(null);
 
   // Validation function
-
 
   // Main Cover Image Handlers
   const handleMainCoverChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -250,72 +245,67 @@ export default function AddNewProduct() {
 
   const [addProduct, { data, error, isLoading }] = useAddProductMutation();
 
-const handlePublish = async () => {
-  setShowValidation(true);
+  const handlePublish = async () => {
+    setShowValidation(true);
 
-  // Validate required fields before sending
-  const errors: ValidationErrors = {};
-  if (!productTitle.trim()) errors.productTitle = "Product title is required";
-  if (!category.trim()) errors.category = "Category is required";
-  if (!price || isNaN(Number(price))) errors.price = "Price is required and must be a number";
-  if (!stockQuantity || isNaN(Number(stockQuantity))) errors.stockQuantity = "Stock quantity is required and must be a number";
-  if (!mainCoverFile) errors.mainCoverImage = "Main cover image is required";
-  if (tracks.length === 0) errors.tracks = "At least one track is required";
+    // Validate required fields before sending
+    const errors: ValidationErrors = {};
+    if (!productTitle.trim()) errors.productTitle = "Product title is required";
+    if (!category.trim()) errors.category = "Category is required";
+    if (!price || isNaN(Number(price)))
+      errors.price = "Price is required and must be a number";
+    if (!stockQuantity || isNaN(Number(stockQuantity)))
+      errors.stockQuantity = "Stock quantity is required and must be a number";
+    if (!mainCoverFile) errors.mainCoverImage = "Main cover image is required";
+    if (tracks.length === 0) errors.tracks = "At least one track is required";
 
-  if (Object.keys(errors).length > 0) {
-    setValidationErrors(errors);
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-
-    const data = {
-      title: productTitle.trim(),
-      category: category.trim(),
-      artistId: selectedArtist,
-      price: Number(price), 
-      discountPrice: Number(discountPrice) ,
-      stock: Number(stockQuantity),
-      description: productDescription.trim(),
-      shippingInfo: shippingInfo.trim(),
-      returnPolicy: returnPolicy.trim(),
-      sizes: selectedSizes,
-      colors: colors.map((c) => c.color),
-      mainImage: mainCoverFile,
-      
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
     }
 
-     const dataString = JSON.stringify(data);
+    try {
+      const formData = new FormData();
 
-    formData.append("data", dataString);
-    
-    songs.forEach((items : File ) => {
-      formData.append(`trackFiles`, items);
-    })
-    
-   
-    const result = await addProduct(formData).unwrap();
-    console.log(data, songs);
-    alert(`✅ Product "${result.data.title}" created successfully!`);
+      const data = {
+        title: productTitle.trim(),
+        category: category.trim(),
+        artistId: selectedArtist,
+        price: Number(price),
+        discountPrice: Number(discountPrice),
+        stock: Number(stockQuantity),
+        description: productDescription.trim(),
+        shippingInfo: shippingInfo.trim(),
+        returnPolicy: returnPolicy.trim(),
+        sizes: selectedSizes,
+        colors: colors.map((c) => c.color),
+        mainImage: mainCoverFile,
+      };
 
-    
-    router.push("/admin/products")
-     
+      const dataString = JSON.stringify(data);
 
+      formData.append("data", dataString);
 
-  } catch (err: any) {
-    console.error("❌ Error:", err);
+      songs.forEach((items: File) => {
+        formData.append(`trackFiles`, items);
+      });
 
-    let errorMessage = "Something went wrong";
-    if (err?.data?.message) errorMessage = err.data.message;
-    else if (err?.data?.error?.message) errorMessage = err.data.error.message;
-    else if (err?.message) errorMessage = err.message;
+      const result = await addProduct(formData).unwrap();
+      console.log(data, songs);
+      alert(`✅ Product "${result.data.title}" created successfully!`);
 
-    alert(`❌ Error: ${errorMessage}`);
-  }
-};
+      router.push("/admin/products");
+    } catch (err: any) {
+      console.error("❌ Error:", err);
 
+      let errorMessage = "Something went wrong";
+      if (err?.data?.message) errorMessage = err.data.message;
+      else if (err?.data?.error?.message) errorMessage = err.data.error.message;
+      else if (err?.message) errorMessage = err.message;
+
+      alert(`❌ Error: ${errorMessage}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black p-6">
@@ -608,8 +598,9 @@ const handlePublish = async () => {
                       <input
                         type="file"
                         accept="audio/*"
-                        onChange={(e) => setSongs(prev => [...prev, e.target.files![0]]) }
-                     
+                        onChange={(e) =>
+                          setSongs((prev) => [...prev, e.target.files![0]])
+                        }
                         id={`music-${track.id}`}
                         className="hidden"
                       />
