@@ -13,6 +13,18 @@ interface AllArtistsResponse {
 }
 
 export type ProductData = {
+    [x: string]: number | string | string[] | boolean | undefined | {
+        id?: string;
+        name?: string;
+        duration?: string;
+        url?: string;
+        productId?: string;
+        createdAt?: string;
+        updatedAt?: string;
+    }[] | {
+        id?: string;
+        name?: string;
+    };
     id?: string;
     title?: string;
     category?: string;
