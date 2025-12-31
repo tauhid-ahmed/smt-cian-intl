@@ -158,25 +158,30 @@ export default function UpdateMusic() {
 
   const onSubmit = async (data: MusicFormData) => {
     try {
-      const musicData = new FormData();
-      musicData.append("id", musicId); // Add music ID for update
-      musicData.append("title", data.title);
-      if (data.description) {
-        musicData.append("description", data.description);
-      }
-      musicData.append("genre", data.genre);
-      musicData.append("language", data.language);
-      if (data.albumId) {
-        musicData.append("albumId", data.albumId);
-      }
-      data.artistIds.forEach((id) => {
-        musicData.append("artistIds[]", id);
-      });
+      const formData = new FormData();
+
+      // ✅ audio (optional for update)
       if (data.audioFile) {
-        musicData.append("audioFile", data.audioFile);
+        formData.append("audio", data.audioFile);
       }
 
-      await updateMusic({ formData: musicData, id: musicId }).unwrap();
+      // ✅ all other music data as JSON
+      const musicPayload = {
+        title: data.title,
+        description: data.description || "",
+        genre: data.genre,
+        language: data.language,
+        albumId: data.albumId || null,
+        artistIds: data.artistIds,
+      };
+
+      formData.append("data", JSON.stringify(musicPayload));
+
+      await updateMusic({
+        id: musicId,
+        formData,
+      }).unwrap();
+
       toast.success("Music updated successfully!");
     } catch (error) {
       console.error("Failed to update music:", error);

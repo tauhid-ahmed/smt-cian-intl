@@ -126,25 +126,31 @@ export default function AddNewMusic() {
 
   const onSubmit = async (data: MusicFormData) => {
     try {
-      const musicData = new FormData();
-      musicData.append("title", data.title);
-      if (data.description) {
-        musicData.append("description", data.description);
-      }
-      musicData.append("genre", data.genre);
-      musicData.append("language", data.language);
-      if (data.albumId) {
-        musicData.append("albumId", data.albumId);
-      }
-      data.artistIds.forEach((id) => {
-        musicData.append("artistIds[]", id);
+      const formData = new FormData();
+
+      // ✅ audio file
+      formData.append("audio", data.audioFile);
+
+      // ✅ all other music data as JSON
+      const musicPayload = {
+        title: data.title,
+        description: data.description || "",
+        genre: data.genre,
+        language: data.language,
+        albumId: data.albumId || null,
+        artistIds: data.artistIds,
+      };
+
+      formData.append("data", JSON.stringify(musicPayload));
+
+      await addMusic(formData).unwrap();
+
+      console.log("FormData submitted:", {
+        audio: data.audioFile,
+        data: musicPayload,
       });
-      musicData.append("audioFile", data.audioFile);
 
-      await addMusic(musicData).unwrap();
       toast.success("Music added successfully!");
-
-      // Reset form
       reset();
     } catch (error) {
       console.error("Failed to add music:", error);
