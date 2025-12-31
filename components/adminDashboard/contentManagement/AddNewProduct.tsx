@@ -677,7 +677,7 @@ export default function AddNewProduct() {
                                         placeholder="0.00"
                                         value={price}
                                         onChange={(e) => {
-                                            setPrice(e.target.value);
+                                            setPrice(Number(e.target.value));
                                             if (showValidation) {
                                                 setValidationErrors((prev) => ({
                                                     ...prev,
@@ -707,7 +707,7 @@ export default function AddNewProduct() {
                                         min="0"
                                         placeholder="0.00"
                                         value={discountPrice}
-                                        onChange={(e) => setDiscountPrice(e.target.value)}
+                                        onChange={(e) => setDiscountPrice(Number(e.target.value))}
                                         className="w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500"
                                     />
                                 </div>
@@ -721,7 +721,7 @@ export default function AddNewProduct() {
                                         placeholder="0"
                                         value={stockQuantity}
                                         onChange={(e) => {
-                                            setStockQuantity(e.target.value);
+                                            setStockQuantity(Number(e.target.value));
                                             if (showValidation) {
                                                 setValidationErrors((prev) => ({
                                                     ...prev,

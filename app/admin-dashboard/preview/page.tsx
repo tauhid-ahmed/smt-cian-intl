@@ -313,7 +313,7 @@ export default function Home() {
                 Monitor stock levels and receive reorder alerts
               </p>
               <DataTable
-                columns={inventoryColumns}
+                columns={inventoryColumns as Column<InventoryItem| OrderItem>[]}
                 data={inventoryPaginated}
                 isLoading={isLoading}
                 currentPage={inventoryPage}
@@ -334,7 +334,7 @@ export default function Home() {
                 View, fulfill, and track orders
               </p>
               <DataTable
-                columns={orderColumns}
+                columns={orderColumns as Column<InventoryItem|OrderItem>[]}
                 data={ordersPaginated}
                 isLoading={isLoading}
                 currentPage={ordersPage}
