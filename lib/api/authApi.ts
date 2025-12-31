@@ -1,6 +1,7 @@
 import { baseApi } from "./baseApi";
 import { API_ENDPOINTS } from "@/lib/config/api";
 
+// First commit of (dev) branch
 /**
  * Request/Response types for auth endpoints
  */
@@ -113,7 +114,9 @@ export interface EmailVerifyErrorResponse {
   stack?: string;
 }
 
-export type EmailVerifyResponse = EmailVerifySuccessResponse | EmailVerifyErrorResponse;
+export type EmailVerifyResponse =
+  | EmailVerifySuccessResponse
+  | EmailVerifyErrorResponse;
 
 /**
  * Resend OTP Request/Response types
@@ -146,7 +149,9 @@ export interface ResendOtpErrorResponse {
   stack?: string;
 }
 
-export type ResendOtpResponse = ResendOtpSuccessResponse | ResendOtpErrorResponse;
+export type ResendOtpResponse =
+  | ResendOtpSuccessResponse
+  | ResendOtpErrorResponse;
 
 /**
  * Forgot Password Request/Response types
@@ -180,7 +185,9 @@ export interface ForgotPasswordErrorResponse {
   stack?: string;
 }
 
-export type ForgotPasswordResponse = ForgotPasswordSuccessResponse | ForgotPasswordErrorResponse;
+export type ForgotPasswordResponse =
+  | ForgotPasswordSuccessResponse
+  | ForgotPasswordErrorResponse;
 
 /**
  * Verify Reset Password OTP Request/Response types
@@ -211,7 +218,9 @@ export interface VerifyResetPasswordOtpErrorResponse {
   stack?: string;
 }
 
-export type VerifyResetPasswordOtpResponse = VerifyResetPasswordOtpSuccessResponse | VerifyResetPasswordOtpErrorResponse;
+export type VerifyResetPasswordOtpResponse =
+  | VerifyResetPasswordOtpSuccessResponse
+  | VerifyResetPasswordOtpErrorResponse;
 
 /**
  * Reset Password Request/Response types
@@ -242,30 +251,31 @@ export interface ResetPasswordErrorResponse {
   stack?: string;
 }
 
-export type ResetPasswordResponse = ResetPasswordSuccessResponse | ResetPasswordErrorResponse;
+export type ResetPasswordResponse =
+  | ResetPasswordSuccessResponse
+  | ResetPasswordErrorResponse;
 
- 
 export type GetMeSuccessResponse = {
-    success: boolean;
-    message: string;
-    statusCode: number;
-    data: {
-        id: string;
-        fullName: string;
-        email: string;
-        profileView: number;
-        image: string | null;
-        isEmailVerified: boolean;
-        isVerified: boolean;
-        role: "USER" | "SUPERADMIN" ;
-        createdAt: string;
-        updatedAt: string;
-        status: string;
-        passwordChangedAt: string | null;
-        fcmToken: string | null;
-        accountWith: string;
-        isDeleted: boolean;
-    };
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: {
+    id: string;
+    fullName: string;
+    email: string;
+    profileView: number;
+    image: string | null;
+    isEmailVerified: boolean;
+    isVerified: boolean;
+    role: "USER" | "SUPERADMIN";
+    createdAt: string;
+    updatedAt: string;
+    status: string;
+    passwordChangedAt: string | null;
+    fcmToken: string | null;
+    accountWith: string;
+    isDeleted: boolean;
+  };
 };
 
 /**
@@ -294,7 +304,9 @@ export interface RefreshTokenErrorResponse {
   stack?: string;
 }
 
-export type RefreshTokenResponse = RefreshTokenSuccessResponse | RefreshTokenErrorResponse;
+export type RefreshTokenResponse =
+  | RefreshTokenSuccessResponse
+  | RefreshTokenErrorResponse;
 
 /**
  * Google Login Request/Response types
@@ -333,7 +345,9 @@ export interface GoogleLoginErrorResponse {
   stack?: string;
 }
 
-export type GoogleLoginResponse = GoogleLoginSuccessResponse | GoogleLoginErrorResponse;
+export type GoogleLoginResponse =
+  | GoogleLoginSuccessResponse
+  | GoogleLoginErrorResponse;
 
 /**
  * Auth API slice
@@ -359,7 +373,10 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User", "Auth"],
     }),
-    emailVerify: builder.mutation<EmailVerifySuccessResponse, EmailVerifyRequest>({
+    emailVerify: builder.mutation<
+      EmailVerifySuccessResponse,
+      EmailVerifyRequest
+    >({
       query: (body) => ({
         url: API_ENDPOINTS.AUTH.EMAIL_VERIFY,
         method: "POST",
@@ -374,24 +391,33 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    forgotPassword: builder.mutation<ForgotPasswordSuccessResponse, ForgotPasswordRequest>({
+    forgotPassword: builder.mutation<
+      ForgotPasswordSuccessResponse,
+      ForgotPasswordRequest
+    >({
       query: (body) => ({
         url: API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
         method: "POST",
         body,
       }),
     }),
-    verifyResetPasswordOtp: builder.mutation<VerifyResetPasswordOtpSuccessResponse, VerifyResetPasswordOtpRequest>({
+    verifyResetPasswordOtp: builder.mutation<
+      VerifyResetPasswordOtpSuccessResponse,
+      VerifyResetPasswordOtpRequest
+    >({
       query: (body) => ({
         url: API_ENDPOINTS.AUTH.VERIFY_RESET_PASSWORD_OTP,
         method: "POST",
         body,
       }),
     }),
-    resetPassword: builder.mutation<ResetPasswordSuccessResponse, ResetPasswordRequest>({
+    resetPassword: builder.mutation<
+      ResetPasswordSuccessResponse,
+      ResetPasswordRequest
+    >({
       query: (body) => {
         const { accessToken, ...requestBody } = body;
-        
+
         return {
           url: API_ENDPOINTS.AUTH.RESET_PASSWORD,
           method: "POST",
@@ -402,15 +428,21 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
-    refreshToken: builder.mutation<RefreshTokenSuccessResponse, RefreshTokenRequest>({
+    refreshToken: builder.mutation<
+      RefreshTokenSuccessResponse,
+      RefreshTokenRequest
+    >({
       query: () => {
         // Get refresh token from localStorage
-        const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null;
-        
+        const refreshToken =
+          typeof window !== "undefined"
+            ? localStorage.getItem("refreshToken")
+            : null;
+
         if (!refreshToken) {
           throw new Error("No refresh token available");
         }
-        
+
         return {
           url: API_ENDPOINTS.AUTH.REFRESH_TOKEN,
           method: "POST",
@@ -420,7 +452,10 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
-    googleLogin: builder.mutation<GoogleLoginSuccessResponse, GoogleLoginRequest>({
+    googleLogin: builder.mutation<
+      GoogleLoginSuccessResponse,
+      GoogleLoginRequest
+    >({
       query: (body) => ({
         url: API_ENDPOINTS.AUTH.GOOGLE_LOGIN,
         method: "POST",
@@ -439,8 +474,8 @@ export const authApi = baseApi.injectEndpoints({
 });
 
 // Export hooks for usage in functional components
-export const { 
-  useCreateAccountMutation, 
+export const {
+  useCreateAccountMutation,
   useLoginMutation,
   useEmailVerifyMutation,
   useResendOtpMutation,
@@ -449,6 +484,5 @@ export const {
   useResetPasswordMutation,
   useRefreshTokenMutation,
   useGoogleLoginMutation,
-  useGetMeQuery
+  useGetMeQuery,
 } = authApi;
-

@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
 import { API_BASE_URL } from "@/lib/config/api";
 import type { RefreshTokenSuccessResponse } from "./authApi";
 
@@ -7,11 +11,11 @@ import type { RefreshTokenSuccessResponse } from "./authApi";
  * Custom base query to handle error responses properly
  */
 const baseQuery = fetchBaseQuery({
-  baseUrl: API_BASE_URL,
+  baseUrl: "http://206.162.244.175:6006/api/v1",
   prepareHeaders: (headers) => {
     // Add any default headers here (e.g., authorization tokens)
     headers.set("Content-Type", "application/json");
-    
+
     // Add access token from localStorage if available
     if (typeof window !== "undefined") {
       const accessToken = localStorage.getItem("accessToken");
@@ -19,7 +23,7 @@ const baseQuery = fetchBaseQuery({
         headers.set("Authorization", `Bearer ${accessToken}`);
       }
     }
-    
+
     return headers;
   },
 });
@@ -30,18 +34,18 @@ const baseQueryWithErrorHandling: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-  
+
   // Log for debugging
-  if (process.env.NODE_ENV === 'development') {
-    console.log('API Request:', args);
-    console.log('API Response:', result);
+  if (process.env.NODE_ENV === "development") {
+    console.log("API Request:", args);
+    console.log("API Response:", result);
   }
-  
+
   // Handle 401 Unauthorized - try to refresh token
   if (result.error && result.error.status === 401) {
     // Don't try to refresh if this is already a refresh token request
-    const url = typeof args === 'string' ? args : args.url;
-    if (url && url.includes('/auth/refresh-token')) {
+    const url = typeof args === "string" ? args : args.url;
+    if (url && url.includes("/auth/refresh-token")) {
       // If refresh token request also fails, clear tokens and return error
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
@@ -49,10 +53,13 @@ const baseQueryWithErrorHandling: BaseQueryFn<
       }
       return result;
     }
-    
+
     // Try to refresh the token
-    const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refreshToken") : null;
-    
+    const refreshToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("refreshToken")
+        : null;
+
     if (refreshToken) {
       try {
         // Call refresh token endpoint
@@ -67,15 +74,15 @@ const baseQueryWithErrorHandling: BaseQueryFn<
           api,
           extraOptions
         );
-        
+
         if (refreshResult.data) {
           const refreshData = refreshResult.data as RefreshTokenSuccessResponse;
-          
+
           // Update access token in localStorage
           if (typeof window !== "undefined" && refreshData.data?.accessToken) {
             localStorage.setItem("accessToken", refreshData.data.accessToken);
           }
-          
+
           // Retry the original request with new token
           const retryResult = await baseQuery(args, api, extraOptions);
           return retryResult;
@@ -94,7 +101,7 @@ const baseQueryWithErrorHandling: BaseQueryFn<
       }
     }
   }
-  
+
   return result;
 };
 
@@ -108,4 +115,3 @@ export const baseApi = createApi({
   tagTypes: ["Auth", "User"], // Add more tag types as needed
   endpoints: () => ({}), // Endpoints will be injected by other API slices
 });
-
