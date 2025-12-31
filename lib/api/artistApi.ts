@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from "../config/api";
+import { ArtistListResponseType } from "../types/artistTypes";
 import { baseApi } from "./baseApi";
 
 export const artistApi = baseApi.injectEndpoints({
@@ -42,7 +43,7 @@ export const artistApi = baseApi.injectEndpoints({
     }),
 
     // GET ARTIST LIST
-    getArtistList: builder.query<any, void>({
+    getArtistList: builder.query<ArtistListResponseType, void>({
       query: () => ({
         url: `${API_ENDPOINTS.ARTIST.GET_SINGLE_ARTIST}/list`,
         method: "GET",

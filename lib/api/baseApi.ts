@@ -112,6 +112,6 @@ const baseQueryWithErrorHandling: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithErrorHandling,
-  tagTypes: ["Auth", "User", "Music", "Artist"], // Add more tag types as needed
+  tagTypes: ["Auth", "User", "Music", "Artist", "Albums"], // Add more tag types as needed
   endpoints: () => ({}), // Endpoints will be injected by other API slices
 });
