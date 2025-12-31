@@ -61,9 +61,9 @@ export default function AddNewProduct() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
   // Pricing & Inventory
-  const [price, setPrice] = useState<number>(0);
-  const [discountPrice, setDiscountPrice] = useState<number>(0);
-  const [stockQuantity, setStockQuantity] = useState<number>(0);
+  const [price, setPrice] = useState<string>("");
+  const [discountPrice, setDiscountPrice] = useState<string>("");
+  const [stockQuantity, setStockQuantity] = useState<string>("");
 
   // Music (Track list)
   const [songs, setSongs] = useState<File[]>([]);

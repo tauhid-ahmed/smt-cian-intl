@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
@@ -46,7 +47,7 @@ export function PieChartCard({ title, subtitle, data }: PieChartCardProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip formatter={(value: number | undefined) => value !== undefined ? `${value}%` : ''} />
+              <Tooltip formatter={(value: any) => value !== undefined ? `${value}%` : ''} />
             </PieChart>
           </ResponsiveContainer>
         </div>

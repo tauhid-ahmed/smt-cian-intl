@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -11,7 +12,6 @@ import {
     Heart,
     ShoppingCart,
     Loader2,
-    CheckCheckIcon,
     CheckIcon,
 } from "lucide-react";
 import Section from "@/components/layout/Section";
@@ -20,7 +20,7 @@ import { Heading } from "@/components/Heading";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProductData, useAddToWhishlistMutation, useGetAllProductsQuery, useToggleWhishlistMutation } from "@/lib/api/commonApi";
+import { ProductData,  useGetAllProductsQuery, useToggleWhishlistMutation } from "@/lib/api/commonApi";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -467,8 +467,8 @@ function MusicShop() {
 
     const allProducts = allProductsData?.data
 
-    const parsedProduct = allProducts?.map((product: ProductData) => ({
-        id: product.id,
+    const parsedProduct = allProducts?.map((product: any) => ({
+        id: typeof product.id === 'string' ? product.id : String(product.id),
         title: product.title,
         artist: product.artist?.name || '',
         price: product.price,
