@@ -24,9 +24,7 @@ export default function WorkDemo() {
   };
 
   const handleDemoClick = () => {
-    console.log("Opening demo submission...");
-    // router navigation
-    router.push("/contact/artist-information");
+  router.push("/about-us/artist-information");
   };
 
   const handlePressKitClick = () => {
