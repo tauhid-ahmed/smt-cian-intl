@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import {
-  Upload,
+
   User,
   Music,
   FileText,
   Video,
   CheckCircle2,
 } from "lucide-react";
+import { useAddDemoArtistSubmissionMutation } from "@/lib/api/userApi";
 
-interface FormData {
+interface FormDataType {
   fullName: string;
   email: string;
   phone: string;
@@ -29,7 +32,7 @@ interface FormData {
 }
 
 export default function DemoSubmissionForm() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormDataType>({
     fullName: "",
     email: "",
     phone: "",
@@ -47,36 +50,81 @@ export default function DemoSubmissionForm() {
     understandTerms: false,
   });
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const target = e.target as HTMLInputElement;
-    const { name, value, type, checked } = target;
+  const [addDemoArtistSubmission, { isLoading }] = useAddDemoArtistSubmissionMutation();
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleFileChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    fieldName: keyof FormData
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        [fieldName]: file,
-      }));
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>, fieldName: keyof FormDataType) => {
+    const file = e.target.files?.[0] || null;
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: file,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.musicFile) {
+      alert("Please upload a music file.");
+      return;
+    }
+
+    const body = new FormData();
+
+    // Append files
+    if (formData.musicFile) body.append("audio", formData.musicFile);
+    if (formData.pressKit) body.append("pressKit", formData.pressKit);
+
+    // Append JSON data as string
+    const dataJson = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phoneNumber: formData.phone,
+      location: formData.location,
+      socialMedia: formData.socialMedia || null,
+      songTitle: formData.songTitle,
+      genre: formData.genre,
+      briefBio: formData.briefBio,
+      whyJoin: formData.whyJoin,
+      videoLink: formData.videoLinks || null,
+    };
+    body.append("data", JSON.stringify(dataJson));
+
+    try {
+      const response = await addDemoArtistSubmission(body).unwrap();
+      alert("Demo submitted successfully!");
+      console.log(response);
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        location: "",
+        socialMedia: "",
+        songTitle: "",
+        genre: "",
+        musicFile: null,
+        streamingLinks: "",
+        briefBio: "",
+        whyJoin: "",
+        pressKit: null,
+        videoLinks: "",
+        ministryAlignment: false,
+        understandTerms: false,
+      });
+    } catch (error: any) {
+      console.error(error);
+      alert("Failed to submit demo. Please try again.");
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-900 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -84,42 +132,34 @@ export default function DemoSubmissionForm() {
             Submit Your Demo
           </h1>
           <p className="text-gray-400 text-sm md:text-base">
-            Join the CiAN Collective family. Share your God-given talent with
-            us.
+            Join the CiAN Collective family. Share your God-given talent with us.
           </p>
         </div>
 
         <div className="space-y-8">
-          {/* Artist Information Section */}
+          {/* Artist Info */}
           <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
             <div className="flex items-center gap-2 mb-6">
               <User className="text-yellow-500" size={20} />
-              <h2 className="text-xl font-semibold text-yellow-500">
-                Artist Information
-              </h2>
+              <h2 className="text-xl font-semibold text-yellow-500">Artist Information</h2>
             </div>
-
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Full Name *</label>
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
+                  
                   placeholder="Enter your full name"
                   className="w-full bg-gray-900/50 border border-gray-600 rounded px-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
                   required
                 />
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Email <span className="text-red-500">*</span>
-                  </label>
+                  <label className="block text-gray-300 text-sm mb-2">Email *</label>
                   <input
                     type="email"
                     name="email"
@@ -130,11 +170,8 @@ export default function DemoSubmissionForm() {
                     required
                   />
                 </div>
-
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Phone <span className="text-red-500">*</span>
-                  </label>
+                  <label className="block text-gray-300 text-sm mb-2">Phone *</label>
                   <input
                     type="tel"
                     name="phone"
@@ -146,11 +183,8 @@ export default function DemoSubmissionForm() {
                   />
                 </div>
               </div>
-
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Location <span className="text-red-500">*</span>
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Location *</label>
                 <input
                   type="text"
                   name="location"
@@ -161,38 +195,30 @@ export default function DemoSubmissionForm() {
                   required
                 />
               </div>
-
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Social Media Links
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Social Media Links</label>
                 <input
                   type="text"
                   name="socialMedia"
                   value={formData.socialMedia}
                   onChange={handleInputChange}
-                  placeholder="Instagram, Twitter, Facebook, etc."
+                  placeholder="Instagram, Twitter, etc."
                   className="w-full bg-gray-900/50 border border-gray-600 rounded px-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
                 />
               </div>
             </div>
           </div>
 
-          {/* Music Submission Section */}
+          {/* Music Submission */}
           <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
             <div className="flex items-center gap-2 mb-6">
               <Music className="text-yellow-500" size={20} />
-              <h2 className="text-xl font-semibold text-yellow-500">
-                Music Submission
-              </h2>
+              <h2 className="text-xl font-semibold text-yellow-500">Music Submission</h2>
             </div>
-
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Song Title <span className="text-red-500">*</span>
-                  </label>
+                  <label className="block text-gray-300 text-sm mb-2">Song Title *</label>
                   <input
                     type="text"
                     name="songTitle"
@@ -203,11 +229,8 @@ export default function DemoSubmissionForm() {
                     required
                   />
                 </div>
-
                 <div>
-                  <label className="block text-gray-300 text-sm mb-2">
-                    Genre <span className="text-red-500">*</span>
-                  </label>
+                  <label className="block text-gray-300 text-sm mb-2">Genre *</label>
                   <input
                     type="text"
                     name="genre"
@@ -220,44 +243,43 @@ export default function DemoSubmissionForm() {
                 </div>
               </div>
 
-              <div>
+            <div>
                 <label className="block text-gray-300 text-sm mb-2">
-                  Upload Music File{" "}
-                  <span className="text-gray-400 text-xs">(MP3/WAV)</span>
+                  Upload Music File <span className="text-gray-400 text-xs">(MP3/WAV)</span>
                 </label>
-                <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center hover:border-yellow-500 transition-colors cursor-pointer bg-gray-900/30">
+                <div className="relative">
                   <input
                     type="file"
                     accept=".mp3,.wav"
                     onChange={(e) => handleFileChange(e, "musicFile")}
                     className="hidden"
-                    id="music-upload"
+                    id="musicFile"
                   />
-                  <label htmlFor="music-upload" className="cursor-pointer">
-                    <Upload
-                      className="mx-auto text-yellow-500 mb-3"
-                      size={32}
-                    />
-                    <p className="text-gray-300 mb-1">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      MP3 or WAV (MAX. 50MB)
-                    </p>
-                    {formData.musicFile && (
-                      <p className="text-yellow-500 text-sm mt-2">
-                        Selected: {formData.musicFile.name}
+                  <label
+                    htmlFor="musicFile"
+                    className="flex items-center justify-center w-full bg-gray-900/50 border-2 border-dashed border-gray-600 rounded-lg px-6 py-8 cursor-pointer hover:border-yellow-500 hover:bg-gray-900/70 transition-all duration-300"
+                  >
+                    <div className="text-center">
+                      <Music className="mx-auto mb-3 text-gray-400" size={32} />
+                      <p className="text-gray-300 text-sm mb-1">
+                        {formData.musicFile ? formData.musicFile.name : "Click to upload music file"}
                       </p>
-                    )}
-                    <p className="text-gray-400 text-xs mt-2">OR</p>
+                      <p className="text-gray-500 text-xs">MP3 or WAV files supported</p>
+                    </div>
                   </label>
                 </div>
+                {formData.musicFile && (
+                  <div className="flex items-center gap-2 mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <CheckCircle2 className="text-yellow-500" size={16} />
+                    <p className="text-yellow-500 text-sm">
+                      {formData.musicFile.name}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Streaming Links
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Streaming Links</label>
                 <input
                   type="text"
                   name="streamingLinks"
@@ -270,40 +292,32 @@ export default function DemoSubmissionForm() {
             </div>
           </div>
 
-          {/* About You Section */}
+          {/* About You */}
           <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
             <div className="flex items-center gap-2 mb-6">
               <FileText className="text-yellow-500" size={20} />
-              <h2 className="text-xl font-semibold text-yellow-500">
-                About You
-              </h2>
+              <h2 className="text-xl font-semibold text-yellow-500">About You</h2>
             </div>
-
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Brief Bio <span className="text-red-500">*</span>
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Brief Bio *</label>
                 <textarea
                   name="briefBio"
                   value={formData.briefBio}
                   onChange={handleInputChange}
-                  placeholder="Tell us about your musical journey and ministry..."
+                  placeholder="Tell us about your musical journey..."
                   rows={4}
                   className="w-full bg-gray-900/50 border border-gray-600 rounded px-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 resize-none"
                   required
                 />
               </div>
-
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Why do you want to join CiAN Collective?
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Why join?</label>
                 <textarea
                   name="whyJoin"
                   value={formData.whyJoin}
                   onChange={handleInputChange}
-                  placeholder="Share your vision and how you align with our mission..."
+                  placeholder="Share your vision and alignment..."
                   rows={4}
                   className="w-full bg-gray-900/50 border border-gray-600 rounded px-4 py-2.5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 resize-none"
                 />
@@ -311,50 +325,49 @@ export default function DemoSubmissionForm() {
             </div>
           </div>
 
-          {/* Supporting Materials Section */}
+          {/* Supporting Materials */}
           <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
             <div className="flex items-center gap-2 mb-6">
               <Video className="text-yellow-500" size={20} />
-              <h2 className="text-xl font-semibold text-yellow-500">
-                Supporting Materials (Optional)
-              </h2>
+              <h2 className="text-xl font-semibold text-yellow-500">Supporting Materials (Optional)</h2>
             </div>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-300 text-sm mb-2">
-                  Press Kit / EPK
+                  Press Kit / EPK <span className="text-gray-400 text-xs">(PDF/Image)</span>
                 </label>
-                <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-yellow-500 transition-colors cursor-pointer bg-gray-900/30">
+                <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf,.doc,.docx"
+                    accept="image/*,.pdf"
                     onChange={(e) => handleFileChange(e, "pressKit")}
                     className="hidden"
-                    id="press-kit-upload"
+                    id="pressKit"
                   />
-                  <label htmlFor="press-kit-upload" className="cursor-pointer">
-                    <Upload
-                      className="mx-auto text-yellow-500 mb-2"
-                      size={28}
-                    />
-                    <p className="text-gray-300 text-sm mb-1">
-                      Upload Press Kit
-                    </p>
-                    <p className="text-gray-500 text-xs">PDF, DOC, DOCX</p>
-                    {formData.pressKit && (
-                      <p className="text-yellow-500 text-sm mt-2">
-                        Selected: {formData.pressKit.name}
+                  <label
+                    htmlFor="pressKit"
+                    className="flex items-center justify-center w-full bg-gray-900/50 border-2 border-dashed border-gray-600 rounded-lg px-6 py-8 cursor-pointer hover:border-yellow-500 hover:bg-gray-900/70 transition-all duration-300"
+                  >
+                    <div className="text-center">
+                      <FileText className="mx-auto mb-3 text-gray-400" size={32} />
+                      <p className="text-gray-300 text-sm mb-1">
+                        {formData.pressKit ? formData.pressKit.name : "Click to upload press kit"}
                       </p>
-                    )}
+                      <p className="text-gray-500 text-xs">PDF or image files supported</p>
+                    </div>
                   </label>
                 </div>
+                {formData.pressKit && (
+                  <div className="flex items-center gap-2 mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <CheckCircle2 className="text-yellow-500" size={16} />
+                    <p className="text-yellow-500 text-sm">
+                      {formData.pressKit.name}
+                    </p>
+                  </div>
+                )}
               </div>
-
               <div>
-                <label className="block text-gray-300 text-sm mb-2">
-                  Music Video Links
-                </label>
+                <label className="block text-gray-300 text-sm mb-2">Music Video Links</label>
                 <input
                   type="text"
                   name="videoLinks"
@@ -367,15 +380,12 @@ export default function DemoSubmissionForm() {
             </div>
           </div>
 
-          {/* Ministry Alignment Section */}
+          {/* Ministry Alignment */}
           <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
             <div className="flex items-center gap-2 mb-6">
               <CheckCircle2 className="text-yellow-500" size={20} />
-              <h2 className="text-xl font-semibold text-yellow-500">
-                Ministry Alignment
-              </h2>
+              <h2 className="text-xl font-semibold text-yellow-500">Ministry Alignment</h2>
             </div>
-
             <div className="space-y-3">
               <label className="flex items-start gap-3 cursor-pointer group">
                 <input
@@ -387,11 +397,9 @@ export default function DemoSubmissionForm() {
                   required
                 />
                 <span className="text-gray-300 text-sm group-hover:text-gray-200">
-                  I confirm that my music aligns with Christian values and the
-                  mission of CiAN Collective
+                  I confirm that my music aligns with Christian values and the mission of CiAN Collective
                 </span>
               </label>
-
               <label className="flex items-start gap-3 cursor-pointer group">
                 <input
                   type="checkbox"
@@ -402,8 +410,7 @@ export default function DemoSubmissionForm() {
                   required
                 />
                 <span className="text-gray-300 text-sm group-hover:text-gray-200">
-                  I understand that this submission is not a guarantee of
-                  acceptance or representation
+                  I understand that this submission is not a guarantee of acceptance or representation
                 </span>
               </label>
             </div>
@@ -413,9 +420,12 @@ export default function DemoSubmissionForm() {
           <div className="text-center pt-4">
             <button
               onClick={handleSubmit}
-              className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-12 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+              disabled={isLoading}
+              className={`bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-12 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-yellow-500/50 ${
+                isLoading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             >
-              Submit Demo for Review
+              {isLoading ? "Submitting..." : "Submit Demo for Review"}
             </button>
           </div>
         </div>
