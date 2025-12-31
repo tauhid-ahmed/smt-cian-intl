@@ -5,7 +5,7 @@ import { baseApi } from "./baseApi";
 
 // get all artists response
 
-interface AllArtistsResponse {
+export interface AllArtistsResponse {
     success: boolean;
     statusCode: number;
     message: string;
