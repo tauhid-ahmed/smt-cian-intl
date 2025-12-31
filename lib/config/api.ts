@@ -47,5 +47,6 @@ export const API_ENDPOINTS = {
         GET_PRODUCTS: "/products",
         GET_ALL_PRODUCTS: "/products",
         ADD_TO_WISHLIST: "/wishlist/toggle",
+        GET_WHISH_LIST: "/wishlist",
     },
 } as const;

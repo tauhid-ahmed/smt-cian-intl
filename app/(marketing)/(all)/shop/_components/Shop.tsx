@@ -20,7 +20,7 @@ import { Heading } from "@/components/Heading";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProductData, useAddToWhishlistMutation, useGetAllProductsQuery } from "@/lib/api/commonApi";
+import { ProductData, useAddToWhishlistMutation, useGetAllProductsQuery, useToggleWhishlistMutation } from "@/lib/api/commonApi";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -232,12 +232,12 @@ export function FilterPanel({
 // ==================== PRODUCT CARD COMPONENT ====================
 function ProductCard({ product: product }) {
 
-    const [addToWhishlist , { isLoading , isSuccess }] = useAddToWhishlistMutation()
+    const [toggleWhishlist , { isLoading , isSuccess }] = useToggleWhishlistMutation()
     return (
 
         <div className="rounded-lg overflow-hidden group relative border border-white/20">
             {/* Wishlist Icon */}
-            <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors" title="add to which list " onClick={()=> addToWhishlist({productId: product.id})}>
+            <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors" title="add to which list " onClick={() => toggleWhishlist({productId: product.id})}>
                {
                 isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
