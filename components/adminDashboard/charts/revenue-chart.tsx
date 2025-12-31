@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -62,7 +63,7 @@ export function RevenueChart({
                 color: "#FFFFFF",
               }}
               labelStyle={{ color: "#B3B3B3", fontSize: 12 }}
-              formatter={(value: number | undefined) =>
+              formatter={(value: any) =>
                 value !== undefined ? `${lineDataKey}: ${value.toLocaleString()}` : ''
               }
             />

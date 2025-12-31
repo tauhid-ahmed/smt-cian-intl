@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import ArtistProfileTab from "@/components/adminDashboard/contentManagement/ArtistProfileTab";
 import ArtistPage from "@/components/adminDashboard/contentManagement/ArtistPage";
 import ProductCatalogTab from "@/components/adminDashboard/contentManagement/ProductCatalogTab";
 import ReviewModerationTab from "@/components/adminDashboard/contentManagement/ReviewModerationTab";
@@ -13,6 +12,8 @@ import {
   CustomTabsTrigger,
 } from "@/components/adminDashboard/custom-tabs";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
+import ArtistDemo from "@/components/adminDashboard/contentManagement/ArtistDemo";
+import AlbumPage from "@/components/adminDashboard/contentManagement/AlbumPage";
 
 const ContentManagementPage = () => {
   const [activeTab, setActiveTab] = useState("tab1");
@@ -21,7 +22,9 @@ const ContentManagementPage = () => {
   const tabs = [
     { value: "tab1", label: "Product Catalog" },
     { value: "tab2", label: "Artist Page" },
-    { value: "tab4", label: "Review Moderation" },
+    { value: "tab3", label: "Artist Demo" },
+    { value: "tab4", label: "Album" },
+    { value: "tab5", label: "Review Moderation" },
   ];
 
   return (
@@ -94,7 +97,15 @@ const ContentManagementPage = () => {
             <ArtistPage />
           </CustomTabsContent>
 
+          <CustomTabsContent value="tab3">
+            <ArtistDemo />
+          </CustomTabsContent>
+
           <CustomTabsContent value="tab4">
+            <AlbumPage />
+          </CustomTabsContent>
+
+          <CustomTabsContent value="tab5">
             <ReviewModerationTab />
           </CustomTabsContent>
         </CustomTabs>
