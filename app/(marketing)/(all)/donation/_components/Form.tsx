@@ -7,6 +7,8 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Container from "@/components/layout/Container";
+import { DonationPayment } from "@/features/payment/components/DonationPayment";
+import { DonationPaymentData } from "@/features/payment/types";
 
 interface DonationFormData {
   frequency: "one-time" | "monthly";
@@ -90,7 +92,7 @@ export default function DonationForm() {
       cvv: "",
       firstName: "",
       lastName: "",
-      email: "",
+      email: "tauhid@me.com",
       streetAddress: "",
       city: "",
       state: "",
@@ -101,6 +103,99 @@ export default function DonationForm() {
     },
     mode: "onBlur",
   });
+
+  // Your collected form data
+  const [formData, setFormData] = useState({
+    // Gift Amount
+    selectedGiftAmount: 25, // $25, $50, $100, $250, $500
+    customAmount: 0,
+
+    // Donation Frequency
+    donationFrequency: "one-time" as "one-time" | "monthly",
+
+    // Select Gift Amount (monthly)
+    monthlyAmount: 25,
+
+    // Other Amount
+    otherAmount: 0,
+
+    // Campaign Type
+    campaignType: "donation",
+
+    // User Information
+    firstName: "Tauhid",
+    lastName: "Ahmed",
+    email: "tauhid@me.com",
+    streetAddress: "",
+    city: "Dhaka",
+    state: "Dhaka",
+    zipCode: "1212",
+    phoneNumber: "01670012716",
+
+    // Optional
+    isAnonymous: false,
+  });
+
+  // Calculate final amount (in cents for Stripe)
+  const getFinalAmount = (): number => {
+    if (formData.otherAmount > 0) {
+      return formData.otherAmount * 100; // Convert to cents
+    }
+
+    if (formData.donationFrequency === "monthly") {
+      return formData.monthlyAmount * 100;
+    }
+
+    return formData.selectedGiftAmount * 100;
+  };
+
+  // Prepare payment data from your form
+  const preparePaymentData = (): DonationPaymentData => {
+    return {
+      amount: getFinalAmount(),
+      currency: "usd",
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      streetAddress: formData.streetAddress,
+      city: formData.city,
+      state: formData.state,
+      zipCode: formData.zipCode,
+      phoneNumber: formData.phoneNumber,
+      campaign: formData.campaignType || "General",
+      donationFrequency: formData.donationFrequency,
+      isAnonymous: formData.isAnonymous,
+    };
+  };
+
+  const handlePaymentSuccess = () => {
+    console.log("✅ Donation successful!");
+
+    // Redirect to thank you page
+    // router.push("/thank-you");
+  };
+
+  const handlePaymentError = (error: string) => {
+    console.error("❌ Payment failed:", error);
+
+    // Show error message to user
+    // You can add additional error handling here
+  };
+
+  // Check if form is complete
+  const isFormComplete = () => {
+    return (
+      formData.firstName.trim() !== "" &&
+      formData.lastName.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.streetAddress.trim() !== "" &&
+      formData.city.trim() !== "" &&
+      formData.state.trim() !== "" &&
+      formData.zipCode.trim() !== "" &&
+      formData.phoneNumber.trim() !== "" &&
+      getFinalAmount() >= 100 // Minimum $1.00
+    );
+  };
 
   const {
     control,
@@ -797,7 +892,7 @@ export default function DonationForm() {
 
               {/* Submit Button */}
               <div className="px-4 md:px-10 lg:px-20">
-                <Button
+                {/* <Button
                   type="button"
                   // onClick={handleSubmit(onSubmit)}
                   onClick={() => router.push("/thank-you")}
@@ -808,7 +903,12 @@ export default function DonationForm() {
                   {isSubmitting
                     ? "Processing..."
                     : `Complete Donation of $${totalAmount.toFixed(2)}`}
-                </Button>
+                </Button> */}
+                <DonationPayment
+                  donationData={preparePaymentData()}
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                />
               </div>
 
               {/* Footer Text */}
