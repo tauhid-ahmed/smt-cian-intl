@@ -1,17 +1,21 @@
 "use client";
 import { Upload, Music, Save } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useGetAllAlbumsQuery } from "@/lib/api/albumApi";
 import { useGetArtistListQuery } from "@/lib/api/artistApi";
-import { useAddMusicMutation } from "@/lib/api/musicApi";
+import {
+  useGetSingleMusicQuery,
+  useUpdateMusicMutation,
+} from "@/lib/api/musicApi";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
-// Zod validation schema
+// Updated Zod validation schema for update (audio file optional)
 const musicSchema = z.object({
   title: z.string().min(1, "Music title is required"),
   description: z.string().optional(),
@@ -20,32 +24,43 @@ const musicSchema = z.object({
   language: z.string().min(1, "Language is required"),
   artistIds: z.array(z.string()).min(1, "At least one artist is required"),
   audioFile: z
-    .instanceof(File)
-    .refine((file) => file.type.startsWith("audio/"), {
-      message: "Please upload a valid audio file",
-    })
-    .refine((file) => file.size <= 50 * 1024 * 1024, {
-      message: "Audio file must be less than 50MB",
-    }),
+    .union([
+      z
+        .instanceof(File)
+        .refine((file) => file.type.startsWith("audio/"), {
+          message: "Please upload a valid audio file",
+        })
+        .refine((file) => file.size <= 50 * 1024 * 1024, {
+          message: "Audio file must be less than 50MB",
+        }),
+      z.undefined(),
+    ])
+    .optional(),
 });
 
 type MusicFormData = z.infer<typeof musicSchema>;
 
-export default function AddNewMusic() {
+export default function UpdateMusic() {
+  const params = useParams();
+  const musicId = params.id as string;
   const [openArtistPopover, setOpenArtistPopover] = React.useState(false);
   const [openAlbumPopover, setOpenAlbumPopover] = React.useState(false);
   const [artistSearch, setArtistSearch] = useState("");
   const [albumSearch, setAlbumSearch] = useState("");
 
   // RTK Query hooks
+  const { data: musicData, isLoading: isLoadingMusic } =
+    useGetSingleMusicQuery(musicId);
   const { data: albumsData, isLoading: isLoadingAlbums } =
     useGetAllAlbumsQuery();
   const { data: artistsData, isLoading: isLoadingArtists } =
     useGetArtistListQuery();
-  const [addMusic, { isLoading: isAddingMusic }] = useAddMusicMutation();
+  const [updateMusic, { isLoading: isUpdatingMusic }] =
+    useUpdateMusicMutation();
 
   const albums = albumsData?.data || [];
   const artists = artistsData?.data || [];
+  const currentMusic = musicData?.data;
 
   // React Hook Form with Zod validation
   const {
@@ -72,6 +87,21 @@ export default function AddNewMusic() {
   const watchedArtistIds = watch("artistIds");
   const watchedAlbumId = watch("albumId");
   const watchedAudioFile = watch("audioFile");
+
+  // Populate form when music data is loaded
+  useEffect(() => {
+    if (currentMusic) {
+      reset({
+        title: currentMusic.title || "",
+        description: currentMusic.description || "",
+        genre: currentMusic.genre || "",
+        albumId: currentMusic.albumId || "",
+        language: currentMusic.language || "English",
+        artistIds: currentMusic.artistIds || [],
+        audioFile: undefined, // Keep undefined for existing file
+      });
+    }
+  }, [currentMusic, reset]);
 
   const filteredArtists = artists.filter((artist: any) =>
     artist.name.toLowerCase().includes(artistSearch.toLowerCase())
@@ -121,12 +151,15 @@ export default function AddNewMusic() {
   const handleAudioFileChange = (file: File | null) => {
     if (file) {
       setValue("audioFile", file, { shouldValidate: true });
+    } else {
+      setValue("audioFile", undefined, { shouldValidate: true });
     }
   };
 
   const onSubmit = async (data: MusicFormData) => {
     try {
       const musicData = new FormData();
+      musicData.append("id", musicId); // Add music ID for update
       musicData.append("title", data.title);
       if (data.description) {
         musicData.append("description", data.description);
@@ -139,18 +172,26 @@ export default function AddNewMusic() {
       data.artistIds.forEach((id) => {
         musicData.append("artistIds[]", id);
       });
-      musicData.append("audioFile", data.audioFile);
+      if (data.audioFile) {
+        musicData.append("audioFile", data.audioFile);
+      }
 
-      await addMusic(musicData).unwrap();
-      toast.success("Music added successfully!");
-
-      // Reset form
-      reset();
+      await updateMusic({ formData: musicData, id: musicId }).unwrap();
+      toast.success("Music updated successfully!");
     } catch (error) {
-      console.error("Failed to add music:", error);
-      toast.error("Failed to add music. Please try again.");
+      console.error("Failed to update music:", error);
+      toast.error("Failed to update music. Please try again.");
     }
   };
+
+  // Show loading state while fetching music data
+  if (isLoadingMusic) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="text-white text-lg">Loading music data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-4 sm:p-6 lg:p-8">
@@ -159,11 +200,11 @@ export default function AddNewMusic() {
           <div className="flex items-center gap-3 mb-2">
             <div className="w-1 h-8 bg-linear-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
             <h1 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-white to-neutral-400 bg-clip-text text-transparent">
-              Add New Music
+              Update Music
             </h1>
           </div>
           <p className="text-neutral-400 ml-7">
-            Add a new music to the music library
+            Update existing music information
           </p>
         </div>
 
@@ -437,7 +478,7 @@ export default function AddNewMusic() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Audio File *
+                Audio File (Optional - Upload only if you want to change)
               </label>
               <Controller
                 name="audioFile"
@@ -485,6 +526,9 @@ export default function AddNewMusic() {
                             {(watchedAudioFile.size / (1024 * 1024)).toFixed(2)}{" "}
                             MB
                           </p>
+                          <p className="text-yellow-500 text-xs mt-2">
+                            New file selected
+                          </p>
                         </div>
                       ) : (
                         <div className="text-center">
@@ -493,8 +537,16 @@ export default function AddNewMusic() {
                             className="text-neutral-500 group-hover:text-yellow-500 transition-colors mx-auto mb-2"
                           />
                           <p className="text-neutral-400 text-sm">
-                            Click or drag to upload audio
+                            {currentMusic?.audioUrl
+                              ? "Click or drag to upload new audio (Optional)"
+                              : "Click or drag to upload audio"}
                           </p>
+                          {currentMusic?.audioUrl && (
+                            <p className="text-neutral-500 text-xs mt-1">
+                              Current audio file will be kept if no new file is
+                              uploaded
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -515,23 +567,23 @@ export default function AddNewMusic() {
               type="button"
               onClick={() => reset()}
               className="w-full sm:w-auto px-8 py-3.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-105"
-              disabled={isAddingMusic}>
-              Cancel
+              disabled={isUpdatingMusic}>
+              Reset
             </button>
             <button
               type="button"
               onClick={handleSubmit(onSubmit)}
-              disabled={isAddingMusic}
+              disabled={isUpdatingMusic}
               className="w-full sm:w-auto px-8 py-3.5 bg-linear-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold rounded-xl shadow-lg shadow-yellow-500/30 transition-all transform hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
-              {isAddingMusic ? (
+              {isUpdatingMusic ? (
                 <>
                   <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                  Adding...
+                  Updating...
                 </>
               ) : (
                 <>
                   <Save size={18} />
-                  Add Music
+                  Update Music
                 </>
               )}
             </button>
