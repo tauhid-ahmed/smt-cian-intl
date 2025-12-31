@@ -1,9 +1,10 @@
-import React from "react";
+'use client'
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
+import { useGetWhishlistQuery } from "@/lib/api/commonApi";
 
 export default function Page() {
-  // Mock data for wishlist products
+  const {data: whishListData , isLoading , isSuccess} = useGetWhishlistQuery()
   const wishlistProducts = [
     {
       id: 1,
@@ -51,6 +52,24 @@ export default function Page() {
     },
   ];
 
+  const whishlist = whishListData?.data.map((item) => {
+    return {
+        id: item.id , 
+        artist : item.product.artist?.name, 
+        rating: item.product.rating ?? 0, 
+        price: item.product.price, 
+        image: item.product.mainImage, 
+        tag: item.product.category, 
+        category: item.product.category,
+    }
+  })
+
+  console.log(whishListData, whishListData?.data);
+
+  if (isLoading) {
+    return <div className="w-full h-[50vh]">Loading...</div>;
+  }
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex items-center gap-1">
@@ -78,7 +97,7 @@ export default function Page() {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {wishlistProducts.map((product) => (
+        {whishlist?.map((product) => (
           <div
             key={product.id}
             className="border border-gray-700 rounded-2xl bg-gray-900/50 hover:border-gray-600 transition-colors overflow-hidden"
@@ -88,18 +107,13 @@ export default function Page() {
               {/* Image */}
               <Image
                 src={product.image}
-                alt={`${product.artist} - ${product.album}`}
+                alt={`${product.artist}`}
                 className="object-cover w-full h-full"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               />
 
-              {/* Top Left Tag Badge */}
-              {product.tag && (
-                <div className="absolute top-2 left-2 bg-gray-500/10 border border-yellow-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                  {product.tag}
-                </div>
-              )}
+              
 
               {/* Top Right Heart Icon */}
               <button className="absolute top-2 right-2 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
@@ -116,16 +130,16 @@ export default function Page() {
             <div className="p-4 space-y-2">
               <div>
                 <h3 className="font-semibold text-gray-400 text-base">
-                  {product.artist}
+                  {product.artist || 'Artist name'}
                 </h3>
-                <p className="text-white text-lg">{product.album}</p>
+                <p className="text-white text-lg">{product.artist || 'Artist name'}</p>
               </div>
 
               {/* Rating */}
               <div className="flex items-center gap-2">
                 {renderStars(product.rating)}
                 <span className="text-gray-500 text-sm">
-                  ({product.reviews})
+                  ({product.rating})
                 </span>
               </div>
 

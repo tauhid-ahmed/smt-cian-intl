@@ -20,7 +20,7 @@ const ArtistCard = ({artist}: {artist: Artist}) => {
     //todo: replace with actural artist id later
     return<Link href={'/artists/'+artist.id}>
         <div className="bg-gray-900 hover:border hover:border-b-gray-700 rounded-md transition-all cursor-pointer">
-            <Image width={200} height={200} src={artist.image} alt="" className="w-full" />
+            <Image width={200} height={200} src={artist.image} alt="" className="w-full aspect-square object-cover" />
             <p className="p-4 rounded-md overflow-hidden"> {artist.name} </p>
         </div>
     </Link>

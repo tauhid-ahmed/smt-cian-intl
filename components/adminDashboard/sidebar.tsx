@@ -10,6 +10,7 @@ import {
   LogOut,
   X,
   Music,
+  CoinsIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,12 @@ const menuItems = [
     label: "E-commerce Management",
     href: "/admin-dashboard/ecommerce",
     id: "ecommerce",
+  },
+  {
+    icon: CoinsIcon,
+    label: "Plan Management",
+    href: "/admin-dashboard/plans",
+    id: "plans",
   },
 ];
 
