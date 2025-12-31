@@ -28,7 +28,6 @@ export const useStripePayment = <T extends PaymentData>(
   const [error, setError] = useState<string | null>(null);
 
   const clearError = () => setError(null);
-  const token = localStorage.getItem("accessToken");
 
   const processPayment = async (
     paymentData: T,
@@ -39,6 +38,7 @@ export const useStripePayment = <T extends PaymentData>(
 
     try {
       // Step 1: Create donation/order and get payment intent
+      const token = localStorage.getItem("accessToken");
       const createResponse = await fetch(`${createEndpoint}`, {
         method: "POST",
         headers: {
