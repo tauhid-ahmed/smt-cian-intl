@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { Edit, Trash } from "lucide-react";
-import { useGetAllMusicQuery } from "@/lib/api/musicApi";
+import {
+  useDeleteMusicMutation,
+  useGetAllMusicQuery,
+} from "@/lib/api/musicApi";
 import { useState, useEffect, ChangeEvent } from "react";
+import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
+import { toast } from "sonner";
 
 const MusicManagement = () => {
   const [search, setSearch] = useState<string>("");
@@ -34,6 +39,53 @@ const MusicManagement = () => {
     setSearch("");
   };
 
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    id: string | null;
+    name: string;
+  }>({
+    isOpen: false,
+    id: null,
+    name: "",
+  });
+
+  const [deleteAction, { isLoading: isDeletingLoading }] =
+    useDeleteMusicMutation();
+
+  const handleDeleteClick = (id: string, name: string) => {
+    setDeleteDialog({
+      isOpen: true,
+      id,
+      name,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteDialog.id) return;
+
+    try {
+      await deleteAction(deleteDialog.id);
+
+      toast.success("Deleted Successfully!");
+      // Close dialog
+      setDeleteDialog({
+        isOpen: false,
+        id: null,
+        name: "",
+      });
+    } catch (error) {
+      toast.error("Failed to delete music, please try again later.");
+      console.error("Delete failed:", error);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialog({
+      isOpen: false,
+      id: null,
+      name: "",
+    });
+  };
   return (
     <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
       <div className="space-y-8">
@@ -228,6 +280,9 @@ const MusicManagement = () => {
                         <td className="pl-4 pt-4 pb-4">
                           <div className="flex justify-end gap-4">
                             <button
+                              onClick={() =>
+                                handleDeleteClick(music.id, music.title)
+                              }
                               className="text-white hover:text-gray-300"
                               type="button">
                               <Trash size={18} />
@@ -326,6 +381,21 @@ const MusicManagement = () => {
           </div>
         )}
       </div>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={deleteDialog.isOpen}
+        title={`Delete "${deleteDialog.name}"?`}
+        message={`You are about to delete "${deleteDialog.name}". This action is permanent and cannot be reversed.`}
+        confirmText="Delete Permanently"
+        cancelText="Keep Item"
+        isLoading={isDeletingLoading}
+        dangerLevel="high"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        // Optional customization
+        dialogClassName="border-2 border-red-200/50"
+        overlayClassName="backdrop-blur-md"
+      />
     </div>
   );
 };
