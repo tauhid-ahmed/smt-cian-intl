@@ -63,7 +63,7 @@ export interface DonationPaymentData {
   city: string;
   state: string;
   zipCode: string;
-  phoneNumber: string;
+  // phoneNumber: string;
   campaign: string;
   donationFrequency?: "one-time" | "monthly";
   isAnonymous?: boolean;

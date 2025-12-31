@@ -28,6 +28,7 @@ interface DonationFormData {
   taxDeduction: boolean;
   newsletter: boolean;
   paymentMethod: "credit";
+  isAnonymous?: boolean;
 }
 
 interface GiftOption {
@@ -79,7 +80,6 @@ export default function DonationForm() {
   const router = useRouter();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(25);
   const [isCustomAmount, setIsCustomAmount] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formData = useForm<DonationFormData>({
     defaultValues: {
@@ -99,6 +99,7 @@ export default function DonationForm() {
       zipCode: "",
       taxDeduction: false,
       newsletter: false,
+      isAnonymous: false,
     },
     mode: "onBlur",
   });
@@ -106,7 +107,7 @@ export default function DonationForm() {
   // Prepare payment data from your form
   const preparePaymentData = (): DonationPaymentData => {
     return {
-      amount: formData.getValues("amount"),
+      amount: formData.getValues("amount") || Number(customAmount),
       currency: "usd",
       firstName: formData.getValues("firstName"),
       lastName: formData.getValues("lastName"),
@@ -117,7 +118,7 @@ export default function DonationForm() {
       zipCode: formData.getValues("zipCode"),
       donationFrequency: formData.getValues("frequency"),
       campaign: formData.getValues("campaign"),
-      isAnonymous: formData.getValues("anonymous") || false,
+      isAnonymous: formData.getValues("isAnonymous") ? true : false,
       cardDetails: {
         number: formData.getValues("cardNumber"),
         exp_month: formData.getValues("expiryDate").split("/")[0],
@@ -130,8 +131,7 @@ export default function DonationForm() {
   const handlePaymentSuccess = () => {
     console.log("✅ Donation successful!");
 
-    // Redirect to thank you page
-    // router.push("/thank-you");
+    router.push("/thank-you");
   };
 
   const handlePaymentError = (error: string) => {
@@ -143,7 +143,6 @@ export default function DonationForm() {
 
   const {
     control,
-    handleSubmit,
     formState: { errors },
     watch,
     setValue,
@@ -151,7 +150,6 @@ export default function DonationForm() {
 
   const frequency = watch("frequency");
   const customAmount = watch("customAmount");
-  const paymentMethod = watch("paymentMethod");
 
   const totalAmount =
     isCustomAmount && customAmount
@@ -405,116 +403,113 @@ export default function DonationForm() {
                 </span>
               </div>
 
-              {/* Payment Information - Only show for credit card */}
-              {paymentMethod === "credit" && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Payment Information</h3>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Payment Information</h3>
 
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Card Number
+                  </label>
+                  <Controller
+                    name="cardNumber"
+                    control={control}
+                    rules={{
+                      required: "Card number is required",
+                      validate: (value) => {
+                        const cleaned = value.replace(/\s/g, "");
+                        return (
+                          cleaned.length === 16 ||
+                          "Card number must be 16 digits"
+                        );
+                      },
+                    }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="1234 5678 9012 3456"
+                        maxLength={19}
+                        onChange={(e) =>
+                          field.onChange(formatCardNumber(e.target.value))
+                        }
+                        className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                      />
+                    )}
+                  />
+                  {errors.cardNumber && (
+                    <span className="text-red-500 text-sm mt-1 block">
+                      {errors.cardNumber.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Card Number
+                      Expiry Date
                     </label>
                     <Controller
-                      name="cardNumber"
+                      name="expiryDate"
                       control={control}
                       rules={{
-                        required: "Card number is required",
-                        validate: (value) => {
-                          const cleaned = value.replace(/\s/g, "");
-                          return (
-                            cleaned.length === 16 ||
-                            "Card number must be 16 digits"
-                          );
+                        required: "Expiry date is required",
+                        pattern: {
+                          value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
+                          message: "Format: MM/YY",
                         },
                       }}
                       render={({ field }) => (
                         <input
                           {...field}
                           type="text"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
+                          placeholder="MM/YY"
+                          maxLength={5}
                           onChange={(e) =>
-                            field.onChange(formatCardNumber(e.target.value))
+                            field.onChange(formatExpiry(e.target.value))
                           }
                           className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                         />
                       )}
                     />
-                    {errors.cardNumber && (
+                    {errors.expiryDate && (
                       <span className="text-red-500 text-sm mt-1 block">
-                        {errors.cardNumber.message}
+                        {errors.expiryDate.message}
                       </span>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Expiry Date
-                      </label>
-                      <Controller
-                        name="expiryDate"
-                        control={control}
-                        rules={{
-                          required: "Expiry date is required",
-                          pattern: {
-                            value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                            message: "Format: MM/YY",
-                          },
-                        }}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="text"
-                            placeholder="MM/YY"
-                            maxLength={5}
-                            onChange={(e) =>
-                              field.onChange(formatExpiry(e.target.value))
-                            }
-                            className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
-                          />
-                        )}
-                      />
-                      {errors.expiryDate && (
-                        <span className="text-red-500 text-sm mt-1 block">
-                          {errors.expiryDate.message}
-                        </span>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      CVC
+                    </label>
+                    <Controller
+                      name="cvv"
+                      control={control}
+                      rules={{
+                        required: "CVV is required",
+                        pattern: {
+                          value: /^[0-9]{3,4}$/,
+                          message: "CVV must be 3-4 digits",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder="123"
+                          maxLength={4}
+                          className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
+                        />
                       )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        CVC
-                      </label>
-                      <Controller
-                        name="cvv"
-                        control={control}
-                        rules={{
-                          required: "CVV is required",
-                          pattern: {
-                            value: /^[0-9]{3,4}$/,
-                            message: "CVV must be 3-4 digits",
-                          },
-                        }}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="text"
-                            placeholder="123"
-                            maxLength={4}
-                            className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
-                          />
-                        )}
-                      />
-                      {errors.cvv && (
-                        <span className="text-red-500 text-sm mt-1 block">
-                          {errors.cvv.message}
-                        </span>
-                      )}
-                    </div>
+                    />
+                    {errors.cvv && (
+                      <span className="text-red-500 text-sm mt-1 block">
+                        {errors.cvv.message}
+                      </span>
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Your Information */}
               <div className="space-y-4">

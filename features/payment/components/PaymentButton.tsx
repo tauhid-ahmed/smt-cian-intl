@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Loader2, Lock } from "lucide-react";
-import { formatCurrency } from "../utils";
 
 import {
   CardDetails,
@@ -49,19 +48,22 @@ export type PaymentButtonProps =
   | ProductPaymentButtonProps;
 
 export function PaymentButton(props: PaymentButtonProps) {
-  const {
-    amount,
-    currency = "usd",
-    createEndpoint,
-    paymentData,
-    cardDetails,
-  } = props;
+  const { createEndpoint, paymentData, cardDetails } = props;
 
   const { processPayment, isProcessing } =
     useStripePayment<typeof paymentData>(createEndpoint);
 
   const handleClick = async () => {
-    const success = await processPayment(paymentData, cardDetails);
+    try {
+      const success = await processPayment(paymentData, cardDetails);
+      if (success && props.onSuccess) {
+        props.onSuccess();
+      }
+    } catch (error) {
+      if (props.onError) {
+        props.onError(error as string);
+      }
+    }
   };
 
   return (
@@ -78,7 +80,7 @@ export function PaymentButton(props: PaymentButtonProps) {
         </>
       ) : (
         <>
-          <Lock className="mr-2 h-4 w-4" /> Pay ${amount}
+          <Lock className="mr-2 h-4 w-4" /> {props.buttonText}
         </>
       )}
     </Button>

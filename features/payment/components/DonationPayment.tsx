@@ -20,7 +20,7 @@ export function DonationPayment({
       amount={donationData.amount}
       currency={donationData.currency}
       createEndpoint={`${process.env.NEXT_PUBLIC_API_BASE_URL}/donations/create`}
-      buttonText={`Complete Donation of ${donationData.amount}`}
+      buttonText={`Complete Donation`}
       buttonVariant="default"
       buttonClassName="w-full h-12 text-lg"
       paymentData={donationData}
