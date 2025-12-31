@@ -1,26 +1,25 @@
 "use client";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import {
-  CustomTabs,
-  CustomTabsContent,
-  CustomTabsList,
-  CustomTabsTrigger,
-} from "@/components/adminDashboard/custom-tabs";
 import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
-import TaxReceiptsTab from "@/components/adminDashboard/donationManagement/TaxReceiptsTab";
+// import { useState } from "react";
+// import { ChevronDown } from "lucide-react";
+// import {
+//   CustomTabs,
+//   CustomTabsContent,
+//   CustomTabsList,
+//   CustomTabsTrigger,
+// } from "@/components/adminDashboard/custom-tabs";
+// import OverviewTab from "@/components/adminDashboard/donationManagement/OverviewTab";
+// import TaxReceiptsTab from "@/components/adminDashboard/donationManagement/TaxReceiptsTab";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 
 const DonationManagementPage = () => {
-  
-  const [activeTab, setActiveTab] = useState("tab1");
-  const [open, setOpen] = useState(false);
+  // const [activeTab, setActiveTab] = useState("tab1");
+  // const [open, setOpen] = useState(false);
 
-  const tabs = [
-    { value: "tab1", label: "Overview" },
-    { value: "tab3", label: "Tax Receipts" },
-
-  ];
+  // const tabs = [
+  //   { value: "tab1", label: "Overview" },
+  //   { value: "tab3", label: "Tax Receipts" },
+  // ];
 
   return (
     <>
@@ -30,8 +29,10 @@ const DonationManagementPage = () => {
       />
 
       <div className="mt-4">
-        <CustomTabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab}>
-          {/* ===== Mobile Dropdown (visible on sm) ===== */}
+        <OverviewTab />
+
+        {/* <CustomTabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab}>
+   
           <div className="relative md:hidden mb-4">
             <button
               onClick={() => setOpen(!open)}
@@ -61,7 +62,7 @@ const DonationManagementPage = () => {
             )}
           </div>
 
-          {/* ===== Desktop Tabs (md and up) ===== */}
+
           <div className="hidden md:block">
             <CustomTabsList variant="bordered">
               {tabs.map((tab) => (
@@ -76,7 +77,7 @@ const DonationManagementPage = () => {
             </CustomTabsList>
           </div>
 
-          {/* ===== Tab Contents ===== */}
+
           <CustomTabsContent value="tab1">
             <OverviewTab />
           </CustomTabsContent>
@@ -87,7 +88,7 @@ const DonationManagementPage = () => {
             <TaxReceiptsTab />
           </CustomTabsContent>
 
-        </CustomTabs>
+        </CustomTabs> */}
       </div>
     </>
   );
