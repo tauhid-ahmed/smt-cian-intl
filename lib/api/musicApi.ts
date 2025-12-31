@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from "../config/api";
+import { GetAllMusicResponseTypes } from "../types/musicTypes";
 import { baseApi } from "./baseApi";
 
 export const adminApi = baseApi.injectEndpoints({
@@ -24,10 +25,14 @@ export const adminApi = baseApi.injectEndpoints({
     }),
 
     // GET ALL
-    getAllMusic: builder.query<any, void>({
-      query: () => ({
+    getAllMusic: builder.query<
+      GetAllMusicResponseTypes,
+      Record<string, string>
+    >({
+      query: (params) => ({
         url: API_ENDPOINTS.MUSIC.GET_ALL_MUSIC,
         method: "GET",
+        params,
       }),
       providesTags: ["Music"],
     }),
