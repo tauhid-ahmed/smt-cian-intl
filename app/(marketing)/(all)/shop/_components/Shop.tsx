@@ -17,6 +17,7 @@ import { Heading } from "@/components/Heading";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useGetAllProductsQuery } from "@/lib/api/commonApi";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -448,6 +449,25 @@ function MusicShop() {
     },
   ];
 
+  const { data: allProductsData, isLoading: isProductsLoading } = useGetAllProductsQuery();
+   
+  const allProducts = allProductsData?.data
+
+  const parsedProduct = allProducts?.map((product: any) => ({
+    id: product.id,
+    title: product.title,
+    artist: product.artist?.name || '',
+    price: product.price,
+    rating: product.rating || 0,
+    reviews: product.review_count || 0,
+    image: product.image?.url || '',
+    badge: product.on_sale ? 'Sale' : product.is_new ? 'New' : '',
+    format: product.format || 'Digital',
+  }));
+
+  if (isProductsLoading) {
+    return <div className="w-full h-[50vh] flex items-center justify-center text-lg">Loading...</div>;
+  }
   const handleFilterChange = (filterId: string, value: string) => {
     setSelectedFilters((prev) => {
       const current = prev[filterId] || [];
@@ -536,7 +556,7 @@ function MusicShop() {
                   : "grid-cols-1"
               }`}
             >
-              {products.map((product) => (
+              {parsedProduct?.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

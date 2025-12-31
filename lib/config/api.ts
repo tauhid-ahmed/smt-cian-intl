@@ -45,5 +45,6 @@ export const API_ENDPOINTS = {
     GET_ARTIST: "/artists",
     GET_SINGLE_ARTIST: "/artists",
     GET_PRODUCTS: "/products",
+    GET_ALL_PRODUCTS: "/products",
   },
 } as const;

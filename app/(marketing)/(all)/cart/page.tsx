@@ -4,6 +4,7 @@ import { StarRating } from '@/components/StarRating';
 import { Button } from '@/components/ui/button';
 
 import { MinusIcon, PlusIcon, XIcon } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
 
 const Cart = () => {
@@ -78,7 +79,9 @@ const Cart = () => {
                         <p>$234</p>
                     </div>
                     <div className="py-2">
-                        <Button className="w-full">Checkout</Button>
+                        <Link href="/payment">
+                            <Button className="w-full">Checkout</Button>
+                        </Link>
                     </div>
                 </div>
             </div>
