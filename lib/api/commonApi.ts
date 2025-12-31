@@ -12,6 +12,41 @@ interface AllArtistsResponse {
     data: ArtistData[];
 }
 
+export type ProductData = {
+    id?: string;
+    title?: string;
+    category?: string;
+    price?: number;
+    discountPrice?: number;
+    stock?: number;
+    reorderPoint?: number;
+    productType?: "REGULAR" | string;
+    description?: string;
+    shippingInfo?: string;
+    returnPolicy?: string;
+    mainImage?: string;
+    gallery?: string[];
+    sizes?: string[];
+    colors?: string[];
+    artistId?: string;
+    isDeleted?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    tracks?: {
+        id?: string;
+        name?: string;
+        duration?: string;
+        url?: string;
+        productId?: string;
+        createdAt?: string;
+        updatedAt?: string;
+    }[];
+    artist?: {
+        id?: string;
+        name?: string;
+    };
+}
+
 
 export interface ProductsApiResponse {
     success: boolean;
@@ -84,7 +119,25 @@ export const commonApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+
+        getSingleProduct : builder.query<ProductResponse, string>({
+            query: (id: string) => ({
+                url: `${API_ENDPOINTS.COMMON.GET_PRODUCTS}/${id}`,
+                method: "GET",  
+            }),
+        }),
+
+        /** 
+         * /wishlist/toggle/:id
+         */
+
+        addToWhishlist : builder.mutation<{ success: boolean }, { productId: string }>({
+            query: ({ productId }) => ({
+                url: `${API_ENDPOINTS.COMMON.ADD_TO_WISHLIST}/${productId}`,
+                method: "POST",
+            }),
+        })
     }),
 });
 
-export const { useGetArtistsQuery, useGetSingleArtistQuery, useGetAllProductsQuery } = commonApi;
+export const { useGetArtistsQuery, useGetSingleArtistQuery, useGetAllProductsQuery, useGetSingleProductQuery, useAddToWhishlistMutation } = commonApi;
