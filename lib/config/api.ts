@@ -75,4 +75,11 @@ export const API_ENDPOINTS = {
     GET_SINGLE_MUSIC: "/music",
     DELETE_MUSIC: "/music",
   },
+  ADMIN_DONATION: {
+    GET_DONATION_STATS: "/analytics/donation-stats",
+    GET_DONATION_TRENDS: "/analytics/donation-trends",
+    GET_CAMPAING_PERFORMANCE: "/analytics/campaign-performance",
+    GET_DONATION_GROWTH: "/analytics/donor-growth",
+    GET_DONATIONS: "/subscriptions/donations",
+  },
 } as const;
