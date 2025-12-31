@@ -27,7 +27,7 @@ interface DonationFormData {
   zipCode: string;
   taxDeduction: boolean;
   newsletter: boolean;
-  paymentMethod: "credit" | "paypal" | "apple";
+  paymentMethod: "credit";
 }
 
 interface GiftOption {
@@ -81,17 +81,17 @@ export default function DonationForm() {
   const [isCustomAmount, setIsCustomAmount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const methods = useForm<DonationFormData>({
+  const formData = useForm<DonationFormData>({
     defaultValues: {
       frequency: "one-time",
       amount: 25,
       customAmount: "",
       campaign: "",
-      cardNumber: "",
-      expiryDate: "",
-      cvv: "",
-      firstName: "",
-      lastName: "",
+      cardNumber: "4242424242424242",
+      expiryDate: "12/27",
+      cvv: "222",
+      firstName: "Tauhid",
+      lastName: "Ahmed",
       email: "tauhid@me.com",
       streetAddress: "",
       city: "",
@@ -99,72 +99,31 @@ export default function DonationForm() {
       zipCode: "",
       taxDeduction: false,
       newsletter: false,
-      paymentMethod: "credit",
     },
     mode: "onBlur",
   });
 
-  // Your collected form data
-  const [formData, setFormData] = useState({
-    // Gift Amount
-    selectedGiftAmount: 25, // $25, $50, $100, $250, $500
-    customAmount: 0,
-
-    // Donation Frequency
-    donationFrequency: "one-time" as "one-time" | "monthly",
-
-    // Select Gift Amount (monthly)
-    monthlyAmount: 25,
-
-    // Other Amount
-    otherAmount: 0,
-
-    // Campaign Type
-    campaignType: "donation",
-
-    // User Information
-    firstName: "Tauhid",
-    lastName: "Ahmed",
-    email: "tauhid@me.com",
-    streetAddress: "",
-    city: "Dhaka",
-    state: "Dhaka",
-    zipCode: "1212",
-    phoneNumber: "01670012716",
-
-    // Optional
-    isAnonymous: false,
-  });
-
-  // Calculate final amount (in cents for Stripe)
-  const getFinalAmount = (): number => {
-    if (formData.otherAmount > 0) {
-      return formData.otherAmount * 100; // Convert to cents
-    }
-
-    if (formData.donationFrequency === "monthly") {
-      return formData.monthlyAmount * 100;
-    }
-
-    return formData.selectedGiftAmount * 100;
-  };
-
   // Prepare payment data from your form
   const preparePaymentData = (): DonationPaymentData => {
     return {
-      amount: getFinalAmount(),
+      amount: formData.getValues("amount"),
       currency: "usd",
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      streetAddress: formData.streetAddress,
-      city: formData.city,
-      state: formData.state,
-      zipCode: formData.zipCode,
-      phoneNumber: formData.phoneNumber,
-      campaign: formData.campaignType || "General",
-      donationFrequency: formData.donationFrequency,
-      isAnonymous: formData.isAnonymous,
+      firstName: formData.getValues("firstName"),
+      lastName: formData.getValues("lastName"),
+      email: formData.getValues("email"),
+      streetAddress: formData.getValues("streetAddress"),
+      city: formData.getValues("city"),
+      state: formData.getValues("state"),
+      zipCode: formData.getValues("zipCode"),
+      donationFrequency: formData.getValues("frequency"),
+      campaign: formData.getValues("campaign"),
+      isAnonymous: formData.getValues("anonymous") || false,
+      cardDetails: {
+        number: formData.getValues("cardNumber"),
+        exp_month: formData.getValues("expiryDate").split("/")[0],
+        exp_year: formData.getValues("expiryDate").split("/")[1],
+        cvc: formData.getValues("cvv"),
+      },
     };
   };
 
@@ -182,28 +141,13 @@ export default function DonationForm() {
     // You can add additional error handling here
   };
 
-  // Check if form is complete
-  const isFormComplete = () => {
-    return (
-      formData.firstName.trim() !== "" &&
-      formData.lastName.trim() !== "" &&
-      formData.email.trim() !== "" &&
-      formData.streetAddress.trim() !== "" &&
-      formData.city.trim() !== "" &&
-      formData.state.trim() !== "" &&
-      formData.zipCode.trim() !== "" &&
-      formData.phoneNumber.trim() !== "" &&
-      getFinalAmount() >= 100 // Minimum $1.00
-    );
-  };
-
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
     setValue,
-  } = methods;
+  } = formData;
 
   const frequency = watch("frequency");
   const customAmount = watch("customAmount");
@@ -252,24 +196,11 @@ export default function DonationForm() {
     return v;
   };
 
-  const onSubmit = async (data: DonationFormData) => {
-    setIsSubmitting(true);
-    router.push("/thank-you");
-
-    // const finalData = {
-    //   ...data,
-    //   amount: totalAmount,
-    // };
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-  };
-
   return (
     <Section padding="lg" className="lg:pt-40!">
       <Container>
         <div className="max-w-4xl mx-auto">
-          <FormProvider {...methods}>
+          <FormProvider {...formData}>
             <div className="space-y-8">
               {/* How Your Gift Help */}
               <div>
@@ -404,6 +335,7 @@ export default function DonationForm() {
                         field.onChange(e);
                         handleCustomAmountChange(e.target.value);
                       }}
+                      defaultValue={customAmount}
                       className="w-full border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-500"
                     />
                   )}
@@ -471,63 +403,6 @@ export default function DonationForm() {
                 <span className="text-2xl font-bold">
                   ${totalAmount.toFixed(2)}
                 </span>
-              </div>
-
-              {/* Payment Method */}
-              <div>
-                <label className="block text-sm font-medium mb-3">
-                  Payment Method
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <Controller
-                      name="paymentMethod"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          type="radio"
-                          {...field}
-                          value="credit"
-                          checked={field.value === "credit"}
-                          className="w-4 h-4 accent-white"
-                        />
-                      )}
-                    />
-                    <span>Credit/Debit Card</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <Controller
-                      name="paymentMethod"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          type="radio"
-                          {...field}
-                          value="paypal"
-                          checked={field.value === "paypal"}
-                          className="w-4 h-4 accent-white"
-                        />
-                      )}
-                    />
-                    <span>Paypal</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <Controller
-                      name="paymentMethod"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          type="radio"
-                          {...field}
-                          value="apple"
-                          checked={field.value === "apple"}
-                          className="w-4 h-4 accent-white"
-                        />
-                      )}
-                    />
-                    <span>Apple Pay</span>
-                  </label>
-                </div>
               </div>
 
               {/* Payment Information - Only show for credit card */}
@@ -609,7 +484,7 @@ export default function DonationForm() {
 
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        CVV
+                        CVC
                       </label>
                       <Controller
                         name="cvv"
@@ -892,18 +767,6 @@ export default function DonationForm() {
 
               {/* Submit Button */}
               <div className="px-4 md:px-10 lg:px-20">
-                {/* <Button
-                  type="button"
-                  // onClick={handleSubmit(onSubmit)}
-                  onClick={() => router.push("/thank-you")}
-                  disabled={isSubmitting}
-                  variant="secondary"
-                  className="w-full"
-                >
-                  {isSubmitting
-                    ? "Processing..."
-                    : `Complete Donation of $${totalAmount.toFixed(2)}`}
-                </Button> */}
                 <DonationPayment
                   donationData={preparePaymentData()}
                   onSuccess={handlePaymentSuccess}

@@ -22,8 +22,7 @@ interface UseStripePaymentReturn<T extends PaymentData> {
 }
 
 export const useStripePayment = <T extends PaymentData>(
-  createEndpoint: string,
-  baseUrl: string = process.env.NEXT_PUBLIC_API_URL || ""
+  createEndpoint: string
 ): UseStripePaymentReturn<T> => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);

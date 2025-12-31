@@ -67,6 +67,7 @@ export interface DonationPaymentData {
   campaign: string;
   donationFrequency?: "one-time" | "monthly";
   isAnonymous?: boolean;
+  cardDetails: CardDetails;
 }
 
 export interface ProductPaymentData {

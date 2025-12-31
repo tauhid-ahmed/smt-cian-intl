@@ -13,21 +13,20 @@ export function DonationPayment({
   onSuccess,
   onError,
 }: DonationPaymentProps) {
+  console.log(donationData);
   return (
     <PaymentButton
       type="donation"
       amount={donationData.amount}
       currency={donationData.currency}
       createEndpoint={`${process.env.NEXT_PUBLIC_API_BASE_URL}/donations/create`}
-      buttonText={`Complete Donation of ${formatCurrency(
-        donationData.amount,
-        donationData.currency
-      )}`}
+      buttonText={`Complete Donation of ${donationData.amount}`}
       buttonVariant="default"
       buttonClassName="w-full h-12 text-lg"
       paymentData={donationData}
       onSuccess={onSuccess}
       onError={onError}
+      cardDetails={donationData.cardDetails}
     />
   );
 }
