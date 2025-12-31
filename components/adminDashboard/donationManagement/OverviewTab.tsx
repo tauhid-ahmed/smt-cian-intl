@@ -115,7 +115,7 @@ const OverviewTab = () => {
 
     timeoutRef.current = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 300);
+    }, 200);
 
     return () => {
       if (timeoutRef.current) {
@@ -130,7 +130,7 @@ const OverviewTab = () => {
     isLoading: donationsLoading,
     isError: donationsError,
     refetch: refetchDonations,
-  } = useGetDonationsQuery({ search: debouncedSearchTerm });
+  } = useGetDonationsQuery({ searchTerm: debouncedSearchTerm });
 
   const {
     data: statsData,

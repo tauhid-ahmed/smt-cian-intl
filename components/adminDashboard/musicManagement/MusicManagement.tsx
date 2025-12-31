@@ -24,7 +24,7 @@ const MusicManagement = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 300); // 300ms delay
+    }, 200); // 300ms delay
 
     return () => {
       clearTimeout(timer);
