@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { Heart, GraduationCap, Home, Utensils, DollarSign } from "lucide-react";
 import Section from "@/components/layout/Section";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { DonationPayment } from "@/features/payment/components/DonationPayment";
@@ -704,7 +703,7 @@ export default function DonationForm() {
               {/* Tax Deduction Information */}
               <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6">
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="w-5 h-5 rounded-full border border-white flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-5 h-5 rounded-full border border-white flex items-center justify-center shrink-0 mt-1">
                     <div className="w-2 h-2 rounded-full bg-white"></div>
                   </div>
                   <div>
