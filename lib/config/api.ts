@@ -47,4 +47,18 @@ export const API_ENDPOINTS = {
     GET_PRODUCTS: "/products",
     GET_ALL_PRODUCTS: "/products",
   },
+  ARTIST: {
+    ADD_ARTIST: "/artists",
+    UPDATE_ARTIST: "/artists",
+    GET_ALL_ARTIST: "/artists",
+    GET_SINGLE_ARTIST: "/artists",
+    DELETE_ARTIST: "/artists",
+  },
+  MUSIC: {
+    ADD_MUSIC: "/music/create",
+    UPDATE_MUSIC: "/music",
+    GET_ALL_MUSIC: "/music",
+    GET_SINGLE_MUSIC: "/music",
+    DELETE_MUSIC: "/music",
+  },
 } as const;
