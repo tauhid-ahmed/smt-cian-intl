@@ -7,7 +7,7 @@ import type { RefreshTokenSuccessResponse } from "./authApi";
  * Custom base query to handle error responses properly
  */
 const baseQuery = fetchBaseQuery({
-  baseUrl: API_BASE_URL,
+  baseUrl: "http://206.162.244.175:6006/api/v1",
   prepareHeaders: (headers) => {
     // Add any default headers here (e.g., authorization tokens)
     headers.set("Content-Type", "application/json");
