@@ -1,13 +1,7 @@
-import EditMusic from "@/components/adminDashboard/musicManagement/EditMusic";
-
-
+import UpdateMusic from "@/components/adminDashboard/musicManagement/UpdatedMusic";
 
 const page = () => {
-    return (
-        <div>
-             <EditMusic/>
-        </div>
-    );
+  return <UpdateMusic />;
 };
 
 export default page;

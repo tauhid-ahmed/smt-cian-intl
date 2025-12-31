@@ -15,9 +15,9 @@ export const adminApi = baseApi.injectEndpoints({
     }),
 
     // UPDATE
-    updateMusic: builder.mutation<any, FormData>({
-      query: (formData) => ({
-        url: API_ENDPOINTS.MUSIC.UPDATE_MUSIC,
+    updateMusic: builder.mutation<any, { id: string; formData: FormData }>({
+      query: ({ id, formData }) => ({
+        url: `${API_ENDPOINTS.MUSIC.UPDATE_MUSIC}/${id}`,
         method: "PATCH",
         body: formData,
       }),
