@@ -6,7 +6,7 @@ import { useState, useRef, ChangeEvent, DragEvent, useEffect } from "react";
 import { Upload, X, CircleCheckBig, TicketX, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGetSingleArtistQuery } from "@/lib/api/commonApi";
-import { ArtistData, useUpdateSingleArtistMutation } from "@/lib/api/adminApi";
+import {  useUpdateSingleArtistMutation } from "@/lib/api/adminApi";
 import toast from "react-hot-toast";
 
 interface GalleryPhoto<T> {
@@ -136,7 +136,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
         setGalleryPhotos(galleryPhotos.filter((photo) => photo.id !== id));
     };
 
-    const handlePublish = async (): void => {
+    const handlePublish = async (): Promise<void> => {
         // Create FormData object
         const formData = new FormData();
         const updatedArtistData = {
@@ -394,7 +394,7 @@ export default function EditArtistPage({ artistId }: EditArtistPageProps) {
                                     type='text'
                                     placeholder='0'
                                     value={awards}
-                                    onChange={(e) => setAwards(e.target.value)}
+                                    onChange={(e) => setAwards(Number(e.target.value) || 0)}
                                     className='w-full px-4 py-2.5 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-neutral-500'
                                 />
                             </div>

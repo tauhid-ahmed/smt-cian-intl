@@ -13,6 +13,7 @@ import {
 } from "@/components/adminDashboard/custom-tabs";
 import DashboardPageHeader from "@/components/shared/DashboardPageHeader";
 import ArtistDemo from "@/components/adminDashboard/contentManagement/ArtistDemo";
+import AlbumPage from "@/components/adminDashboard/contentManagement/AlbumPage";
 
 const ContentManagementPage = () => {
   const [activeTab, setActiveTab] = useState("tab1");
@@ -22,7 +23,8 @@ const ContentManagementPage = () => {
     { value: "tab1", label: "Product Catalog" },
     { value: "tab2", label: "Artist Page" },
     { value: "tab3", label: "Artist Demo" },
-    { value: "tab4", label: "Review Moderation" },
+    { value: "tab4", label: "Album" },
+    { value: "tab5", label: "Review Moderation" },
   ];
 
   return (
@@ -100,6 +102,10 @@ const ContentManagementPage = () => {
           </CustomTabsContent>
 
           <CustomTabsContent value="tab4">
+            <AlbumPage />
+          </CustomTabsContent>
+
+          <CustomTabsContent value="tab5">
             <ReviewModerationTab />
           </CustomTabsContent>
         </CustomTabs>
