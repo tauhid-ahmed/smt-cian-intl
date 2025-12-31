@@ -59,4 +59,5 @@ export const {
   useGetAllAlbumsQuery,
   useGetSingleAlbumQuery,
   useDeleteAlbumMutation,
+  useLazyGetAllAlbumsQuery,
 } = adminApi;
