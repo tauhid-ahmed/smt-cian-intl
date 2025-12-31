@@ -3,6 +3,8 @@
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import { Mail, Mic, FileText } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import React from "react";
 
 interface ContactCategory {
@@ -16,12 +18,15 @@ interface ContactCategory {
 }
 
 export default function WorkDemo() {
+  const router = useRouter();
   const handleEmailClick = () => {
     window.location.href = "mailto:info@ciancollective.com";
   };
 
   const handleDemoClick = () => {
     console.log("Opening demo submission...");
+    // router navigation
+    router.push("/contact/artist-information");
   };
 
   const handlePressKitClick = () => {

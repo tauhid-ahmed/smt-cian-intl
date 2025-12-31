@@ -49,4 +49,9 @@ export const API_ENDPOINTS = {
         ADD_TO_WISHLIST: "/wishlist/toggle",
         GET_WHISH_LIST: "/wishlist",
     },
+    USER: {
+        ADD_DEMO_ARTIST_SUBMISSION: "/demos/submit",
+        GET_DEMO_ARTIST_SUBMISSION: "/demos",
+        GET_SINGLE_DEMO_ARTIST_SUBMISSION: "/demos",
+    },
 } as const;
