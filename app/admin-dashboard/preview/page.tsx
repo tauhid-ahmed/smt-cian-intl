@@ -260,7 +260,7 @@ export default function Home() {
   const handlePageChange = (page: number) => {
     setIsLoading(true);
     // Simulate loading
-    setTimeout(() => setIsLoading(false), 300);
+    setTimeout(() => setIsLoading(false), 200);
     if (activeTab === "inventory") {
       setInventoryPage(page);
     } else {
@@ -290,14 +290,13 @@ export default function Home() {
               onClick={() => {
                 setActiveTab(tab.id as "inventory" | "orders");
                 setIsLoading(true);
-                setTimeout(() => setIsLoading(false), 300);
+                setTimeout(() => setIsLoading(false), 200);
               }}
               className={`px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-white-500/20 text-white-400 border border-white-500/50"
                   : "text-gray-400 hover:text-gray-300"
-              }`}
-            >
+              }`}>
               {tab.label}
             </button>
           ))}
