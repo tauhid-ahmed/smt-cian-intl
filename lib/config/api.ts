@@ -36,7 +36,6 @@ export const API_ENDPOINTS = {
     ADD_PRODUCT: "/products",
     UPDATE_ARTIST: "/artists",
     DELETE_ARTIST: "/artists",
-
     GET_PRODUCTS: "/products",
     UPDATE_PRODUCT: "/products",
     DELETE_PRODUCT: "/products",
@@ -46,5 +45,28 @@ export const API_ENDPOINTS = {
     GET_SINGLE_ARTIST: "/artists",
     GET_PRODUCTS: "/products",
     GET_ALL_PRODUCTS: "/products",
+    ADD_TO_WISHLIST: "/wishlist/toggle",
+    GET_WHISH_LIST: "/wishlist",
+  },
+  ARTIST: {
+    ADD_ARTIST: "/artists",
+    UPDATE_ARTIST: "/artists",
+    GET_ALL_ARTIST: "/artists",
+    GET_SINGLE_ARTIST: "/artists",
+    DELETE_ARTIST: "/artists",
+  },
+  ALBUM: {
+    ADD_ALBUM: "/music/albums",
+    UPDATE_ALBUM: "/albums",
+    GET_ALL_ALBUM: "/albums",
+    GET_SINGLE_ALBUM: "/albums",
+    DELETE_ALBUM: "/albums",
+  },
+  MUSIC: {
+    ADD_MUSIC: "/music/create",
+    UPDATE_MUSIC: "/music",
+    GET_ALL_MUSIC: "/music",
+    GET_SINGLE_MUSIC: "/music",
+    DELETE_MUSIC: "/music",
   },
 } as const;

@@ -18,6 +18,7 @@ import {
 import Image from "next/image";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
+import { useGetAllProductsQuery } from "@/lib/api/commonApi";
 
 // ==================== TYPE DEFINITIONS ====================
 interface Track {
@@ -240,6 +241,13 @@ const ProductDetailSection = ({ product }: { product: Product }) => {
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
 
+
+  const { data: allProductsData, isLoading } = useGetAllProductsQuery(); 
+
+ 
+
+
+
   const handleQuantityChange = (delta: number) => {
     const newQuantity = quantity + delta;
     if (newQuantity >= 1 && newQuantity <= selectedFormat.stock) {
@@ -254,6 +262,8 @@ const ProductDetailSection = ({ product }: { product: Product }) => {
     }
     setQuantity(1);
   };
+
+
 
   return (
     <Section>
