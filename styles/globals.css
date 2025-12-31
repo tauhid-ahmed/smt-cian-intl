@@ -89,7 +89,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
- 
 
 @layer base {
   * {
@@ -160,6 +159,7 @@
 .animate-equalizer {
   animation: equalizer 0.8s ease-in-out infinite;
 }
-button, a{
+button,
+a {
   cursor: pointer;
 }
