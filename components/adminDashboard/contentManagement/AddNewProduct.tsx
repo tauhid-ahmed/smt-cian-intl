@@ -239,16 +239,16 @@ export default function AddNewProduct() {
         if (!mainCoverFile) errors.mainCoverImage = "Main cover image is required";
         if (tracks.length === 0) errors.tracks = "At least one track is required";
 
+        // Add artist validation
+        if (!selectedArtist) {
+            errors.artist = "Artist is required";
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
-
             // ✅ Stop loader on validation error
             setIsPublishing(false);
             return;
-        }
-
-        if (!selectedArtist) {
-            errors.artist = "Artist is required";
         }
 
         try {
@@ -316,13 +316,10 @@ export default function AddNewProduct() {
                             selectedArtist={selectedArtist}
                             setSelectedArtist={setSelectedArtist}
                             artistDataList={artistRes!}
+                            error={showValidation ? validationErrors.artist : undefined}
                         />
 
-                        {validationErrors.artist && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {validationErrors.artist}
-                            </p>
-                        )}
+                        
                     </div>
                 </div>
 
@@ -350,8 +347,8 @@ export default function AddNewProduct() {
                                             }
                                         }}
                                         className={`w-full px-4 py-2.5 border ${validationErrors.productTitle
-                                                ? "border-red-500"
-                                                : "border-neutral-700"
+                                            ? "border-red-500"
+                                            : "border-neutral-700"
                                             } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                                     />
                                     {validationErrors.productTitle && (
@@ -377,8 +374,8 @@ export default function AddNewProduct() {
                                             }
                                         }}
                                         className={`w-full px-4 py-2.5 border ${validationErrors.category
-                                                ? "border-red-500"
-                                                : "border-neutral-700"
+                                            ? "border-red-500"
+                                            : "border-neutral-700"
                                             } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                                     >
                                         <option value="" disabled className="text-neutral-500">
@@ -430,8 +427,8 @@ export default function AddNewProduct() {
                                     onDrop={handleMainCoverDrop}
                                     onDragOver={(e) => e.preventDefault()}
                                     className={`w-full h-48 border-2 border-dashed ${validationErrors.mainCoverImage
-                                            ? "border-red-500"
-                                            : "border-neutral-700"
+                                        ? "border-red-500"
+                                        : "border-neutral-700"
                                         } rounded-lg flex items-center justify-center cursor-pointer hover:border-neutral-600 hover:bg-neutral-800 bg-neutral-900 overflow-hidden transition-colors`}
                                 >
                                     {mainCoverImage ? (
@@ -609,8 +606,8 @@ export default function AddNewProduct() {
                                                 key={size}
                                                 onClick={() => toggleSize(size)}
                                                 className={`px-4 py-2 border rounded-lg transition-colors ${selectedSizes.includes(size)
-                                                        ? "bg-blue-500 border-blue-500 text-white"
-                                                        : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-neutral-600"
+                                                    ? "bg-blue-500 border-blue-500 text-white"
+                                                    : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-neutral-600"
                                                     }`}
                                             >
                                                 {size}
@@ -686,8 +683,8 @@ export default function AddNewProduct() {
                                             }
                                         }}
                                         className={`w-full px-4 py-2.5 border ${validationErrors.price
-                                                ? "border-red-500"
-                                                : "border-neutral-700"
+                                            ? "border-red-500"
+                                            : "border-neutral-700"
                                             } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                                     />
                                     {validationErrors.price && (
@@ -730,8 +727,8 @@ export default function AddNewProduct() {
                                             }
                                         }}
                                         className={`w-full px-4 py-2.5 border ${validationErrors.stockQuantity
-                                                ? "border-red-500"
-                                                : "border-neutral-700"
+                                            ? "border-red-500"
+                                            : "border-neutral-700"
                                             } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
                                     />
                                     {validationErrors.stockQuantity && (
