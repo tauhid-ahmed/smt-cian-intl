@@ -319,7 +319,11 @@ export default function AddNewProduct() {
                             error={showValidation ? validationErrors.artist : undefined}
                         />
 
-                        
+                        {validationErrors.artist && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {validationErrors.artist}
+                            </p>
+                        )}
                     </div>
                 </div>
 
