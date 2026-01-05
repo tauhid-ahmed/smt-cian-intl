@@ -308,6 +308,44 @@ export default function UpdateProductPage() {
                                         </p>
                                     )}
                                 </div>
+
+                                {/* Artist selector */}
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-300 mb-2">
+                                        Artist *
+                                    </label>
+                                    <select
+                                        value={selectedArtist}
+                                        onChange={(e) => {
+                                            setSelectedArtist(e.target.value);
+                                            if (showValidation) {
+                                                setValidationErrors((prev) => ({
+                                                    ...prev,
+                                                    artist: undefined,
+                                                }));
+                                            }
+                                        }}
+                                        className={`w-full px-4 py-2.5 border ${validationErrors.artist
+                                            ? "border-red-500"
+                                            : "border-neutral-700"
+                                            } bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500`}
+                                    >
+                                        <option value="" disabled className="text-neutral-500">
+                                            Select artist
+                                        </option>
+                                        {artistRes?.data?.map((artist: any) => (
+                                            <option key={artist.id} value={artist.id}>
+                                                {artist.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {validationErrors.artist && (
+                                        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                            <AlertCircle className="w-3 h-3" />
+                                            {validationErrors.artist}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -486,8 +524,8 @@ export default function UpdateProductPage() {
                                             key={size}
                                             onClick={() => toggleSize(size)}
                                             className={`px-4 py-2 border rounded-lg transition-colors ${selectedSizes.includes(size)
-                                                    ? "bg-blue-500 border-blue-500 text-white"
-                                                    : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-neutral-600"
+                                                ? "bg-blue-500 border-blue-500 text-white"
+                                                : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-neutral-600"
                                                 }`}
                                         >
                                             {size}

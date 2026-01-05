@@ -13,10 +13,8 @@ import type { RefreshTokenSuccessResponse } from "./authApi";
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://206.162.244.175:6006/api/v1",
   prepareHeaders: (headers) => {
-    // Add any default headers here (e.g., authorization tokens)
     headers.set("Content-Type", "application/json");
 
-    // Add access token from localStorage if available
     if (typeof window !== "undefined") {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
