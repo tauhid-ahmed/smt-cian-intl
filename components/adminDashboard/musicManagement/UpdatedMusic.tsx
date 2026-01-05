@@ -13,7 +13,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 // Updated Zod validation schema for update (audio file optional)
 const musicSchema = z.object({
@@ -42,6 +42,7 @@ type MusicFormData = z.infer<typeof musicSchema>;
 
 export default function UpdateMusic() {
     const params = useParams();
+    const router = useRouter();
     const musicId = params.id as string;
     const [openArtistPopover, setOpenArtistPopover] = React.useState(false);
     const [openAlbumPopover, setOpenAlbumPopover] = React.useState(false);
@@ -212,6 +213,11 @@ export default function UpdateMusic() {
             }).unwrap();
 
             toast.success("Music updated successfully!");
+
+            // Redirect back to music list after successful update
+            setTimeout(() => {
+                router.push("/admin-dashboard/music-management");
+            }, 1500);
         } catch (error) {
             console.error("Failed to update music:", error);
             toast.error("Failed to update music. Please try again.");
