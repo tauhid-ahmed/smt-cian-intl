@@ -51,6 +51,7 @@ export const commonApi = baseApi.injectEndpoints({
                 method: "GET",
                 body,
             }),
+            providesTags: ["Demos"],
         }),
 
         getSingleDemoArtistSubmission: builder.query<
@@ -61,6 +62,7 @@ export const commonApi = baseApi.injectEndpoints({
                 url: `${API_ENDPOINTS.USER.GET_SINGLE_DEMO_ARTIST_SUBMISSION}/${id}`,
                 method: "GET",
             }),
+            providesTags: ["Demos"],
         }),
 
         approveDemoArtistSubmission: builder.mutation<
@@ -71,6 +73,7 @@ export const commonApi = baseApi.injectEndpoints({
                 url: `${API_ENDPOINTS.USER.APPROVE_DEMO_ARTIST_SUBMISSION}/${id}`,
                 method: "PUT",
             }),
+            invalidatesTags: ["Demos"],
         }),
     }),
 });

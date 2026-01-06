@@ -350,6 +350,17 @@ export const adminApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        updateDemoStatus: builder.mutation<
+            any,
+            { id: string; status: "APPROVED" | "REJECTED" }
+        >({
+            query: ({ id, status }) => ({
+                url: `${API_ENDPOINTS.ADMIN.UPDATE_DEMO_STATUS}/${id}`,
+                method: "PATCH",
+                body: { status },
+            }),
+            invalidatesTags: ["Demos"],
+        }),
     }),
 });
 
@@ -367,4 +378,5 @@ export const {
     useDeleteSingleProductMutation,
     useGetAllOrdersQuery,
     useGetInventoryQuery,
+    useUpdateDemoStatusMutation,
 } = adminApi;

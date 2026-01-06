@@ -14,11 +14,13 @@ import {
     Music2,
     FileText,
     Check,
+    X,
     ArrowLeft,
     Loader,
 } from "lucide-react";
 import { useState } from "react";
-import { useGetSingleDemoArtistSubmissionQuery, useApproveDemoArtistSubmissionMutation } from "@/lib/api/userApi";
+import { useGetSingleDemoArtistSubmissionQuery } from "@/lib/api/userApi";
+import { useUpdateDemoStatusMutation } from "@/lib/api/adminApi";
 import toast from "react-hot-toast";
 
 export default function DemoDetails() {
@@ -32,7 +34,7 @@ export default function DemoDetails() {
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [copiedField, setCopiedField] = useState<string | null>(null);
-    const [approveDemoArtistSubmission] = useApproveDemoArtistSubmissionMutation();
+    const [updateDemoStatus, { isLoading: isUpdating }] = useUpdateDemoStatusMutation();
 
     if (isLoading) {
         return (
@@ -95,19 +97,18 @@ export default function DemoDetails() {
         }
     };
 
-    const handleApprove = async () => {
+    const handleStatusUpdate = async (status: "APPROVED" | "REJECTED") => {
         if (!demo.id) return;
 
         try {
-            await approveDemoArtistSubmission(demo.id).unwrap();
-            toast.success("Artist demo approved successfully!");
-            // Optionally redirect back to list after a short delay
+            await updateDemoStatus({ id: demo.id, status }).unwrap();
+            toast.success(`Artist demo ${status.toLowerCase()} successfully!`);
             setTimeout(() => {
                 router.push("/admin-dashboard/content?tab=tab3");
             }, 1500);
         } catch (err) {
-            console.error("Failed to approve demo:", err);
-            toast.error("Failed to approve artist demo. Please try again.");
+            console.error(`Failed to ${status.toLowerCase()} demo:`, err);
+            toast.error(`Failed to ${status.toLowerCase()} artist demo. Please try again.`);
         }
     };
 
@@ -154,19 +155,30 @@ export default function DemoDetails() {
                         <div className="flex gap-3 ">
                             {/* Approve Button */}
                             {demo.status === "PENDING" && (
-                                <button
-                                    onClick={handleApprove}
-                                    className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-xl transition shadow-lg hover:shadow-green-500/50 whitespace-nowrap"
-                                >
-                                    <Check size={18} />
-                                    Approve Request
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => handleStatusUpdate("APPROVED")}
+                                        disabled={isUpdating}
+                                        className="flex items-center gap-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 py-2 rounded-xl transition shadow-lg hover:shadow-green-500/50 whitespace-nowrap"
+                                    >
+                                        {isUpdating ? <Loader className="animate-spin" size={18} /> : <Check size={18} />}
+                                        Approve Request
+                                    </button>
+                                    <button
+                                        onClick={() => handleStatusUpdate("REJECTED")}
+                                        disabled={isUpdating}
+                                        className="flex items-center gap-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 py-2 rounded-xl transition shadow-lg hover:shadow-red-500/50 whitespace-nowrap"
+                                    >
+                                        {isUpdating ? <Loader className="animate-spin" size={18} /> : <X size={18} />}
+                                        Reject Request
+                                    </button>
+                                </>
                             )}
                             <button
                                 onClick={() => router.push("/admin-dashboard/content?tab=tab3")}
                                 className="flex items-center gap-2 text-gray-400 hover:text-white transition group border rounded-xl p-1 whitespace-nowrap"
                             >
-                                 <ArrowLeft /> 
+                                <ArrowLeft />
                                 <span className="font-medium">Back to list</span>
                             </button>
                         </div>
