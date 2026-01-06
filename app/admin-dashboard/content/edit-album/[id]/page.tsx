@@ -32,6 +32,8 @@ export default function EditAlbum() {
         }>
     >([]);
     const [playingTrackId, setPlayingTrackId] = useState<number | string | null>(null);
+    const [currentTrack, setCurrentTrack] = useState<any>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [genreDropdownOpen, setGenreDropdownOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -65,22 +67,40 @@ export default function EditAlbum() {
         }
     }, [albumData]);
 
-    const handlePlayPreview = (track: any) => {
-        if (!audioRef.current) return;
+    useEffect(() => {
+        if (currentTrack && audioRef.current) {
+            const trackUrl = currentTrack.file ? URL.createObjectURL(currentTrack.file) : currentTrack.url;
+            if (audioRef.current.src !== trackUrl) {
+                // If it's a new track, load it
+                audioRef.current.src = trackUrl || "";
+                audioRef.current.load();
+            }
 
-        const trackUrl = track.file ? URL.createObjectURL(track.file) : track.url;
-        if (!trackUrl) {
-            toast.error("Audio URL not found");
-            return;
+            if (isPlaying) {
+                audioRef.current.play().catch(err => {
+                    console.error("Playback failed:", err);
+                    setIsPlaying(false);
+                });
+            } else {
+                audioRef.current.pause();
+            }
+
+            // Cleanup function for object URLs
+            return () => {
+                if (currentTrack.file && trackUrl) {
+                    URL.revokeObjectURL(trackUrl);
+                }
+            };
         }
+    }, [currentTrack, isPlaying]);
 
-        if (playingTrackId === track.id) {
-            audioRef.current.pause();
-            setPlayingTrackId(null);
+    const handlePlayPreview = (track: any) => {
+        if (currentTrack?.id === track.id) {
+            setIsPlaying(!isPlaying);
         } else {
-            audioRef.current.src = trackUrl;
-            audioRef.current.play();
+            setCurrentTrack(track);
             setPlayingTrackId(track.id);
+            setIsPlaying(true);
         }
     };
 
@@ -367,7 +387,7 @@ export default function EditAlbum() {
                             {tracks.map((track, index) => (
                                 <div
                                     key={track.id}
-                                    className={`flex items-center gap-4 p-4 rounded-xl transition group border ${playingTrackId === track.id ? 'bg-blue-600/20 border-blue-500/50' : 'bg-zinc-800/50 hover:bg-zinc-700/50 border-zinc-700/50 hover:border-zinc-600'}`}
+                                    className={`flex items-center gap-4 p-4 rounded-xl transition group border ${currentTrack?.id === track.id ? 'bg-blue-600/20 border-blue-500/50' : 'bg-zinc-800/50 hover:bg-zinc-700/50 border-zinc-700/50 hover:border-zinc-600'}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <GripVertical
@@ -378,7 +398,7 @@ export default function EditAlbum() {
                                             onClick={() => handlePlayPreview(track)}
                                             className="w-10 h-10 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center text-white shadow-lg transition transform hover:scale-105"
                                         >
-                                            {playingTrackId === track.id ? <Pause size={20} /> : <Play size={20} className="ml-1" />}
+                                            {currentTrack?.id === track.id && isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-1" />}
                                         </button>
                                     </div>
 
@@ -410,39 +430,51 @@ export default function EditAlbum() {
                     </div>
 
                     {/* Preview Section */}
-                    {playingTrackId && (
+                    {currentTrack && (
                         <div className="mt-6 p-4 bg-zinc-900 border border-blue-500/30 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center animate-pulse">
+                                    <div className={`w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center ${isPlaying ? 'animate-pulse' : ''}`}>
                                         <Music size={24} className="text-white" />
                                     </div>
-                                    <div>
-                                        <div className="text-sm text-blue-400 font-medium">Now Playing Preview</div>
-                                        <div className="text-white font-bold">
-                                            {tracks.find(t => t.id === playingTrackId)?.title}
+                                    <div className="flex-1">
+                                        <div className="text-sm text-blue-400 font-medium">
+                                            {isPlaying ? "Now Playing Preview" : "Paused"}
+                                        </div>
+                                        <div className="text-white font-bold max-w-[200px] truncate">
+                                            {currentTrack.title}
                                         </div>
                                     </div>
                                 </div>
-                                <audio
-                                    ref={audioRef}
-                                    controls
-                                    className="h-10 flex-1 max-w-xl accent-blue-600"
-                                    onEnded={() => setPlayingTrackId(null)}
-                                />
-                                <button
-                                    onClick={() => {
-                                        audioRef.current?.pause();
-                                        setPlayingTrackId(null);
-                                    }}
-                                    className="p-2 text-gray-400 hover:text-white transition"
-                                >
-                                    <X size={20} />
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => setIsPlaying(!isPlaying)}
+                                        className="w-10 h-10 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center text-white transition transform hover:scale-105"
+                                    >
+                                        {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-1" />}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsPlaying(false);
+                                            setCurrentTrack(null);
+                                            setPlayingTrackId(null);
+                                        }}
+                                        className="p-2 text-gray-400 hover:text-white transition"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
-                    <audio ref={audioRef} className="hidden" onEnded={() => setPlayingTrackId(null)} />
+                    <audio
+                        ref={audioRef}
+                        className="hidden"
+                        onEnded={() => {
+                            setIsPlaying(false);
+                            setPlayingTrackId(null);
+                        }}
+                    />
 
                     {/* Publish Button */}
                     <div className="flex justify-end mt-8 gap-4">
