@@ -88,5 +88,7 @@ export const API_ENDPOINTS = {
     },
     ORDERS: {
         GET_ALL_ORDERS: "/orders/admin/all",
+        GET_SINGLE_ORDER: "/orders",
+        UPDATE_ORDER_STATUS: "/orders/admin/change-status",
     },
 } as const;

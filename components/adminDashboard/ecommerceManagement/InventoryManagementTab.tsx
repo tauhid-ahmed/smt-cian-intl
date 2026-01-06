@@ -1,6 +1,7 @@
 import { Eye, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useGetInventoryQuery, InventoryProduct } from "@/lib/api/adminApi";
+import { useRouter } from "next/navigation";
 
 const InventoryManagementTab = () => {
     const { data: inventoryRes, isLoading } = useGetInventoryQuery({
@@ -11,6 +12,7 @@ const InventoryManagementTab = () => {
     });
 
     const inventory = inventoryRes?.data || [];
+    const router = useRouter();
 
     const handleAction = (item: InventoryProduct) => {
         let message = "";
@@ -23,6 +25,10 @@ const InventoryManagementTab = () => {
             message = `${item.productName} stock level is healthy.`;
             variant = "success";
         }
+
+       setTimeout(() => {
+        router.push(`/admin-dashboard/ecommerce/inventory/${item.productId}`);
+       }, 1000);
 
         toast[variant](message);
     };

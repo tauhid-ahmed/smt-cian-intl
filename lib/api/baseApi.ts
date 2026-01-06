@@ -129,6 +129,7 @@ export const baseApi = createApi({
         "Albums",
         "AdminDonation",
         "Demos",
+        "Orders",
     ], // Add more tag types as needed
     endpoints: () => ({}), // Endpoints will be injected by other API slices
 });

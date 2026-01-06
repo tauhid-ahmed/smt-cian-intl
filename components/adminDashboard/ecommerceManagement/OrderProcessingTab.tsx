@@ -1,8 +1,10 @@
 import { Eye, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useGetAllOrdersQuery, Order } from "@/lib/api/adminApi";
+import { useGetAllOrdersQuery, Order } from "@/lib/api/adminApi"; 
+import { useRouter } from "next/navigation";
 
 const OrderProcessingTab = () => {
+    const router = useRouter() 
     const { data: ordersRes, isLoading } = useGetAllOrdersQuery({
         page: 1,
         limit: 10,
@@ -15,7 +17,9 @@ const OrderProcessingTab = () => {
     const handleEyeByStatus = (order: Order) => {
         let message = "";
         let variant: "success" | "warning" | "info" | "error" = "info";
-
+        setTimeout(() => {
+            router.push(`/admin-dashboard/ecommerce/order/${order.id}`);
+        }, 1000);
         switch (order.status) {
             case "PENDING":
                 message = `${order.user?.fullName}'s order is pending. Take necessary action.`;

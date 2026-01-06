@@ -177,8 +177,14 @@ export interface OrderItem {
     quantity: number;
     price: number;
     imageUrl: string;
+    size?: string;
+    color?: string;
     product: {
+        id: string;
+        title: string;
+        mainImage: string;
         productType: string;
+        category: string;
     };
 }
 
@@ -220,6 +226,40 @@ export interface OrdersResponse {
     };
     data: Order[];
 }
+
+export interface ShippingInfo {
+    id: string;
+    orderId: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    address: string;
+    city: string;
+    postCode: string;
+    country: string;
+    trackingNumber: string | null;
+    carrier: string | null;
+    estimatedDelivery: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PaymentInfo {
+    id: string;
+    amount: number;
+    status: string;
+    paymentMethod: string;
+    receiptUrl: string;
+    paidAt: string;
+}
+
+export interface OrderDetail extends Order {
+    donarInfoId: string | null;
+    shippingInfo: ShippingInfo;
+    payment: PaymentInfo;
+}
+
+export type SingleOrderResponse = ApiResponse<OrderDetail>;
 export interface InventoryProduct {
     productId: string;
     productName: string;
@@ -241,6 +281,17 @@ export interface InventoryResponse {
     };
     data: InventoryProduct[];
 }
+
+export interface InventoryDetail {
+    productId: string;
+    productName: string;
+    stockLevel: number;
+    reorderPoint: number;
+    status: string;
+    mainImage: string;
+}
+
+export type InventoryDetailResponse = ApiResponse<InventoryDetail>;
 
 // post a new artitst
 export const adminApi = baseApi.injectEndpoints({
@@ -330,6 +381,7 @@ export const adminApi = baseApi.injectEndpoints({
                 url: `${API_ENDPOINTS.ORDERS.GET_ALL_ORDERS}?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
                 method: "GET",
             }),
+            providesTags: ["Orders"],
         }),
         getInventory: builder.query<
             InventoryResponse,
@@ -350,6 +402,12 @@ export const adminApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getInventoryDetail: builder.query<InventoryDetailResponse, string>({
+            query: (id: string) => ({
+                url: `${API_ENDPOINTS.ADMIN.GET_INVENTORY}/${id}`,
+                method: "GET",
+            }),
+        }),
         updateDemoStatus: builder.mutation<
             any,
             { id: string; status: "APPROVED" | "REJECTED" }
@@ -360,6 +418,24 @@ export const adminApi = baseApi.injectEndpoints({
                 body: { status },
             }),
             invalidatesTags: ["Demos"],
+        }),
+        getSingleOrder: builder.query<SingleOrderResponse, string>({
+            query: (id: string) => ({
+                url: `${API_ENDPOINTS.ORDERS.GET_SINGLE_ORDER}/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["Orders"],
+        }),
+        updateOrderStatus: builder.mutation<
+            any,
+            { orderId: string; status: string }
+        >({
+            query: ({ orderId, status }) => ({
+                url: `${API_ENDPOINTS.ORDERS.UPDATE_ORDER_STATUS}/${orderId}`,
+                method: "PATCH",
+                body: { status },
+            }),
+            invalidatesTags: ["Orders"],
         }),
     }),
 });
@@ -378,5 +454,8 @@ export const {
     useDeleteSingleProductMutation,
     useGetAllOrdersQuery,
     useGetInventoryQuery,
+    useGetInventoryDetailQuery,
     useUpdateDemoStatusMutation,
+    useGetSingleOrderQuery,
+    useUpdateOrderStatusMutation,
 } = adminApi;
