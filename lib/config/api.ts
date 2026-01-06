@@ -64,7 +64,7 @@ export const API_ENDPOINTS = {
         DELETE_ARTIST: "/artists",
     },
     ALBUM: {
-        ADD_ALBUM: "/music/albums",
+        ADD_ALBUM: "/albums",
         UPDATE_ALBUM: "/albums",
         GET_ALL_ALBUM: "/albums",
         GET_SINGLE_ALBUM: "/albums",
