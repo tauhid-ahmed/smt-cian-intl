@@ -130,7 +130,7 @@ const OrderDetails = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="outline" className="border-zinc-800 hover:bg-zinc-800/50 font-bold h-12 px-6 rounded-xl">
+                        <Button variant="outline" className="border-zinc-800 hover:bg-zinc-800/50 hover:text-white font-bold h-12 px-6 rounded-xl"> 
                             Download Receipt
                         </Button>
                         {order.payment?.receiptUrl && (
