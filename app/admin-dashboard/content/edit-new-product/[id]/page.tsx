@@ -4,7 +4,7 @@
 "use client";
 import * as React from "react";
 import { useState, useRef, ChangeEvent } from "react";
-import { Upload, Plus, Trash2, X, Loader, AlertCircle } from "lucide-react";
+import { Upload, Plus, Trash2, X, Loader, AlertCircle, Play, Pause } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import {
     useGetSingleProductQuery,
@@ -13,9 +13,10 @@ import {
 import { useGetArtistsQuery } from "@/lib/api/commonApi";
 
 interface Track {
-    id: number;
+    id: number | string;
     name: string;
     duration: string;
+    url?: string;
     musicFile: File | null;
 }
 
@@ -69,6 +70,9 @@ export default function UpdateProductPage() {
     const [productDescription, setProductDescription] = useState("");
     const [shippingInfo, setShippingInfo] = useState("");
     const [returnPolicy, setReturnPolicy] = useState("");
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
         {}
     );
@@ -102,10 +106,11 @@ export default function UpdateProductPage() {
         );
 
         setTracks(
-            (p.tracks || []).map((t: any) => ({
-                id: Date.now() + Math.random(),
-                name: t.name,
-                duration: t.duration,
+            (p.tracks || []).map((t: any, index: number) => ({
+                id: t.id || `track-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
+                name: t.name || "",
+                duration: t.duration || "0:00",
+                url: t.url,
                 musicFile: null,
             }))
         );
@@ -141,28 +146,76 @@ export default function UpdateProductPage() {
     const removeGalleryImage = (id: number) =>
         setGalleryImages((prev) => prev.filter((img) => img.id !== id));
 
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+    };
+
     const handleMusicFileChange = (
-        trackId: number,
+        trackId: number | string,
         e: ChangeEvent<HTMLInputElement>
     ) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setTracks((prev) =>
-            prev.map((t) => (t.id === trackId ? { ...t, musicFile: file } : t))
-        );
+
+        // Extract duration
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(file);
+        audio.onloadedmetadata = () => {
+            const formatted = formatDuration(audio.duration);
+            setTracks((prev) =>
+                prev.map((t) => (t.id === trackId ? { ...t, musicFile: file, duration: formatted } : t))
+            );
+            URL.revokeObjectURL(audio.src);
+        };
     };
 
     const addTrack = () =>
         setTracks((prev) => [
             ...prev,
-            { id: Date.now(), name: "", duration: "", musicFile: null },
+            {
+                id: `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                name: "",
+                duration: "",
+                musicFile: null
+            },
         ]);
-    const removeTrack = (id: number) =>
+    const removeTrack = (id: number | string) =>
         setTracks((prev) => prev.filter((t) => t.id !== id));
-    const updateTrack = (id: number, field: "name" | "duration", value: string) =>
+
+    const updateTrack = (id: number | string, field: "name" | "duration", value: string) =>
         setTracks((prev) =>
             prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
         );
+
+    const togglePlay = (track: Track) => {
+        if (currentTrack?.id === track.id) {
+            if (audioRef.current) {
+                if (isPlaying) {
+                    audioRef.current.pause();
+                } else {
+                    audioRef.current.play().catch(console.error);
+                }
+            }
+        } else {
+            setCurrentTrack(track);
+        }
+    };
+
+    React.useEffect(() => {
+        if (currentTrack && audioRef.current) {
+            const url = currentTrack.musicFile ? URL.createObjectURL(currentTrack.musicFile) : currentTrack.url;
+            if (url) {
+                audioRef.current.src = url;
+                audioRef.current.play().catch(err => {
+                    console.error("Playback failed:", err);
+                    setIsPlaying(false);
+                });
+                setIsPlaying(true);
+            }
+        }
+    }, [currentTrack]);
 
     const toggleSize = (size: string) =>
         setSelectedSizes((prev) =>
@@ -224,9 +277,7 @@ export default function UpdateProductPage() {
         );
 
         tracks.forEach((track, idx) => {
-            track.musicFile && formData.append(`tracks`, track.musicFile);
-            formData.append(`trackNames[${idx}]`, track.name);
-            formData.append(`trackDurations[${idx}]`, track.duration);
+            track.musicFile && formData.append(`trackFiles`, track.musicFile); 
         });
 
         colors.forEach((c, idx) => formData.append(`colors[${idx}]`, c.color));
@@ -441,70 +492,104 @@ export default function UpdateProductPage() {
                                 {tracks.map((track) => (
                                     <div
                                         key={track.id}
-                                        className="grid grid-cols-12 gap-2 items-end"
+                                        className="bg-neutral-800/50 p-4 rounded-xl border border-neutral-700/50 hover:border-neutral-600 transition-all group"
                                     >
-                                        <div className="col-span-5">
-                                            <label className="block text-xs text-neutral-400 mb-1">
-                                                Track Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter track name"
-                                                value={track.name}
-                                                onChange={(e) =>
-                                                    updateTrack(track.id, "name", e.target.value)
-                                                }
-                                                className="w-full px-3 py-2 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500 text-sm"
-                                            />
-                                        </div>
-                                        <div className="col-span-3">
-                                            <label className="block text-xs text-neutral-400 mb-1">
-                                                Duration
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder="3:45"
-                                                value={track.duration}
-                                                onChange={(e) =>
-                                                    updateTrack(track.id, "duration", e.target.value)
-                                                }
-                                                className="w-full px-3 py-2 border border-neutral-700 bg-neutral-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-neutral-500 text-sm"
-                                            />
-                                        </div>
-                                        <div className="col-span-3">
-                                            <label className="block text-xs text-neutral-400 mb-1">
-                                                Upload Music
-                                            </label>
-                                            <input
-                                                type="file"
-                                                accept="audio/*"
-                                                onChange={(e) => handleMusicFileChange(track.id, e)}
-                                                id={`music-${track.id}`}
-                                                className="hidden"
-                                            />
-                                            <label
-                                                htmlFor={`music-${track.id}`}
-                                                className="w-full h-9 border border-neutral-700 bg-neutral-800 rounded-lg flex items-center justify-center cursor-pointer hover:bg-neutral-700"
-                                            >
-                                                {track.musicFile ? (
-                                                    <span className="text-xs text-neutral-300 truncate px-2">
-                                                        {track.musicFile.name}
-                                                    </span>
-                                                ) : (
-                                                    <Upload className="w-4 h-4 text-neutral-400" />
-                                                )}
-                                            </label>
-                                        </div>
-                                        <div className="col-span-1 flex items-baseline">
-                                            <button
-                                                onClick={() => removeTrack(track.id)}
-                                                className="w-9 h-9 border border-neutral-700 rounded-lg flex items-center justify-center text-neutral-400 hover:text-red-400 hover:border-red-700"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                        <div className="grid grid-cols-12 gap-4 items-center">
+                                            <div className="col-span-1">
+                                                <div className="relative w-10 h-10">
+                                                    <button
+                                                        onClick={() => togglePlay(track)}
+                                                        className={`w-full h-full flex items-center justify-center rounded-full transition-all duration-300 shadow-lg ${currentTrack?.id === track.id && isPlaying
+                                                                ? "bg-red-500 hover:bg-red-600 shadow-red-500/20"
+                                                                : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/20"
+                                                            }`}
+                                                    >
+                                                        {currentTrack?.id === track.id && isPlaying ? (
+                                                            <Pause className="w-5 h-5 fill-white" />
+                                                        ) : (
+                                                            <Play className="w-5 h-5 fill-white ml-0.5" />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="col-span-4">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Track Name"
+                                                    value={track.name}
+                                                    onChange={(e) =>
+                                                        updateTrack(track.id, "name", e.target.value)
+                                                    }
+                                                    className="w-full bg-transparent border-none text-white focus:ring-0 placeholder-neutral-500 text-sm font-medium"
+                                                />
+                                            </div>
+                                            <div className="col-span-2 text-center">
+                                                <input
+                                                    type="text"
+                                                    placeholder="0:00"
+                                                    value={track.duration}
+                                                    onChange={(e) =>
+                                                        updateTrack(track.id, "duration", e.target.value)
+                                                    }
+                                                    className="w-full bg-transparent border-none text-center text-neutral-400 focus:ring-0 text-sm font-mono"
+                                                />
+                                            </div>
+                                            <div className="col-span-4 flex items-center gap-3">
+                                                <input
+                                                    type="file"
+                                                    accept="audio/*"
+                                                    onChange={(e) => handleMusicFileChange(track.id, e)}
+                                                    id={`music-${track.id}`}
+                                                    className="hidden"
+                                                />
+                                                <label
+                                                    htmlFor={`music-${track.id}`}
+                                                    className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white text-xs rounded-lg cursor-pointer transition flex items-center justify-center gap-2"
+                                                >
+                                                    <Upload className="w-3.5 h-3.5" />
+                                                    {track.musicFile ? track.musicFile.name : (track.url ? "Change Audio" : "Upload File")}
+                                                </label>
+                                            </div>
+                                            <div className="col-span-1 flex justify-end">
+                                                <button
+                                                    onClick={() => removeTrack(track.id)}
+                                                    className="p-2 text-neutral-500 hover:text-red-500 transition-colors"
+                                                >
+                                                    <Trash2 className="w-5 h-5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
+
+                                {currentTrack && (
+                                    <div className="mt-4 p-4 bg-zinc-800 rounded-xl border border-zinc-700 flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2">
+                                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                                            {isPlaying ? <Pause size={20} /> : <Play size={20} fill="currentColor" />}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-white text-sm font-semibold truncate max-w-[200px]">{currentTrack.name || "Unknown Track"}</div>
+                                            <div className="text-zinc-500 text-xs">{currentTrack.duration}</div>
+                                        </div>
+                                        <button
+                                            onClick={() => togglePlay(currentTrack)}
+                                            className="p-2 text-zinc-400 hover:text-white transition-colors"
+                                        >
+                                            {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-zinc-500 font-mono">Preview Mode</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {/* Keep audio element always in DOM to ensure ref is available */}
+                                <audio
+                                    ref={audioRef}
+                                    className="hidden"
+                                    onPlay={() => setIsPlaying(true)}
+                                    onPause={() => setIsPlaying(false)}
+                                    onEnded={() => setIsPlaying(false)}
+                                />
                             </div>
                         </div>
 

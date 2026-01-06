@@ -128,7 +128,7 @@ export default function ArtistAlbum() {
                                     <div className="col-span-2 text-gray-300">{album.genre}</div>
 
                                     {/* Track Count */}
-                                    <div className="col-span-2 text-gray-300">{album.musicIds?.length || 0} tracks</div>
+                                    <div className="col-span-2 text-gray-300">{album.music?.length || 0} tracks</div>
 
                                     {/* Action Buttons */}
                                     <div className="col-span-3 flex items-center justify-end gap-3">
