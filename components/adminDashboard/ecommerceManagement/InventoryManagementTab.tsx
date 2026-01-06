@@ -1,212 +1,169 @@
-"use client";
-
-import { Eye } from "lucide-react";
+import { Eye, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
-// Mock data
-const contents = [
-  {
-    id: "SKU001",
-    type: "Online",
-    title: "John Doe",
-    author: "3 Items",
-    total: "$120",
-    status: "Pending",
-    date: "2025-10-31",
-  },
-  {
-    id: "SKU002",
-    type: "In-Store",
-    title: "Jane Smith",
-    author: "1 Item",
-    total: "$45",
-    status: "Shifted",
-    date: "2025-10-30",
-  },
-  {
-    id: "SKU003",
-    type: "Online",
-    title: "Alice Johnson",
-    author: "5 Items",
-    total: "$250",
-    status: "Processing",
-    date: "2025-10-29",
-  },
-  {
-    id: "SKU004",
-    type: "Online",
-    title: "Bob Brown",
-    author: "2 Items",
-    total: "$80",
-    status: "Delivered",
-    date: "2025-10-28",
-  },
-];
+import { useGetInventoryQuery, InventoryProduct } from "@/lib/api/adminApi";
 
 const InventoryManagementTab = () => {
-  const handleEyeByStatus = (id: string) => {
-    const content = contents.find((c) => c.id === id);
-    if (!content) return;
+    const { data: inventoryRes, isLoading } = useGetInventoryQuery({
+        page: 1,
+        limit: 10,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+    });
 
-    let message = "";
-    let variant: "success" | "warning" | "info" = "info";
+    const inventory = inventoryRes?.data || [];
 
-    switch (content.status) {
-      case "Pending":
-        message = `${content.title}'s order is pending. Take necessary action.`;
-        variant = "warning";
-        break;
-      case "Shifted":
-        message = `${content.title}'s order has been shifted successfully.`;
-        variant = "info";
-        break;
-      case "Processing":
-        message = `${content.title}'s order is currently being processed.`;
-        variant = "info";
-        break;
-      case "Delivered":
-        message = `${content.title}'s order has been delivered.`;
-        variant = "success";
-        break;
-      default:
-        message = `${content.title}'s order status: ${content.status}`;
-        variant = "info";
-    }
+    const handleAction = (item: InventoryProduct) => {
+        let message = "";
+        let variant: "success" | "warning" | "info" = "info";
 
-    // Low stock override
-    const numItems = parseInt(content.author.split(" ")[0], 10); // extract number from "2 Items"
-    if (numItems <= 2) {
-      message = `${content.author} running low on stock. Review inventory to prevent stockout.`;
-      variant = "warning";
-    }
+        if (item.status === "Low Stock") {
+            message = `${item.productName} is running low on stock (${item.stockLevel}). Reorder soon!`;
+            variant = "warning";
+        } else {
+            message = `${item.productName} stock level is healthy.`;
+            variant = "success";
+        }
 
-    // Trigger toast dynamically with proper variant
-    toast[variant](message);
-  };
+        toast[variant](message);
+    };
 
-  return (
-    <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-left text-white">
-          <h1 className="font-semibold text-base sm:text-lg">
-            Inventory Management
-          </h1>
-          <h2 className="text-sm text-[#F2F2F2]">
-            Monitor stock levels and receive reorder alerts
-          </h2>
-        </div>
+    const getStatusStyles = (status: string) => {
+        switch (status) {
+            case "Low Stock":
+                return "bg-[#FFA1001A] text-[#FFA100] border border-[#FFA100]";
+            case "Out of Stock":
+                return "bg-red-500/10 text-red-500 border border-red-500";
+            case "Ok":
+            case "In Stock":
+                return "bg-[#00FF1A1A] text-green-600 border border-green-600";
+            default:
+                return "bg-gray-500/10 text-gray-500 border border-gray-500";
+        }
+    };
 
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-white text-base font-semibold border-b border-[#EFEFEF]">
-                <th className="py-4 pr-4">Product</th>
-                <th className="py-4 pr-4">SKU</th>
-                <th className="py-4 pr-4">Stock Level</th>
-                <th className="py-4 pr-4">Recorder Point</th>
-                <th className="py-4 pr-4">Status</th>
-                <th className="py-4 pl-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contents.map((content) => (
-                <tr
-                  key={content.id}
-                  className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
-                  <td className="py-4 pr-4 text-white text-sm">
-                    {content.title}
-                  </td>
-                  <td className="py-4 pr-4 text-white text-sm">{content.id}</td>
-
-                  <td className="py-4 pr-4 text-white text-sm">
-                    {content.author}
-                  </td>
-                  <td className="py-4 pr-4 text-white text-sm">
-                    {content.total}
-                  </td>
-                  <td className="py-4 pr-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        content.status === "Pending"
-                          ? "bg-[#FFA1001A] text-[#FFA100] border border-[#FFA100]"
-                          : content.status === "Shifted"
-                          ? "bg-[#FF00FA1A] text-[#FF00FA] border border-[#FF00FA]"
-                          : content.status === "Processing"
-                          ? "bg-[#497FF51A] text-[#497FF5] border border-[#497FF5]"
-                          : "bg-[#00FF1A1A] text-green-600 border border-green-600"
-                      }`}>
-                      {content.status}
-                    </span>
-                  </td>
-
-                  <td className="pl-4 pt-4 pb-4 flex justify-end">
-                    <button
-                      className="text-white"
-                      onClick={() => handleEyeByStatus(content.id)}>
-                      <Eye />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-3">
-          {contents.map((content) => (
-            <div
-              key={content.id}
-              className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-white font-medium text-sm">
-                  {content.title}
-                </h3>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                <div>
-                  <span className="text-gray-400">Type:</span>
-                  <span className="text-white ml-2">{content.type}</span>
-                </div>
-                <div>
-                  <span className="text-gray-400">Items:</span>
-                  <span className="text-white ml-2">{content.author}</span>
-                </div>
-                <div>
-                  <span className="text-gray-400">Total:</span>
-                  <span className="text-white ml-2">{content.total}</span>
-                </div>
-                <div>
-                  <span className="text-gray-400">Status:</span>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ml-2 ${
-                      content.status === "Pending"
-                        ? "bg-yellow-200 text-yellow-600"
-                        : content.status === "Shifted"
-                        ? "bg-[#FF00FA1A] text-[#FF00FA]"
-                        : content.status === "Processing"
-                        ? "bg-blue-200 text-blue-600"
-                        : "bg-green-200 text-green-600"
-                    }`}>
-                    {content.status}
-                  </span>
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  className="text-white"
-                  onClick={() => handleEyeByStatus(content.id)}>
-                  <Eye />
-                </button>
-              </div>
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-64 border border-white rounded-xl">
+                <Loader2 className="w-8 h-8 animate-spin text-white" />
             </div>
-          ))}
+        );
+    }
+
+    return (
+        <div className="bg-transparent border border-white rounded-xl p-3 sm:p-5 w-full">
+            <div className="space-y-8">
+                {/* Header */}
+                <div className="text-left text-white">
+                    <h1 className="font-semibold text-base sm:text-lg">
+                        Inventory Management
+                    </h1>
+                    <h2 className="text-sm text-[#F2F2F2]">
+                        Monitor stock levels and receive reorder alerts
+                    </h2>
+                </div>
+
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="text-left text-white text-base font-semibold border-b border-[#EFEFEF]">
+                                <th className="py-4 pr-4">Product Name</th>
+                                <th className="py-4 pr-4 text-center">Stock Level</th>
+                                <th className="py-4 pr-4 text-center">Reorder Point</th>
+                                <th className="py-4 pr-4 text-center">Status</th>
+                                <th className="py-4 pl-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {inventory.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-8 text-center text-gray-400">
+                                        No inventory data found
+                                    </td>
+                                </tr>
+                            ) : (
+                                inventory.map((item) => (
+                                    <tr
+                                        key={item.productId}
+                                        className="border-b border-[#EFEFEF] hover:bg-[#414141]/40">
+                                        <td className="py-4 pr-4 text-white text-sm">
+                                            {item.productName}
+                                        </td>
+                                        <td className="py-4 pr-4 text-white text-sm text-center">
+                                            {item.stockLevel}
+                                        </td>
+                                        <td className="py-4 pr-4 text-white text-sm text-center">
+                                            {item.reorderPoint}
+                                        </td>
+                                        <td className="py-4 pr-4 text-center">
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
+                                                    item.status
+                                                )}`}>
+                                                {item.status}
+                                            </span>
+                                        </td>
+                                        <td className="pl-4 pt-4 pb-4 flex justify-end">
+                                            <button
+                                                className="text-white hover:text-blue-400 transition-colors"
+                                                onClick={() => handleAction(item)}>
+                                                <Eye className="w-5 h-5" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden space-y-3">
+                    {inventory.length === 0 ? (
+                        <div className="text-center py-8 text-gray-400">No inventory data found</div>
+                    ) : (
+                        inventory.map((item) => (
+                            <div
+                                key={item.productId}
+                                className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4">
+                                <div className="flex justify-between items-start mb-3">
+                                    <h3 className="text-white font-medium text-sm">
+                                        {item.productName}
+                                    </h3>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                                    <div>
+                                        <span className="text-gray-400">Stock:</span>
+                                        <span className="text-white ml-2">{item.stockLevel}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-400">Reorder:</span>
+                                        <span className="text-white ml-2">{item.reorderPoint}</span>
+                                    </div>
+                                    <div className="col-span-2 mt-1">
+                                        <span className="text-gray-400">Status:</span>
+                                        <span
+                                            className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusStyles(
+                                                item.status
+                                            )}`}>
+                                            {item.status}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button
+                                        className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+                                        onClick={() => handleAction(item)}>
+                                        <Eye className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default InventoryManagementTab;

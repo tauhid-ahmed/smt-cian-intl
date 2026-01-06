@@ -168,6 +168,80 @@ export interface ProductDetailsResponse {
     };
 }
 
+/* =======================
+   Order Types
+======================= */
+export interface OrderItem {
+    id: string;
+    title: string;
+    quantity: number;
+    price: number;
+    imageUrl: string;
+    product: {
+        productType: string;
+    };
+}
+
+export interface Order {
+    id: string;
+    orderNumber: string;
+    userId: string;
+    subtotal: number;
+    shippingCharge: number;
+    tax: number;
+    discount: number;
+    totalAmount: number;
+    status: string;
+    paymentStatus: string;
+    paymentIntentId: string;
+    paymentMethod: string | null;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+        id: string;
+        fullName: string;
+        email: string;
+        image: string | null;
+    };
+    items: OrderItem[];
+    totalPrice: number;
+    itemsCount: number;
+}
+
+export interface OrdersResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPage: number;
+    };
+    data: Order[];
+}
+export interface InventoryProduct {
+    productId: string;
+    productName: string;
+    stockLevel: number;
+    reorderPoint: number;
+    status: string;
+    action: string;
+}
+
+export interface InventoryResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPage: number;
+    };
+    data: InventoryProduct[];
+}
+
 // post a new artitst
 export const adminApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -238,6 +312,44 @@ export const adminApi = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+        getAllOrders: builder.query<
+            OrdersResponse,
+            {
+                page?: number;
+                limit?: number;
+                sortBy?: string;
+                sortOrder?: string;
+            }
+        >({
+            query: ({
+                page = 1,
+                limit = 5,
+                sortBy = "createdAt",
+                sortOrder = "desc",
+            }) => ({
+                url: `${API_ENDPOINTS.ORDERS.GET_ALL_ORDERS}?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+                method: "GET",
+            }),
+        }),
+        getInventory: builder.query<
+            InventoryResponse,
+            {
+                page?: number;
+                limit?: number;
+                sortBy?: string;
+                sortOrder?: string;
+            }
+        >({
+            query: ({
+                page = 1,
+                limit = 5,
+                sortBy = "createdAt",
+                sortOrder = "desc",
+            }) => ({
+                url: `${API_ENDPOINTS.ADMIN.GET_INVENTORY}?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+                method: "GET",
+            }),
+        }),
     }),
 });
 
@@ -253,4 +365,6 @@ export const {
     useGetSingleProductQuery,
     useUpdateSingleProductMutation,
     useDeleteSingleProductMutation,
+    useGetAllOrdersQuery,
+    useGetInventoryQuery,
 } = adminApi;

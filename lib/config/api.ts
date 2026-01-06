@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
         GET_PRODUCTS: "/products",
         UPDATE_PRODUCT: "/products",
         DELETE_PRODUCT: "/products",
+        GET_INVENTORY: "/products/inventory",
     },
     COMMON: {
         GET_ARTIST: "/artists",
@@ -83,5 +84,8 @@ export const API_ENDPOINTS = {
         GET_CAMPAING_PERFORMANCE: "/analytics/campaign-performance",
         GET_DONATION_GROWTH: "/analytics/donor-growth",
         GET_DONATIONS: "/subscriptions/donations",
+    },
+    ORDERS: {
+        GET_ALL_ORDERS: "/orders/admin/all",
     },
 } as const;

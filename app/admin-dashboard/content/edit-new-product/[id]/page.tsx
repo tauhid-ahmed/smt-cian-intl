@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 "use client";
 import * as React from "react";
 import { useState, useRef, ChangeEvent } from "react";
@@ -277,13 +275,23 @@ export default function UpdateProductPage() {
         );
 
         tracks.forEach((track, idx) => {
-            track.musicFile && formData.append(`trackFiles`, track.musicFile); 
+            track.musicFile && formData.append(`trackFiles`, track.musicFile);
         });
 
         colors.forEach((c, idx) => formData.append(`colors[${idx}]`, c.color));
         selectedSizes.forEach((s, idx) => formData.append(`sizes[${idx}]`, s));
 
         try {
+            console.log("=== FormData Contents ===");
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`${key}: File { name: ${value.name}, size: ${value.size} }`);
+                } else {
+                    console.log(`${key}:`, value);
+                }
+            }
+            console.log("=========================");
+
             await updateProduct({ id: productId, body: formData }).unwrap();
             router.back();
         } catch (err) {
@@ -500,8 +508,8 @@ export default function UpdateProductPage() {
                                                     <button
                                                         onClick={() => togglePlay(track)}
                                                         className={`w-full h-full flex items-center justify-center rounded-full transition-all duration-300 shadow-lg ${currentTrack?.id === track.id && isPlaying
-                                                                ? "bg-red-500 hover:bg-red-600 shadow-red-500/20"
-                                                                : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/20"
+                                                            ? "bg-red-500 hover:bg-red-600 shadow-red-500/20"
+                                                            : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/20"
                                                             }`}
                                                     >
                                                         {currentTrack?.id === track.id && isPlaying ? (
