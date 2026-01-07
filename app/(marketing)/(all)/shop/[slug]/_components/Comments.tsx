@@ -41,7 +41,7 @@ interface ReviewSectionProps {
   reviews?: Review[];
 }
 
-// ==================== STAR RATING COMPONENT ====================
+ 
 export const StarRating = ({
   rating,
   size = "md",
@@ -70,8 +70,7 @@ export const StarRating = ({
     </div>
   );
 };
-
-// ==================== RATING BREAKDOWN COMPONENT ====================
+ 
 const RatingBreakdown = ({ ratings }: { ratings: RatingData[] }) => {
   return (
     <div className="space-y-3 w-full">
@@ -209,8 +208,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
     </div>
   );
 };
-
-// ==================== DEFAULT DATA ====================
+ 
 const defaultRatingBreakdown: RatingData[] = [
   { stars: 5, percentage: 85 },
   { stars: 4, percentage: 10 },
@@ -258,7 +256,7 @@ const defaultReviews: Review[] = [
   },
 ];
 
-// ==================== MAIN COMPONENT ====================
+ 
 export default function CustomerReviewsSection({
   averageRating = 4.8,
   totalReviews = 127,

@@ -1,6 +1,6 @@
 // in this file we will add all common api calls for admin and users.
 import { API_ENDPOINTS } from "../config/api";
-import { ArtistData, ArtistResponse } from "./adminApi";
+import { ArtistData, ArtistResponse, Product } from "./adminApi";
 import { baseApi } from "./baseApi";
 
 // get all artists response
@@ -170,6 +170,13 @@ export interface WishlistProductsApiResponse {
     }[];
 }
 
+export interface SingleProductResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: Product;
+}
+
 export type ProductResponse = ProductsApiResponse;
 
 export const commonApi = baseApi.injectEndpoints({
@@ -195,7 +202,7 @@ export const commonApi = baseApi.injectEndpoints({
             }),
         }),
 
-        getSingleProduct: builder.query<ProductResponse, string>({
+        getSingleProduct: builder.query<SingleProductResponse, string>({
             query: (id: string) => ({
                 url: `${API_ENDPOINTS.COMMON.GET_PRODUCTS}/${id}`,
                 method: "GET",

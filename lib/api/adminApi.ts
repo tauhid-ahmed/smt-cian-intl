@@ -99,6 +99,7 @@ export interface Product {
     updatedAt: string;
     tracks: ProductTrack[];
     artist: ArtistData;
+    productType: string;
 }
 
 export type ProductResponse = ApiResponse<Product>;

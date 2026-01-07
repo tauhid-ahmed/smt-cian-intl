@@ -95,4 +95,10 @@ export const API_ENDPOINTS = {
     SAVED: {
         TOGGLE_SAVED_MUSIC: "/saved/music",
     },
+    CART: {
+        GET_CART: "/cart",
+        ADD_TO_CART: "/cart",
+        UPDATE_CART: "/cart",
+        REMOVE_FROM_CART: "/cart",
+    },
 } as const;
