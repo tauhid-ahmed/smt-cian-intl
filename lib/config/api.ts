@@ -92,4 +92,7 @@ export const API_ENDPOINTS = {
         GET_SINGLE_ORDER: "/orders",
         UPDATE_ORDER_STATUS: "/orders/admin/change-status",
     },
+    SAVED: {
+        TOGGLE_SAVED_MUSIC: "/saved/music",
+    },
 } as const;

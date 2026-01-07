@@ -11,7 +11,7 @@ import type { RefreshTokenSuccessResponse } from "./authApi";
  * Custom base query to handle error responses properly
  */
 const baseQuery = fetchBaseQuery({
-    baseUrl: "http://206.162.244.175:6006/api/v1",
+    baseUrl: "https://api.ciancollective.org/api/v1",
     prepareHeaders: (headers) => {
         headers.set("Content-Type", "application/json");
 
@@ -131,6 +131,7 @@ export const baseApi = createApi({
         "Demos",
         "Orders",
         "Plans",
+        "SavedMusic",
     ], // Add more tag types as needed
     endpoints: () => ({}), // Endpoints will be injected by other API slices
 });
