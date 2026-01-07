@@ -9,27 +9,42 @@ export interface AllArtistsResponse {
     success: boolean;
     statusCode: number;
     message: string;
+    meta: {
+        total: number;
+        page: number;
+        totalPage: number;
+        limit: number;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+    };
     data: ArtistData[];
 }
 
 export type ProductData = {
-    [x: string]: number | string | string[] | boolean | undefined | {
-        id?: string;
-        name?: string;
-        duration?: string;
-        url?: string;
-        productId?: string;
-        createdAt?: string;
-        updatedAt?: string;
-    }[] | {
-        id?: string;
-        name?: string;
-    };
+    [x: string]:
+        | number
+        | string
+        | string[]
+        | boolean
+        | undefined
+        | {
+              id?: string;
+              name?: string;
+              duration?: string;
+              url?: string;
+              productId?: string;
+              createdAt?: string;
+              updatedAt?: string;
+          }[]
+        | {
+              id?: string;
+              name?: string;
+          };
     id?: string;
     title?: string;
     category?: string;
     price?: number;
-    rating?: number; 
+    rating?: number;
     discountPrice?: number;
     stock?: number;
     reorderPoint?: number;
@@ -58,8 +73,7 @@ export type ProductData = {
         id?: string;
         name?: string;
     };
-}
-
+};
 
 export interface ProductsApiResponse {
     success: boolean;
@@ -130,7 +144,7 @@ export interface WishlistProductsApiResponse {
             id: string;
             title: string;
             category: string;
-            rating: number; 
+            rating: number;
             price: number;
             discountPrice: number;
             stock: number;
@@ -156,7 +170,6 @@ export interface WishlistProductsApiResponse {
     }[];
 }
 
-
 export type ProductResponse = ProductsApiResponse;
 
 export const commonApi = baseApi.injectEndpoints({
@@ -166,6 +179,7 @@ export const commonApi = baseApi.injectEndpoints({
                 url: API_ENDPOINTS.COMMON.GET_ARTIST,
                 method: "GET",
             }),
+            providesTags: ["Artist"],
         }),
         getSingleArtist: builder.query<ArtistResponse, string>({
             query: (id: string) => ({
@@ -181,29 +195,32 @@ export const commonApi = baseApi.injectEndpoints({
             }),
         }),
 
-        getSingleProduct : builder.query<ProductResponse, string>({
+        getSingleProduct: builder.query<ProductResponse, string>({
             query: (id: string) => ({
                 url: `${API_ENDPOINTS.COMMON.GET_PRODUCTS}/${id}`,
-                method: "GET",  
+                method: "GET",
             }),
         }),
 
-        /** 
+        /**
          * /wishlist/toggle/:id
          */
 
-        toggleWhishlist : builder.mutation<{ success: boolean }, { productId: string }>({
+        toggleWhishlist: builder.mutation<
+            { success: boolean },
+            { productId: string }
+        >({
             query: ({ productId }) => ({
                 url: `${API_ENDPOINTS.COMMON.ADD_TO_WISHLIST}/${productId}`,
                 method: "POST",
             }),
         }),
-        getWhishlist : builder.query<WishlistProductsApiResponse, void>({
+        getWhishlist: builder.query<WishlistProductsApiResponse, void>({
             query: () => ({
                 url: `${API_ENDPOINTS.COMMON.GET_WHISH_LIST}`,
                 method: "GET",
             }),
-        })
+        }),
     }),
 });
 
@@ -213,5 +230,5 @@ export const {
     useGetAllProductsQuery,
     useGetSingleProductQuery,
     useToggleWhishlistMutation,
-    useGetWhishlistQuery
+    useGetWhishlistQuery,
 } = commonApi;

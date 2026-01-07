@@ -331,6 +331,7 @@ export const adminApi = baseApi.injectEndpoints({
                     method: "DELETE",
                 };
             },
+            invalidatesTags: ["Artist"],
         }),
 
         getProducts: builder.query<ProductResponse, any>({
@@ -442,13 +443,10 @@ export const adminApi = baseApi.injectEndpoints({
 
 export const {
     useAddArtistMutation,
-
     useUpdateSingleArtistMutation,
     useDeleteUserByIdMutation,
     useGetProductsQuery,
-
     useAddProductMutation,
-
     useGetSingleProductQuery,
     useUpdateSingleProductMutation,
     useDeleteSingleProductMutation,

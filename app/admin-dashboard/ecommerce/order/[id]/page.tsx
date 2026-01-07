@@ -89,7 +89,7 @@ const OrderDetails = () => {
 
     return (
         <div className="min-h-screen bg-black text-white p-6 lg:p-10">
-            <div className="max-w-6xl mx-auto">
+            <div className=" mx-auto">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
@@ -146,7 +146,7 @@ const OrderDetails = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content - Items List */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl overflow-hidden backdrop-blur-sm">
+                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-sm overflow-hidden backdrop-blur-sm">
                             <div className="px-8 py-6 border-b border-zinc-800/60 flex items-center justify-between">
                                 <h2 className="text-sm font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2">
                                     <Package className="w-4 h-4" />
@@ -229,7 +229,7 @@ const OrderDetails = () => {
                     {/* Sidebar - Shipping & Payment Info */}
                     <div className="space-y-8">
                         {/* Customer & Shipping Info */}
-                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden group">
+                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-sm p-8 backdrop-blur-sm relative overflow-hidden group">
                             <div className="absolute -right-4 -bottom-4 text-white opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
                                 <Truck size={120} />
                             </div>
@@ -274,7 +274,7 @@ const OrderDetails = () => {
                         </div>
 
                         {/* Payment Details */}
-                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden group">
+                        <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-sm p-8 backdrop-blur-sm relative overflow-hidden group">
                             <div className="absolute -right-4 -bottom-4 text-white opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
                                 <CreditCard size={120} />
                             </div>

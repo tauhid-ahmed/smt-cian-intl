@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
         DELETE_PRODUCT: "/products",
         GET_INVENTORY: "/products/inventory",
         UPDATE_DEMO_STATUS: "/demos",
+        PLANS: "/plans",
     },
     COMMON: {
         GET_ARTIST: "/artists",
