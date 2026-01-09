@@ -23,10 +23,17 @@ export const adminDonationApi = baseApi.injectEndpoints({
         }),
 
         // GET DONATION GROWTH
-        getDonationGrowth: builder.query<any, void>({
-            query: () => ({
-                url: `${API_ENDPOINTS.ADMIN_DONATION.GET_DONATION_GROWTH}?type=monthly&year=2025`,
+        getDonationGrowth: builder.query<
+            any,
+            { type: string; year?: number | string } | void
+        >({
+            query: (params) => ({
+                url: API_ENDPOINTS.ADMIN_DONATION.GET_DONATION_GROWTH,
                 method: "GET",
+                params: params || {
+                    type: "monthly",
+                    year: new Date().getFullYear(),
+                },
             }),
             providesTags: ["AdminDonation"],
         }),

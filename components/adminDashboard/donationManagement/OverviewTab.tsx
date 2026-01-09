@@ -107,6 +107,8 @@ const OverviewTab = () => {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const [trendType, setTrendType] = useState<string>("monthly");
     const [trendYear, setTrendYear] = useState<number>(new Date().getFullYear());
+    const [growthType, setGrowthType] = useState<string>("monthly");
+    const [growthYear, setGrowthYear] = useState<number>(new Date().getFullYear());
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Debounce search term
@@ -146,7 +148,7 @@ const OverviewTab = () => {
         isLoading: growthLoading,
         isError: growthError,
         refetch: refetchGrowth,
-    } = useGetDonationGrowthQuery();
+    } = useGetDonationGrowthQuery({ type: growthType, year: growthYear });
 
     const {
         data: trendsData,
@@ -230,19 +232,20 @@ const OverviewTab = () => {
     const customerData = useMemo(() => {
         if (!campaignData?.data) return [];
 
-        return campaignData.data.map((campaign, index) => ({
+        return campaignData.data.map((campaign: any, index: number) => ({
             name: campaign.campaign,
             value: campaign.totalAmount,
+            count: campaign.donationCount,
             // Use a color from the palette
             color: CAMPAIGN_COLORS[index % CAMPAIGN_COLORS.length],
         }));
     }, [campaignData]);
 
     // Transform growth data for bar chart (donor growth trends)
-    const sampleData = useMemo(
+    const donorGrowthData = useMemo(
         () =>
-            growthData?.data?.map((growth) => ({
-                name: growth.name,
+            growthData?.data?.map((growth: any) => ({
+                month: growth.name,
                 positive: growth.activeDonors,
                 neutral: 0,
                 negative: 0,
@@ -379,20 +382,44 @@ const OverviewTab = () => {
                             data={customerData}
                             title="Campaign Performance"
                             subtitle="Distribution of donations by campaign"
+                            valuePrefix="$"
                         />
                     </>
                 )}
             </div>
 
             {/* Bar chart */}
-            <div className="mt-8">
+            <div className="mt-8 relative group">
+                <div className="absolute top-4 right-4 z-10 flex gap-2">
+                    <select
+                        value={growthType}
+                        onChange={(e) => setGrowthType(e.target.value)}
+                        className="bg-[#2A2A2A] text-white text-xs rounded border border-gray-700 px-2 py-1 outline-none focus:border-blue-500 shadow-sm cursor-pointer hover:bg-[#333333] transition-colors">
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <select
+                        value={growthYear}
+                        onChange={(e) => setGrowthYear(Number(e.target.value))}
+                        className="bg-[#2A2A2A] text-white text-xs rounded border border-gray-700 px-2 py-1 outline-none focus:border-blue-500 shadow-sm cursor-pointer hover:bg-[#333333] transition-colors">
+                        {Array.from({ length: 5 }, (_, i) => {
+                            const year = new Date().getFullYear() - i;
+                            return (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </div>
                 {isLoading ? (
                     <ChartSkeleton />
                 ) : (
                     <BarChartCard
-                        title="Donor Growth Trends"
-                        subtitle="Active donors over time"
-                        data={sampleData}
+                        title={growthType === "monthly" ? "Monthly Donor Growth Trends" : "Yearly Donor Growth Trends"}
+                        subtitle={growthType === "monthly" ? "Active donors over time" : "Active donors by year"}
+                        data={donorGrowthData}
+                        labels={{ positive: "Donors" }}
                     />
                 )}
             </div>
