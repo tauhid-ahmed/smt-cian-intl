@@ -229,7 +229,7 @@ export function FilterPanel({
     );
 }
 
-// ==================== PRODUCT CARD COMPONENT ====================
+ 
 function ProductCard({ product: product }) {
 
     const [toggleWhishlist , { isLoading , isSuccess }] = useToggleWhishlistMutation()
@@ -307,8 +307,7 @@ function ProductCard({ product: product }) {
  
   );
 }
-
-// ==================== MAIN SHOP COMPONENT ====================
+ 
 function MusicShop() {
     const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string[]>

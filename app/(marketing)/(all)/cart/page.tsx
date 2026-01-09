@@ -9,18 +9,133 @@ import {
     useGetCartQuery,
     useUpdateCartMutation,
     useRemoveFromCartMutation,
+    CartItem as ICartItem,
 } from "@/lib/api/cartApi";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 
+const CartItem = React.memo(({
+    item,
+    onUpdateQuantity,
+    onRemove,
+    isRemoving,
+    isUpdating,
+}: {
+    item: ICartItem;
+    onUpdateQuantity: (itemId: string, newQuantity: number) => void;
+    onRemove: (itemId: string) => void;
+    isRemoving: boolean;
+    isUpdating: boolean;
+}) => {
+    const [localQuantity, setLocalQuantity] = React.useState(item.quantity);
+    const [isDirty, setIsDirty] = React.useState(false);
+
+    // Sync local state if server state changes, but only if we're not currently editing
+    React.useEffect(() => {
+        if (!isDirty) {
+            setLocalQuantity(item.quantity);
+        }
+    }, [item.quantity, isDirty]);
+
+    // Debounce the update
+    React.useEffect(() => {
+        if (localQuantity === item.quantity) {
+            setIsDirty(false);
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            onUpdateQuantity(item.id, localQuantity);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [localQuantity, item.id, item.quantity, onUpdateQuantity]);
+
+    const handlePlus = () => {
+        setIsDirty(true);
+        if (localQuantity < (item.stock || 100)) {
+            setLocalQuantity((prev: number) => prev + 1);
+        }
+    };
+
+    const handleMinus = () => {
+        setIsDirty(true);
+        if (localQuantity > 1) {
+            setLocalQuantity((prev: number) => prev - 1);
+        }
+    };
+
+    return (
+        <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 border border-zinc-800 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 transition-colors gap-6">
+            <div className="flex items-center gap-6 flex-1">
+                <div className="relative h-24 sm:h-32 aspect-square rounded-lg overflow-hidden shrink-0 border border-zinc-800">
+                    <Image
+                        src={item?.image || "/images/placeholder.jpg"}
+                        alt={item?.title || "Product"}
+                        fill
+                        className="object-cover"
+                    />
+                </div>
+                <div className="flex flex-col gap-1 min-w-0">
+                    <h2 className="text-lg sm:text-xl font-semibold truncate leading-tight">
+                        {item?.title}
+                    </h2>
+                    <p className="text-sm text-gray-400">Premium Collection</p>
+                    <div className="flex items-center mt-1">
+                        <StarRating rating={4.8} size="sm" />
+                        <p className="text-[10px] text-gray-500 ml-2 uppercase tracking-wider">
+                            (Verified)
+                        </p>
+                    </div>
+                    <div className="mt-2 flex items-baseline gap-2">
+                        <p className="text-lg font-bold text-white">
+                            ${item?.price.toFixed(2)}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-4 self-stretch">
+                <button
+                    onClick={() => onRemove(item.id)}
+                    disabled={isRemoving}
+                    className="text-gray-500 hover:text-red-500 transition-colors p-2 -mr-2 bg-zinc-800/50 sm:bg-transparent rounded-lg"
+                >
+                    <X className="w-5 h-5" />
+                </button>
+
+                <div className="flex items-center border border-zinc-700 rounded-lg overflow-hidden bg-black h-10">
+                    <button
+                        onClick={handleMinus}
+                        disabled={isUpdating || localQuantity <= 1}
+                        className="px-3 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                    >
+                        <Minus className="w-4 h-4" />
+                    </button>
+                    <div className="w-12 text-center bg-transparent border-none text-sm font-medium flex items-center justify-center">
+                        {localQuantity}
+                    </div>
+                    <button
+                        onClick={handlePlus}
+                        disabled={isUpdating || localQuantity >= (item?.stock || 100)}
+                        className="px-3 hover:bg-zinc-800 transition-colors border-l border-zinc-700 disabled:opacity-50"
+                    >
+                        <Plus className="w-4 h-4" />
+                    </button>
+                </div>
+            </div>
+        </section>
+    );
+});
+
 const CartPage = () => {
     const { data: cartResponse, isLoading, isError } = useGetCartQuery();
     const [updateCart, { isLoading: isUpdating }] = useUpdateCartMutation();
     const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
 
-    const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
+    const handleUpdateQuantity = React.useCallback(async (itemId: string, newQuantity: number) => {
         if (newQuantity < 1) return;
         try {
             await updateCart({ itemId, quantity: newQuantity }).unwrap();
@@ -28,16 +143,16 @@ const CartPage = () => {
         } catch (error: any) {
             toast.error(error?.data?.message || "Failed to update cart");
         }
-    };
+    }, [updateCart]);
 
-    const handleRemoveItem = async (itemId: string) => {
+    const handleRemoveItem = React.useCallback(async (itemId: string) => {
         try {
             await removeFromCart({ itemId }).unwrap();
             toast.success("Item removed from cart");
         } catch (error: any) {
             toast.error(error?.data?.message || "Failed to remove item");
         }
-    };
+    }, [removeFromCart]);
 
     if (isLoading) {
         return (
@@ -82,71 +197,15 @@ const CartPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
                     {/* Cart Items List */}
                     <div className="lg:col-span-4 space-y-6">
-                        {items.map((item) => (
-                            <section
+                        {items.map((item: ICartItem) => (
+                            <CartItem
                                 key={item.id}
-                                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 border border-zinc-800 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 transition-colors gap-6"
-                            >
-                                <div className="flex items-center gap-6 flex-1">
-                                    <div className="relative h-24 sm:h-32 aspect-square rounded-lg overflow-hidden shrink-0 border border-zinc-800">
-                                        <Image
-                                            src={item?.image || "/images/placeholder.jpg"}
-                                            alt={item?.title || "Product"}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-1 min-w-0">
-                                        <h2 className="text-lg sm:text-xl font-semibold truncate leading-tight">
-                                            {item?.title}
-                                        </h2>
-                                        <p className="text-sm text-gray-400">
-                                            Premium Collection
-                                        </p>
-                                        <div className="flex items-center mt-1">
-                                            <StarRating rating={4.8} size="sm" />
-                                            <p className="text-[10px] text-gray-500 ml-2 uppercase tracking-wider">
-                                                (Verified)
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 flex items-baseline gap-2">
-                                            <p className="text-lg font-bold text-white">
-                                                ${item?.price.toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-4 self-stretch">
-                                    <button
-                                        onClick={() => handleRemoveItem(item.id)}
-                                        disabled={isRemoving}
-                                        className="text-gray-500 hover:text-red-500 transition-colors p-2 -mr-2 bg-zinc-800/50 sm:bg-transparent rounded-lg"
-                                    >
-                                        <X className="w-5 h-5" />
-                                    </button>
-
-                                    <div className="flex items-center border border-zinc-700 rounded-lg overflow-hidden bg-black h-10">
-                                        <button
-                                            onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                                            disabled={isUpdating || item.quantity <= 1}
-                                            className="px-3 hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                                        >
-                                            <Minus className="w-4 h-4" />
-                                        </button>
-                                        <div className="w-12 text-center bg-transparent border-none text-sm font-medium flex items-center justify-center">
-                                            {item.quantity}
-                                        </div>
-                                        <button
-                                            onClick={() => handleUpdateQuantity(item?.id, item?.quantity + 1)}
-                                            disabled={isUpdating || item?.quantity >= item?.stock}
-                                            className="px-3 hover:bg-zinc-800 transition-colors border-l border-zinc-700 disabled:opacity-50"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </section>
+                                item={item}
+                                onUpdateQuantity={handleUpdateQuantity}
+                                onRemove={handleRemoveItem}
+                                isRemoving={isRemoving}
+                                isUpdating={isUpdating}
+                            />
                         ))}
                     </div>
 
