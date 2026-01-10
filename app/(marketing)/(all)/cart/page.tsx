@@ -214,7 +214,29 @@ const CartPage = () => {
                         <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl space-y-6 sticky top-24 shadow-xl">
                             <h2 className="text-xl font-bold border-b border-zinc-800 pb-4">Order Summary</h2>
 
-                            <div className="space-y-3">
+                            <div className="max-h-60 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-zinc-700">
+                                {items.map((item: ICartItem) => (
+                                    <div key={item.id} className="flex gap-3 text-sm">
+                                        <div className="relative h-12 w-12 rounded border border-zinc-800 overflow-hidden shrink-0">
+                                            <Image
+                                                src={item.image || "/images/placeholder.jpg"}
+                                                alt={item.title}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-white font-medium truncate">{item.title}</p>
+                                            <p className="text-gray-500 text-xs">Qty: {item.quantity}</p>
+                                        </div>
+                                        <div className="text-white font-medium">
+                                            ${(item.price * item.quantity).toFixed(2)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="space-y-3 border-t border-zinc-800 pt-4">
                                 <div className="flex justify-between text-gray-400">
                                     <span>Subtotal ({cart?.totalItems || 0} items)</span>
                                     <span>${(cart?.totalAmount || 0).toFixed(2)}</span>
@@ -236,7 +258,7 @@ const CartPage = () => {
                                 </div>
                             </div>
 
-                            <Link href="/checkout" className="block w-full pt-2">
+                            <Link href="/payment" className="block w-full pt-2">
                                 <Button className="w-full bg-white text-black hover:bg-zinc-200 py-6 text-lg font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all active:scale-[0.98]">
                                     Checkout Now
                                 </Button>

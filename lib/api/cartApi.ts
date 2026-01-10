@@ -10,6 +10,8 @@ export interface CartItem {
     image: string;
     stock: number;
     total: number;
+    size?: string;
+    color?: string;
 }
 
 export interface CartData {

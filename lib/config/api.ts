@@ -91,6 +91,8 @@ export const API_ENDPOINTS = {
         GET_ALL_ORDERS: "/orders/admin/all",
         GET_SINGLE_ORDER: "/orders",
         UPDATE_ORDER_STATUS: "/orders/admin/change-status",
+        MY_ORDERS: "/orders/my-orders",
+        CREATE_CHECKOUT: "/orders/create-checkout",
     },
     SAVED: {
         TOGGLE_SAVED_MUSIC: "/saved/music",
