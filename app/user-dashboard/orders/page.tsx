@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, AlertCircle } from "lucide-react";
+import { Trash2, AlertCircle, Eye } from "lucide-react";
 import { useGetMyOrdersQuery } from "@/lib/api/orderApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 export default function Page() {
     const [page, setPage] = useState(1);
@@ -171,14 +172,25 @@ export default function Page() {
                                     </TableCell>
 
                                     <TableCell className="text-right py-4">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDelete(order.id)}
-                                            className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                        <div className="flex justify-end gap-2">
+                                            <Link href={`/user-dashboard/orders/${order.id}`}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleDelete(order.id)}
+                                                className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))

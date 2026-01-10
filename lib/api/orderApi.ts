@@ -67,7 +67,18 @@ export const orderApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Orders", "Cart"],
         }),
+        getSingleMyOrder: builder.query<any, string>({
+            query: (id) => ({
+                url: `${API_ENDPOINTS.ORDERS.GET_SINGLE_ORDER}/${id}`,
+                method: "GET",
+            }),
+            providesTags: (result, error, id) => [{ type: "Orders", id }],
+        }),
     }),
 });
 
-export const { useGetMyOrdersQuery, useCreateCheckoutMutation } = orderApi;
+export const {
+    useGetMyOrdersQuery,
+    useCreateCheckoutMutation,
+    useGetSingleMyOrderQuery,
+} = orderApi;

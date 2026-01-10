@@ -195,11 +195,47 @@ export const commonApi = baseApi.injectEndpoints({
             }),
         }),
 
-        getAllProducts: builder.query<ProductsApiResponse, void>({
-            query: () => ({
-                url: API_ENDPOINTS.COMMON.GET_ALL_PRODUCTS,
-                method: "GET",
-            }),
+        getAllProducts: builder.query<
+            ProductsApiResponse,
+            {
+                minPrice?: number;
+                maxPrice?: number;
+                rating?: number | string;
+                category?: string;
+                search?: string;
+            } | void
+        >({
+            query: (params) => {
+                const url = new URL(
+                    API_ENDPOINTS.COMMON.GET_ALL_PRODUCTS,
+                    "http://dummy.com"
+                );
+                if (params) {
+                    if (params.minPrice)
+                        url.searchParams.append(
+                            "minPrice",
+                            params.minPrice.toString()
+                        );
+                    if (params.maxPrice)
+                        url.searchParams.append(
+                            "maxPrice",
+                            params.maxPrice.toString()
+                        );
+                    if (params.rating)
+                        url.searchParams.append(
+                            "rating",
+                            params.rating.toString()
+                        );
+                    if (params.category)
+                        url.searchParams.append("category", params.category);
+                    if (params.search)
+                        url.searchParams.append("search", params.search);
+                }
+                return {
+                    url: url.pathname + url.search,
+                    method: "GET",
+                };
+            },
         }),
 
         getSingleProduct: builder.query<SingleProductResponse, string>({

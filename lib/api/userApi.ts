@@ -75,6 +75,14 @@ export const commonApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Demos"],
         }),
+        updateProfile: builder.mutation<any, { fullName: string }>({
+            query: (body) => ({
+                url: API_ENDPOINTS.USER.UPDATE_PROFILE,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["User"],
+        }),
     }),
 });
 
@@ -83,4 +91,5 @@ export const {
     useGetAllDemoArtistSubmissionQuery,
     useGetSingleDemoArtistSubmissionQuery,
     useApproveDemoArtistSubmissionMutation,
+    useUpdateProfileMutation,
 } = commonApi;

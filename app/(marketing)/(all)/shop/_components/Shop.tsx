@@ -13,6 +13,7 @@ import {
     ShoppingCart,
     Loader2,
     CheckIcon,
+    Package,
 } from "lucide-react";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
@@ -20,7 +21,7 @@ import { Heading } from "@/components/Heading";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProductData,  useGetAllProductsQuery, useToggleWhishlistMutation } from "@/lib/api/commonApi";
+import { ProductData, useGetAllProductsQuery, useToggleWhishlistMutation } from "@/lib/api/commonApi";
 
 // ==================== TYPE DEFINITIONS ====================
 interface FilterOption {
@@ -229,127 +230,116 @@ export function FilterPanel({
     );
 }
 
- 
-function ProductCard({ product: product }) {
 
-    const [toggleWhishlist , { isLoading , isSuccess }] = useToggleWhishlistMutation()
+function ProductCard({ product, viewMode }: { product: any, viewMode: "grid" | "list" }) {
+    const [toggleWhishlist, { isLoading, isSuccess }] = useToggleWhishlistMutation()
+
+    const isList = viewMode === "list";
+
     return (
-
-        <div className="rounded-lg overflow-hidden group relative border border-white/20">
+        <div className={`rounded-lg overflow-hidden group relative border border-white/10 bg-zinc-900/50 hover:border-white/20 transition-all ${isList ? "flex flex-col sm:flex-row" : "flex flex-col"}`}>
             {/* Wishlist Icon */}
-            <button className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors" title="add to which list " onClick={() => toggleWhishlist({productId: product.id})}>
-               {
-                isLoading ? (
+            <button
+                className={`absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors ${isList ? "sm:top-4 sm:right-4" : ""}`}
+                title="Add to Wishlist"
+                onClick={(e) => {
+                    e.preventDefault();
+                    toggleWhishlist({ productId: product.id });
+                }}
+            >
+                {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                 ) : isSuccess ? (
-                    <CheckIcon className="w-5 h-5 text-white" />
+                    <CheckIcon className="w-5 h-5 text-green-500" />
                 ) : (
                     <Heart className="w-5 h-5 text-white" />
-                )
-               }
+                )}
             </button>
 
             {/* Product Image */}
-            <Link href={`/shop/${product.id}`}>
-            <div className="relative aspect-3/2 overflow-hidden">
-                <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {product.badge && (
-                    <div className="absolute top-3 left-3 bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold uppercase">
-                        {product.badge}
-                    </div>
-                )}
-            </div>
+            <Link href={`/shop/${product.id}`} className={`${isList ? "w-full sm:w-64" : "w-full"}`}>
+                <div className={`relative overflow-hidden ${isList ? "aspect-video sm:aspect-square h-full" : "aspect-[4/3]"}`}>
+                    <Image
+                        src={product.image}
+                        alt={product.title}
+                        fill
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {product.badge && (
+                        <div className="absolute top-3 left-3 bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+                            {product.badge}
+                        </div>
+                    )}
+                </div>
+            </Link>
 
             {/* Product Info */}
-            <div className="p-4">
-                <p className="text-yellow-500 text-sm mb-1">{product.format}</p>
-                <h3 className="text-white font-semibold mb-1 line-clamp-1">
-                    {product.artist}
-                </h3>
-                <p className="text-gray-400 text-sm mb-2 line-clamp-1">
-                    {product.title}
-                </p>
+            <div className={`p-4 flex flex-col justify-between flex-1 ${isList ? "p-6" : ""}`}>
+                <Link href={`/shop/${product.id}`}>
+                    <div className="space-y-1">
+                        <p className="text-yellow-500 text-xs font-bold uppercase tracking-widest">{product.format}</p>
+                        <h3 className="text-white font-bold text-lg mb-1 line-clamp-1 group-hover:text-yellow-500 transition-colors">
+                            {product.artist}
+                        </h3>
+                        <p className="text-gray-400 text-sm mb-2 line-clamp-2">
+                            {product.title}
+                        </p>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                    <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                            <Star
-                                key={i}
-                                className={`w-3 h-3 ${i < Math.floor(product.rating)
-                                        ? "fill-yellow-500 text-yellow-500"
-                                        : "fill-gray-600 text-gray-600"
-                                    }`}
-                            />
-                        ))}
+                        {/* Rating */}
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`w-3.5 h-3.5 ${i < Math.floor(product.rating)
+                                            ? "fill-yellow-500 text-yellow-500"
+                                            : "fill-zinc-700 text-zinc-700"
+                                            }`}
+                                    />
+                                ))}
+                            </div>
+                            <span className="text-xs text-zinc-500">({product.reviews} reviews)</span>
+                        </div>
                     </div>
-                    <span className="text-xs text-gray-400">({product.reviews})</span>
-                </div>
+                </Link>
 
                 {/* Price and Cart */}
-                <div className="flex items-center justify-between">
-                    <span className="text-white font-bold text-lg">
-                        ${product.price}
-                    </span>
-                    <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-2">
+                <div className={`flex items-center justify-between mt-4 ${isList ? "sm:mt-0" : ""}`}>
+                    <div className="flex flex-col">
+                        <span className="text-white font-black text-xl">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <button className="bg-white text-black px-6 py-2.5 rounded-full hover:bg-yellow-500 transition-all text-sm font-bold flex items-center gap-2 shadow-lg hover:shadow-yellow-500/20 active:scale-95">
                         <ShoppingCart className="w-4 h-4" />
                         Add to Cart
                     </button>
                 </div>
             </div>
-            </Link>
         </div>
- 
-  );
+    );
 }
- 
+
 function MusicShop() {
     const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string[]>
     >({});
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [sortBy, setSortBy] = useState("most-recent");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const filterConfig: FilterConfig = {
         filters: [
             {
-                id: "format",
-                label: "Format",
+                id: "category",
+                label: "Category",
                 type: "checkbox",
                 options: [
                     { value: "vinyl", label: "Vinyl Records", count: 45 },
                     { value: "cd", label: "CDs", count: 89 },
                     { value: "digital", label: "Digital Downloads", count: 120 },
-                    { value: "bundle", label: "Bundles", count: 12 },
-                ],
-            },
-            {
-                id: "genre",
-                label: "Genre",
-                type: "checkbox",
-                options: [
-                    { value: "worship", label: "Worship", count: 45 },
-                    { value: "gospel", label: "Gospel", count: 67 },
-                    { value: "contemporary", label: "Contemporary Christian", count: 87 },
-                    { value: "hip-hop", label: "Hip Hop", count: 23 },
-                    { value: "acoustic", label: "Acoustic", count: 34 },
-                    { value: "rock", label: "Rock", count: 56 },
-                ],
-            },
-            {
-                id: "artist",
-                label: "Artist",
-                type: "checkbox",
-                options: [
-                    { value: "elevation", label: "Elevation Worship", count: 12 },
-                    { value: "hillsong", label: "Hillsong United", count: 8 },
-                    { value: "maverick", label: "Maverick City Music", count: 15 },
-                    { value: "bethel", label: "Bethel Music", count: 10 },
+                    { value: "accessories", label: "Accessories", count: 12 },
+                    { value: "merch", label: "Merchandise", count: 64 },
                 ],
             },
             {
@@ -357,10 +347,10 @@ function MusicShop() {
                 label: "Price Range",
                 type: "radio",
                 options: [
-                    { value: "under-10", label: "Under to $10", count: 34 },
-                    { value: "10-20", label: "$10 - $20", count: 56 },
-                    { value: "20-30", label: "$20 - $30", count: 45 },
-                    { value: "over-50", label: "Over to $50", count: 12 },
+                    { value: "0-20", label: "Under $20", count: 34 },
+                    { value: "20-50", label: "$20 - $50", count: 56 },
+                    { value: "50-100", label: "$50 - $100", count: 45 },
+                    { value: "100-1000", label: "Over $100", count: 12 },
                 ],
             },
             {
@@ -368,122 +358,71 @@ function MusicShop() {
                 label: "Customer Rating",
                 type: "radio",
                 options: [
-                    { value: "all", label: "All", count: 234 },
-                    { value: "5-star", label: "★★★★★ & Up", count: 156 },
-                    { value: "4-star", label: "★★★★ & Up", count: 189 },
-                    { value: "3-star", label: "★★★ & Up", count: 221 },
-                ],
-            },
-            {
-                id: "availability",
-                label: "Availability",
-                type: "checkbox",
-                options: [
-                    { value: "in-stock", label: "In stock", count: 189 },
-                    { value: "pre-order", label: "Pre-Order", count: 12 },
-                    { value: "limited", label: "Limited Edition", count: 8 },
+                    { value: "5", label: "5 Stars", count: 156 },
+                    { value: "4", label: "4 Stars & Up", count: 189 },
+                    { value: "3", label: "3 Stars & Up", count: 221 },
                 ],
             },
         ],
     };
 
-    const products: Product[] = [
-        {
-            id: 1,
-            title: "The Altar and The Door",
-            artist: "Casting Crowns",
-            price: 16.99,
-            rating: 5,
-            reviews: 234,
-            image:
-                "https://images.unsplash.com/photo-1619983081593-e2ba5b543168?w=400&h=400&fit=crop",
-            badge: "Sale",
-            format: "CD",
-        },
-        {
-            id: 2,
-            title: "A Beautiful Exchange",
-            artist: "Hillsong Worship",
-            price: 27.99,
-            rating: 4,
-            reviews: 112,
-            image:
-                "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop",
-            badge: "New",
-            format: "Vinyl",
-        },
-        {
-            id: 3,
-            title: "Only Jesus",
-            artist: "Casting Crowns",
-            price: 22.99,
-            rating: 5,
-            reviews: 189,
-            image:
-                "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop",
-            badge: "Sale",
-            format: "CD",
-        },
-        {
-            id: 4,
-            title: "Live from Atlanta",
-            artist: "Maverick City Music",
-            price: 21.99,
-            rating: 5,
-            reviews: 14,
-            image:
-                "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
-            badge: "Great",
-            format: "Digital",
-        },
-        {
-            id: 5,
-            title: "Live from Atlanta",
-            artist: "Maverick City Music",
-            price: 21.99,
-            rating: 5,
-            reviews: 14,
-            image:
-                "https://images.unsplash.com/photo-1501612780327-45045538702b?w=400&h=400&fit=crop",
-            badge: "Great",
-            format: "Digital",
-        },
-        {
-            id: 6,
-            title: "Praise & Worship Collection",
-            artist: "Elevation Worship",
-            price: 29.99,
-            rating: 4,
-            reviews: 127,
-            image:
-                "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=400&fit=crop",
-            badge: "New",
-            format: "Vinyl",
-        },
-    ];
+    // Construct API params from state
+    const getQueryParams = () => {
+        const params: any = {};
 
-    const { data: allProductsData, isLoading: isProductsLoading } = useGetAllProductsQuery();
+        if (searchQuery) {
+            params.search = searchQuery;
+        }
 
-    const allProducts = allProductsData?.data
+        // Price range mapping
+        if (selectedFilters["price-range"]?.length) {
+            const range = selectedFilters["price-range"][0]; // It's radio-like
+            const [min, max] = range.split("-");
+            params.minPrice = Number(min);
+            if (max) params.maxPrice = Number(max);
+        }
 
-    const parsedProduct = allProducts?.map((product: any) => ({
-        id: typeof product.id === 'string' ? product.id : String(product.id),
+        // Rating mapping
+        if (selectedFilters["customer-rating"]?.length) {
+            params.rating = selectedFilters["customer-rating"][0];
+        }
+
+        // Category mapping
+        if (selectedFilters["category"]?.length) {
+            params.category = selectedFilters["category"].join(",");
+        }
+
+        return params;
+    };
+
+    const { data: allProductsData, isLoading: isProductsLoading } = useGetAllProductsQuery(getQueryParams());
+
+    const allProducts = allProductsData?.data || [];
+
+    const parsedProduct = allProducts.map((product: any) => ({
+        id: product.id,
         title: product.title,
         artist: product.artist?.name || '',
         price: product.price,
-        rating: product?.rating || 0,
-        reviews: product?.reviews || 0,
+        rating: product?.averageRating || 0,
+        reviews: product?.totalReviews || 0,
         image: product.mainImage || '',
-        badge: product?.badge || '',
-        format: product?.format || 'Digital',
+        badge: product?.productType === 'REGULAR' ? '' : product?.productType,
+        format: product?.category || 'Digital',
     }));
 
-    if (isProductsLoading) {
-        return <div className="w-full h-[50vh] flex items-center justify-center text-lg">Loading...</div>;
-    }
     const handleFilterChange = (filterId: string, value: string) => {
         setSelectedFilters((prev) => {
             const current = prev[filterId] || [];
+
+            // For radio-like behavior on price-range and rating
+            if (filterId === "price-range" || filterId === "customer-rating") {
+                return {
+                    ...prev,
+                    [filterId]: current.includes(value) ? [] : [value],
+                };
+            }
+
             const newValues = current.includes(value)
                 ? current.filter((v) => v !== value)
                 : [...current, value];
@@ -497,25 +436,77 @@ function MusicShop() {
 
     const handleClearAll = () => {
         setSelectedFilters({});
+        setSearchQuery("");
     };
 
     return (
         <Section padding="md">
             <Container>
                 <div className="flex flex-col lg:flex-row gap-6">
-                    <FilterPanel
-                        config={filterConfig}
-                        selectedFilters={selectedFilters}
-                        onFilterChange={handleFilterChange}
-                        onClearAll={handleClearAll}
-                    />
+                    <div className="w-full lg:w-72 bg-sidebar text-white rounded-lg">
+                        <div className="bg-sidebar p-4 rounded-t-lg">
+                            <Heading as="h3" size="h6">
+                                Filters
+                            </Heading>
+                        </div>
+
+                        {/* Search Box */}
+                        <div className="p-4 border-b border-zinc-700">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search products..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full bg-stone-800 text-white pl-4 pr-10 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                                />
+                                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-yellow-500" />
+                            </div>
+                        </div>
+
+                        {/* Dynamically render FilterPanel content here to use local state for search */}
+                        <div className="p-4 space-y-4">
+                            {filterConfig.filters.map((filter) => (
+                                <div key={filter.id} className="border-b border-zinc-700 pb-4 last:border-0">
+                                    <h4 className="font-semibold text-base mb-3">{filter.label}</h4>
+                                    <div className="space-y-2">
+                                        {filter.options.map((option) => {
+                                            const isChecked = selectedFilters[filter.id]?.includes(option.value);
+                                            return (
+                                                <label key={option.value} className="flex items-center justify-between cursor-pointer hover:bg-zinc-800 p-2 rounded transition-colors text-sm">
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isChecked}
+                                                            onChange={() => handleFilterChange(filter.id, option.value)}
+                                                            className="w-4 h-4 accent-yellow-500"
+                                                        />
+                                                        <span className="text-gray-300">{option.label}</span>
+                                                    </div>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Clear All */}
+                        {(Object.keys(selectedFilters).length > 0 || searchQuery) && (
+                            <div className="p-4 border-t border-zinc-700">
+                                <Button onClick={handleClearAll} variant="outline" className="w-full border-yellow-500 text-yellow-500 hover:bg-yellow-500/10">
+                                    Clear All
+                                </Button>
+                            </div>
+                        )}
+                    </div>
 
                     {/* Main Content */}
                     <div className="flex-1">
                         {/* Toolbar */}
                         <div className="bg-zinc-800 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="text-lg font-semibold">
-                                {products.length} Products found
+                                {isProductsLoading ? "Searching..." : `${allProducts.length} Products found`}
                             </div>
 
                             <div className="flex flex-wrap items-center gap-4">
@@ -525,8 +516,8 @@ function MusicShop() {
                                     <button
                                         onClick={() => setViewMode("list")}
                                         className={`p-2 rounded ${viewMode === "list"
-                                                ? "bg-yellow-500 text-black"
-                                                : "bg-zinc-700"
+                                            ? "bg-yellow-500 text-black"
+                                            : "bg-zinc-700"
                                             }`}
                                     >
                                         <List className="w-5 h-5" />
@@ -534,8 +525,8 @@ function MusicShop() {
                                     <button
                                         onClick={() => setViewMode("grid")}
                                         className={`p-2 rounded ${viewMode === "grid"
-                                                ? "bg-yellow-500 text-black"
-                                                : "bg-zinc-700"
+                                            ? "bg-yellow-500 text-black"
+                                            : "bg-zinc-700"
                                             }`}
                                     >
                                         <Grid className="w-5 h-5" />
@@ -543,7 +534,7 @@ function MusicShop() {
                                 </div>
 
                                 {/* Sort Dropdown */}
-                                <div className="flex items-center gap-2">
+                                <div className="  items-center gap-2 hidden">
                                     <span className="text-sm">Short by:</span>
                                     <select
                                         value={sortBy}
@@ -559,34 +550,41 @@ function MusicShop() {
                             </div>
                         </div>
 
-                        {/* Products Grid */}
-                        <div
-                            className={`grid gap-6 ${viewMode === "grid"
+                        {/* Products Content */}
+                        {isProductsLoading ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {[...Array(8)].map((_, i) => (
+                                    <div key={i} className="bg-zinc-900 animate-pulse h-80 rounded-lg"></div>
+                                ))}
+                            </div>
+                        ) : allProducts.length === 0 ? (
+                            <div className="text-center py-20 text-gray-400">
+                                <Package className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                                <p className="text-xl">No products matched your criteria</p>
+                                <Button variant="link" onClick={handleClearAll} className="text-yellow-500 mt-2">
+                                    Reset all filters
+                                </Button>
+                            </div>
+                        ) : (
+                            <div
+                                className={`grid gap-6 ${viewMode === "grid"
                                     ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
                                     : "grid-cols-1"
-                                }`}
-                        >
-                            {parsedProduct?.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                                    }`}
+                            >
+                                {parsedProduct.map((product) => (
+                                    <ProductCard key={product.id} product={product} viewMode={viewMode} />
+                                ))}
+                            </div>
+                        )}
 
-                        {/* Pagination */}
+                        {/* Pagination (Simplified for now as API response meta wasn't fully used) */}
                         <div className="flex justify-center items-center gap-2 mt-8">
                             <button className="px-3 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                                 &lt;
                             </button>
                             <button className="px-4 py-2 bg-white text-black rounded font-semibold">
                                 1
-                            </button>
-                            <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
-                                2
-                            </button>
-                            <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
-                                3
-                            </button>
-                            <button className="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
-                                4
                             </button>
                             <button className="px-3 py-2 bg-zinc-800 rounded hover:bg-zinc-700 transition-colors">
                                 &gt;

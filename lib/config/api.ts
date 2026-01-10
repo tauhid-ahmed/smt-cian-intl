@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
         GET_DEMO_ARTIST_SUBMISSION: "/demos",
         GET_SINGLE_DEMO_ARTIST_SUBMISSION: "/demos",
         APPROVE_DEMO_ARTIST_SUBMISSION: "/demos/approve",
+        UPDATE_PROFILE: "/users/update-profile",
     },
     ARTIST: {
         ADD_ARTIST: "/artists",

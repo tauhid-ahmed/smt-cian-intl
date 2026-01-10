@@ -71,7 +71,7 @@ const DashboardTopNav = () => {
                         {/* Notifications */}
                         <button
                             onClick={toggleNotificationsModal}
-                            className="relative p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+                            className="relative p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors hidden"
                         >
                             <Bell className="w-5 h-5 text-gray-300" />
                             {notificationsCount > 0 && (
