@@ -35,7 +35,7 @@ const DashboardSidebar = () => {
   }, []);
 
   const items = [
-    { icon: LayoutDashboard, label: "Overview", href: "/user-dashboard" },
+    // { icon: LayoutDashboard, label: "Overview", href: "/user-dashboard" },
     { icon: ShoppingBag, label: "Orders", href: "/user-dashboard/orders" },
     { icon: Heart, label: "Wishlist", href: "/user-dashboard/wishlist" },
     { icon: Star, label: "Reviews", href: "/user-dashboard/reviews" },

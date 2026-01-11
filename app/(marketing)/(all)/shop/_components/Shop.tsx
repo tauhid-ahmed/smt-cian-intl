@@ -14,6 +14,7 @@ import {
     Loader2,
     CheckIcon,
     Package,
+    Eye,
 } from "lucide-react";
 import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
@@ -259,10 +260,9 @@ function ProductCard({ product, viewMode }: { product: any, viewMode: "grid" | "
             {/* Product Image */}
             <Link href={`/shop/${product.id}`} className={`${isList ? "w-full sm:w-64" : "w-full"}`}>
                 <div className={`relative overflow-hidden ${isList ? "aspect-video sm:aspect-square h-full" : "aspect-[4/3]"}`}>
-                    <Image
+                <img 
                         src={product.image}
-                        alt={product.title}
-                        fill
+                        alt={product.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {product.badge && (
@@ -311,8 +311,8 @@ function ProductCard({ product, viewMode }: { product: any, viewMode: "grid" | "
                         </span>
                     </div>
                     <button className="bg-white text-black px-6 py-2.5 rounded-full hover:bg-yellow-500 transition-all text-sm font-bold flex items-center gap-2 shadow-lg hover:shadow-yellow-500/20 active:scale-95">
-                        <ShoppingCart className="w-4 h-4" />
-                        Add to Cart
+                        <Eye className="w-4 h-4" />
+                        View product 
                     </button>
                 </div>
             </div>
