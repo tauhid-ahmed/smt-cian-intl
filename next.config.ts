@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
             "206.162.244.175",
             "jamil-dev.s3.us-east-1.amazonaws.com",
             "api.ciancollective.org",
+            "ciancollective.s3.us-east-1.amazonaws.com",
         ],
     },
 };
