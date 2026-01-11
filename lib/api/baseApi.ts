@@ -12,8 +12,10 @@ import type { RefreshTokenSuccessResponse } from "./authApi";
  */
 const baseQuery = fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    prepareHeaders: (headers) => {
-        headers.set("Content-Type", "application/json");
+    prepareHeaders: (headers, { arg }) => {
+        if (!(typeof arg !== "string" && arg.body instanceof FormData)) {
+            headers.set("Content-Type", "application/json");
+        }
 
         if (typeof window !== "undefined") {
             const accessToken = localStorage.getItem("accessToken");
@@ -133,6 +135,8 @@ export const baseApi = createApi({
         "Plans",
         "SavedMusic",
         "Cart",
+        "Product",
+        "Review",
     ], // Add more tag types as needed
     endpoints: () => ({}), // Endpoints will be injected by other API slices
 });

@@ -52,6 +52,9 @@ export const API_ENDPOINTS = {
         GET_ALL_PRODUCTS: "/products",
         ADD_TO_WISHLIST: "/wishlist/toggle",
         GET_WHISH_LIST: "/wishlist",
+        REVIEWS: "/reviews",
+        GET_PRODUCT_REVIEWS: "/reviews/product",
+        REVIEWS_ARTIST: "/reviews/artist",
     },
     USER: {
         ADD_DEMO_ARTIST_SUBMISSION: "/demos/submit",

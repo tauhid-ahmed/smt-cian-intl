@@ -257,7 +257,7 @@ export default function Discography({
   );
 
   return (
-    <Section padding="md">
+    <Section padding="md" className="">
       <Container className="space-y-10">
         <Heading as="h2" size="h3" align="center">
           Discography

@@ -270,10 +270,9 @@ const ProductDetailSection = ({ product, apiProduct }: { product: Product, apiPr
                         <div className="space-y-6">
                             {/* Main Product Image */}
                             <div className="relative aspect-square bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800">
-                                <Image
+                                <img
                                     src={activeImage || "/images/placeholder.jpg"}
-                                    alt={product.title}
-                                    fill
+                                    alt={product.title} 
                                     className="object-cover"
                                 />
                             </div>

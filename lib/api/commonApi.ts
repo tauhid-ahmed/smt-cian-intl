@@ -135,39 +135,95 @@ export interface WishlistProductsApiResponse {
         totalPage: number;
     };
     data: {
-        id: string;
         userId: string;
         productId: string;
+        id: string;
+        title: string;
+        category: string;
+        rating: number;
+        price: number;
+        discountPrice: number;
+        stock: number;
+        reorderPoint: number;
+        productType: "REGULAR" | string;
+        description: string;
+        shippingInfo: string;
+        returnPolicy: string;
+        mainImage: string;
+        gallery: string[];
+        sizes: string[];
+        colors: string[];
+        artistId: string;
+        isDeleted: boolean;
         createdAt: string;
         updatedAt: string;
-        product: {
+        artist: {
             id: string;
-            title: string;
-            category: string;
-            rating: number;
-            price: number;
-            discountPrice: number;
-            stock: number;
-            reorderPoint: number;
-            productType: "REGULAR" | string;
-            description: string;
-            shippingInfo: string;
-            returnPolicy: string;
-            mainImage: string;
-            gallery: string[];
-            sizes: string[];
-            colors: string[];
-            artistId: string;
-            isDeleted: boolean;
-            createdAt: string;
-            updatedAt: string;
-            artist: {
-                id: string;
-                name: string;
-                image: string | null;
-            };
+            name: string;
+            image: string | null;
         };
     }[];
+}
+
+export interface ReviewResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        id: string;
+        comment: string;
+        userId: string;
+        artistId: string | null;
+        productId: string | null;
+        rating: number;
+        media: string[];
+        status: string;
+        isVerifiedPurchase: boolean;
+        consentMarketing: boolean;
+        allowFeature: boolean;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
+export interface ProductReview {
+    id: string;
+    comment: string;
+    userId: string;
+    artistId: string | null;
+    productId: string;
+    rating: number;
+    media: string[];
+    status: string;
+    isVerifiedPurchase: boolean;
+    consentMarketing: boolean;
+    allowFeature: boolean;
+    createdAt: string;
+    updatedAt: string;
+    isDeleted: boolean;
+    user: {
+        id: string;
+        fullName: string;
+        image: string | null;
+    };
+    product: {
+        id: string;
+        title: string;
+        mainImage: string;
+    };
+}
+
+export interface ProductReviewsResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPage: number;
+    };
+    data: ProductReview[];
 }
 
 export interface SingleProductResponse {
@@ -258,11 +314,81 @@ export const commonApi = baseApi.injectEndpoints({
                 method: "POST",
             }),
         }),
-        getWhishlist: builder.query<WishlistProductsApiResponse, void>({
-            query: () => ({
-                url: `${API_ENDPOINTS.COMMON.GET_WHISH_LIST}`,
-                method: "GET",
+        getWhishlist: builder.query<
+            WishlistProductsApiResponse,
+            { page?: number; limit?: number } | void
+        >({
+            query: (params) => {
+                const url = new URL(
+                    API_ENDPOINTS.COMMON.GET_WHISH_LIST,
+                    "http://dummy.com"
+                );
+                if (params) {
+                    if (params.page)
+                        url.searchParams.append("page", params.page.toString());
+                    if (params.limit)
+                        url.searchParams.append(
+                            "limit",
+                            params.limit.toString()
+                        );
+                }
+                return {
+                    url: url.pathname + url.search,
+                    method: "GET",
+                };
+            },
+        }),
+        addReview: builder.mutation<ReviewResponse, FormData>({
+            query: (formData) => ({
+                url: API_ENDPOINTS.COMMON.REVIEWS,
+                method: "POST",
+                body: formData,
             }),
+            invalidatesTags: ["Product", "Artist", "Review"],
+        }),
+        getProductReviews: builder.query<
+            ProductReviewsResponse,
+            { page?: number; limit?: number } | void
+        >({
+            query: (params) => {
+                const url = new URL(
+                    API_ENDPOINTS.COMMON.GET_PRODUCT_REVIEWS,
+                    "http://dummy.com"
+                );
+                if (params) {
+                    if (params.page)
+                        url.searchParams.append("page", params.page.toString());
+                    if (params.limit)
+                        url.searchParams.append(
+                            "limit",
+                            params.limit.toString()
+                        );
+                }
+                return {
+                    url: url.pathname + url.search,
+                    method: "GET",
+                };
+            },
+            providesTags: ["Review"],
+        }),
+        updateReviewStatus: builder.mutation<
+            any,
+            { id: string; status: "APPROVED" | "REJECTED" }
+        >({
+            query: ({ id, status }) => ({
+                url: `${API_ENDPOINTS.COMMON.REVIEWS}/${id}/status`,
+                method: "PATCH",
+                body: { status },
+            }),
+            invalidatesTags: ["Review", "Product"],
+        }),
+        addArtistReview: builder.mutation<ReviewResponse, FormData>({
+            query: (formData) => ({
+                url: API_ENDPOINTS.COMMON.REVIEWS_ARTIST,
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["Review", "Artist"],
         }),
     }),
 });
@@ -274,4 +400,8 @@ export const {
     useGetSingleProductQuery,
     useToggleWhishlistMutation,
     useGetWhishlistQuery,
+    useAddReviewMutation,
+    useGetProductReviewsQuery,
+    useUpdateReviewStatusMutation,
+    useAddArtistReviewMutation,
 } = commonApi;
